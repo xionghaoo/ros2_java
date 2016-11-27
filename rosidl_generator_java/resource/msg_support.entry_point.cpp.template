@@ -186,6 +186,7 @@ static JavaVM* g_vm = nullptr;
 
         _dest_@(field.name)[i] = *convert_from_java_@(field.name)(element, nullptr);
 @[        end if]@
+      env->DeleteLocalRef(element);
     }
   }
 @[    else]@
@@ -246,6 +247,7 @@ static JavaVM* g_vm = nullptr;
 
     ros_message->@(field.name) = *convert_from_java_@(field.name)(_jfield_@(field.name)_obj, nullptr);
   }
+  env->DeleteLocalRef(_jfield_@(field.name)_obj);
 @[        end if]@
 @[    end if]@
 @[end for]@
@@ -328,8 +330,6 @@ jobject @(spec.base_type.pkg_name)_@(type_name)__convert_to_java(@(msg_typename)
       assert(_jlist_@(field.name)_add_result);
     }
   }
-
-  env->SetObjectField(_jmessage_obj, _jfield_@(field.name)_fid, _jarray_list_@(field.name)_obj);
 @[        else]@
 
   auto _jfield_@(field.name)_fid = env->GetFieldID(_jmessage_class, "@(field.name)", "Ljava/util/List;");
@@ -365,9 +365,9 @@ jobject @(spec.base_type.pkg_name)_@(type_name)__convert_to_java(@(msg_typename)
     }
 
   }
-
-  env->SetObjectField(_jmessage_obj, _jfield_@(field.name)_fid, _jarray_list_@(field.name)_obj);
 @[        end if]@
+  env->SetObjectField(_jmessage_obj, _jfield_@(field.name)_fid, _jarray_list_@(field.name)_obj);
+  env->DeleteLocalRef(_jarray_list_@(field.name)_obj);
 @[    else]@
 @[        if field.type.type == 'string']@
   auto _jfield_@(field.name)_fid = env->GetFieldID(_jmessage_class, "@(field.name)", "Ljava/lang/String;");
