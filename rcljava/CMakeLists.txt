@@ -133,8 +133,13 @@ if(BUILD_TESTING)
     "msg/UInt32.msg"
   )
 
+  set(${PROJECT_NAME}_service_files
+    "srv/AddTwoInts.srv"
+  )
+
   rosidl_generate_interfaces(${PROJECT_NAME}
     ${${PROJECT_NAME}_message_files}
+    ${${PROJECT_NAME}_service_files}
     DEPENDENCIES builtin_interfaces
     SKIP_INSTALL
   )
@@ -148,6 +153,7 @@ if(BUILD_TESTING)
     PROPERTY "JAR_FILE")
 
   set(${PROJECT_NAME}_test_sources
+    "src/test/java/org/ros2/rcljava/ClientTest.java"
     "src/test/java/org/ros2/rcljava/NodeTest.java"
     "src/test/java/org/ros2/rcljava/PublisherTest.java"
     "src/test/java/org/ros2/rcljava/RCLJavaTest.java"
@@ -155,6 +161,7 @@ if(BUILD_TESTING)
   )
 
   set(${PROJECT_NAME}_testsuites
+    "org.ros2.rcljava.ClientTest"
     "org.ros2.rcljava.NodeTest"
     "org.ros2.rcljava.PublisherTest"
     "org.ros2.rcljava.RCLJavaTest"
@@ -176,6 +183,7 @@ if(BUILD_TESTING)
   endforeach()
   list(APPEND _deps_library_paths ${CMAKE_CURRENT_BINARY_DIR})
   list(APPEND _deps_library_paths ${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_java/rcljava/msg/)
+  list(APPEND _deps_library_paths ${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_java/rcljava/srv/)
 
   foreach(testsuite ${${PROJECT_NAME}_testsuites})
     add_junit_tests("${PROJECT_NAME}_tests_${testsuite}"
