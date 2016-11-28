@@ -399,7 +399,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void*)
   }
 
   JNIEnv* env;
-  if(g_vm->GetEnv((void**)&env, JNI_VERSION_1_6) != JNI_OK)
+  if(g_vm->GetEnv(reinterpret_cast<void**>(&env), JNI_VERSION_1_6) != JNI_OK)
   {
     return JNI_ERR;
   } else {
@@ -466,7 +466,7 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void*)
   assert(g_vm == vm);
 
   JNIEnv* env;
-  if(g_vm->GetEnv((void**)&env, JNI_VERSION_1_6) == JNI_OK)
+  if(g_vm->GetEnv(reinterpret_cast<void**>(&env), JNI_VERSION_1_6) == JNI_OK)
   {
 @[for normalized_type, jni_type in cache.items()]@
     if(_j@(normalized_type)_class_global != nullptr)
