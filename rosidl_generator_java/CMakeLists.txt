@@ -92,6 +92,8 @@ if(BUILD_TESTING)
       "${rosidl_generator_java_JARS}"
       "${_${PROJECT_NAME}_messages_jar_file}"
     )
+
+    add_dependencies("${PROJECT_NAME}_tests_${testsuite}" "${PROJECT_NAME}_messages_jar")
   endforeach()
 
 endif()
