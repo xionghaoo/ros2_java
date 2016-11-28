@@ -183,31 +183,31 @@ def constant_value_to_java(type_, value):
 
 def get_builtin_java_type(type_, use_primitives=True):
     if type_ == 'bool':
-        return 'boolean' if use_primitives else 'Boolean'
+        return 'boolean' if use_primitives else 'java.lang.Boolean'
 
     if type_ == 'byte':
-        return 'byte' if use_primitives else 'Byte'
+        return 'byte' if use_primitives else 'java.lang.Byte'
 
     if type_ == 'char':
-        return 'char' if use_primitives else 'Character'
+        return 'char' if use_primitives else 'java.lang.Character'
 
     if type_ == 'float32':
-        return 'float' if use_primitives else 'Float'
+        return 'float' if use_primitives else 'java.lang.Float'
 
     if type_ == 'float64':
-        return 'double' if use_primitives else 'Double'
+        return 'double' if use_primitives else 'java.lang.Double'
 
     if type_ in ['int8', 'uint8']:
-        return 'byte' if use_primitives else 'Byte'
+        return 'byte' if use_primitives else 'java.lang.Byte'
 
     if type_ in ['int16', 'uint16']:
-        return 'short' if use_primitives else 'Short'
+        return 'short' if use_primitives else 'java.lang.Short'
 
     if type_ in ['int32', 'uint32']:
-        return 'int' if use_primitives else 'Integer'
+        return 'int' if use_primitives else 'java.lang.Integer'
 
     if type_ in ['int64', 'uint64']:
-        return 'long' if use_primitives else 'Long'
+        return 'long' if use_primitives else 'java.lang.Long'
 
     if type_ == 'string':
         return 'java.lang.String'
@@ -215,8 +215,8 @@ def get_builtin_java_type(type_, use_primitives=True):
     assert False, "unknown type '%s'" % type_
 
 
-def get_java_type(type_, use_primitives=True):
+def get_java_type(type_, use_primitives=True, subfolder='msg'):
     if not type_.is_primitive_type():
-        return type_.type
+        return '%s.%s.%s' % (type_.pkg_name, subfolder, type_.type)
 
     return get_builtin_java_type(type_.type, use_primitives=use_primitives)
