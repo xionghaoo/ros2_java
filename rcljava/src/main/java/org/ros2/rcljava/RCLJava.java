@@ -20,10 +20,13 @@ import org.ros2.rcljava.qos.QoSProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.Map;
-import java.util.Queue;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.LinkedBlockingQueue;
+
+import org.ros2.rcljava.interfaces.MessageDefinition;
+import org.ros2.rcljava.interfaces.ServiceDefinition;
 
 /**
  * Entry point for the ROS2 Java API, similar to the rclcpp API.
@@ -40,7 +43,7 @@ public final class RCLJava {
   /**
    * All the @{link Node}s that have been created.
    */
-  private static Queue<Node> nodes;
+  private static Collection<Node> nodes;
 
   static {
     nodes = new LinkedBlockingQueue<Node>();
@@ -182,7 +185,7 @@ public final class RCLJava {
    */
   public static Node createNode(final String nodeName) {
     long nodeHandle = nativeCreateNodeHandle(nodeName);
-    Node node = new Node(nodeHandle);
+    Node node = new NodeImpl(nodeHandle);
     nodes.add(node);
     return node;
   }
@@ -199,23 +202,23 @@ public final class RCLJava {
 
     nativeWaitSetClearClients(waitSetHandle);
 
-    for (Subscription subscription : node.getSubscriptions()) {
+    for (Subscription<MessageDefinition> subscription : node.getSubscriptions()) {
       nativeWaitSetAddSubscription(
           waitSetHandle, subscription.getSubscriptionHandle());
     }
 
-    for (Service service : node.getServices()) {
+    for (Service<ServiceDefinition> service : node.getServices()) {
       nativeWaitSetAddService(waitSetHandle, service.getServiceHandle());
     }
 
-    for (Client client : node.getClients()) {
+    for (Client<ServiceDefinition> client : node.getClients()) {
       nativeWaitSetAddClient(waitSetHandle, client.getClientHandle());
     }
 
     nativeWait(waitSetHandle);
 
-    for (Subscription subscription : node.getSubscriptions()) {
-      Object message = nativeTake(
+    for (Subscription<MessageDefinition> subscription : node.getSubscriptions()) {
+      MessageDefinition message = nativeTake(
           subscription.getSubscriptionHandle(),
           subscription.getMessageType());
       if (message != null) {
@@ -224,20 +227,11 @@ public final class RCLJava {
     }
 
     for (Service service : node.getServices()) {
-      long requestFromJavaConverterHandle =
-          service.getRequestFromJavaConverterHandle();
-      long requestToJavaConverterHandle =
-          service.getRequestToJavaConverterHandle();
-      long responseFromJavaConverterHandle =
-          service.getResponseFromJavaConverterHandle();
-      long responseToJavaConverterHandle =
-          service.getResponseToJavaConverterHandle();
+      Class<MessageDefinition> requestType = service.getRequestType();
+      Class<MessageDefinition> responseType = service.getResponseType();
 
-      Class requestType = service.getRequestType();
-      Class responseType = service.getResponseType();
-
-      Object requestMessage = null;
-      Object responseMessage = null;
+      MessageDefinition requestMessage = null;
+      MessageDefinition responseMessage = null;
 
       try {
         requestMessage = requestType.newInstance();
@@ -250,34 +244,33 @@ public final class RCLJava {
         continue;
       }
 
+      long requestFromJavaConverterHandle =
+          requestMessage.getFromJavaConverterInstance();
+      long requestToJavaConverterHandle =
+          requestMessage.getToJavaConverterInstance();
+      long responseFromJavaConverterHandle =
+          responseMessage.getFromJavaConverterInstance();
+      long responseToJavaConverterHandle =
+          responseMessage.getToJavaConverterInstance();
+
       RMWRequestId rmwRequestId =
-          (RMWRequestId) nativeTakeRequest(service.getServiceHandle(),
+          nativeTakeRequest(service.getServiceHandle(),
           requestFromJavaConverterHandle, requestToJavaConverterHandle,
           requestMessage);
       if (rmwRequestId != null) {
-        service.getCallback().accept(rmwRequestId, requestMessage,
-            responseMessage);
+        service.getCallback().accept(rmwRequestId, requestMessage, responseMessage);
         nativeSendServiceResponse(service.getServiceHandle(), rmwRequestId,
             responseFromJavaConverterHandle, responseToJavaConverterHandle,
             responseMessage);
       }
     }
 
-    for (Client client : node.getClients()) {
-      long requestFromJavaConverterHandle =
-          client.getRequestFromJavaConverterHandle();
-      long requestToJavaConverterHandle =
-          client.getRequestToJavaConverterHandle();
-      long responseFromJavaConverterHandle =
-          client.getResponseFromJavaConverterHandle();
-      long responseToJavaConverterHandle =
-          client.getResponseToJavaConverterHandle();
+    for (Client<ServiceDefinition> client : node.getClients()) {
+      Class<MessageDefinition> requestType = client.getRequestType();
+      Class<MessageDefinition> responseType = client.getResponseType();
 
-      Class requestType = client.getRequestType();
-      Class responseType = client.getResponseType();
-
-      Object requestMessage = null;
-      Object responseMessage = null;
+      MessageDefinition requestMessage = null;
+      MessageDefinition responseMessage = null;
 
       try {
         requestMessage = requestType.newInstance();
@@ -290,7 +283,16 @@ public final class RCLJava {
         continue;
       }
 
-      RMWRequestId rmwRequestId = (RMWRequestId)nativeTakeResponse(
+      long requestFromJavaConverterHandle =
+          requestMessage.getFromJavaConverterInstance();
+      long requestToJavaConverterHandle =
+          requestMessage.getToJavaConverterInstance();
+      long responseFromJavaConverterHandle =
+          responseMessage.getFromJavaConverterInstance();
+      long responseToJavaConverterHandle =
+          responseMessage.getToJavaConverterInstance();
+
+      RMWRequestId rmwRequestId = nativeTakeResponse(
           client.getClientHandle(), responseFromJavaConverterHandle,
           responseToJavaConverterHandle, responseMessage);
 
@@ -321,8 +323,8 @@ public final class RCLJava {
 
   private static native void nativeWait(long waitSetHandle);
 
-  private static native Object nativeTake(long subscriptionHandle,
-      Class messageType);
+  private static native MessageDefinition nativeTake(long subscriptionHandle,
+      Class<MessageDefinition> messageType);
 
   private static native void nativeWaitSetClearServices(long waitSetHandle);
 
@@ -334,17 +336,17 @@ public final class RCLJava {
   private static native void nativeWaitSetAddClient(long waitSetHandle,
       long clientHandle);
 
-  private static native Object nativeTakeRequest(
+  private static native RMWRequestId nativeTakeRequest(
       long serviceHandle, long requestFromJavaConverterHandle,
-      long requestToJavaConverterHandle, Object requestMessage);
+      long requestToJavaConverterHandle, MessageDefinition requestMessage);
 
   private static native void nativeSendServiceResponse(long serviceHandle,
-      Object header, long responseFromJavaConverterHandle,
-      long responseToJavaConverterHandle, Object responseMessage);
+      RMWRequestId header, long responseFromJavaConverterHandle,
+      long responseToJavaConverterHandle, MessageDefinition responseMessage);
 
-  private static native Object nativeTakeResponse(
+  private static native RMWRequestId nativeTakeResponse(
       long clientHandle, long responseFromJavaConverterHandle,
-      long responseToJavaConverterHandle, Object responseMessage);
+      long responseToJavaConverterHandle, MessageDefinition responseMessage);
 
   public static long convertQoSProfileToHandle(final QoSProfile qosProfile) {
     int history = qosProfile.getHistory().getValue();

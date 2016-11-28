@@ -13,17 +13,13 @@
  * limitations under the License.
  */
 
-package org.ros2.rcljava;
+package org.ros2.rcljava.interfaces;
 
-import org.ros2.rcljava.interfaces.MessageDefinition;
-import org.ros2.rcljava.interfaces.ServiceDefinition;
+public interface MessageDefinition {
 
-public interface Service<T extends ServiceDefinition> {
-  long getServiceHandle();
+  public long getFromJavaConverterInstance();
 
-  <U extends MessageDefinition> Class<U> getRequestType();
+  public long getToJavaConverterInstance();
 
-  <U extends MessageDefinition> Class<U> getResponseType();
-
-  TriConsumer<RMWRequestId, ?, ?> getCallback();
+  public long getTypeSupportInstance();
 }

@@ -13,20 +13,20 @@
 // limitations under the License.
 
 #include <jni.h>
-/* Header for class org_ros2_rcljava_Publisher */
+/* Header for class org_ros2_rcljava_PublisherImpl */
 
-#ifndef ORG_ROS2_RCLJAVA_PUBLISHER_H_
-#define ORG_ROS2_RCLJAVA_PUBLISHER_H_
+#ifndef ORG_ROS2_RCLJAVA_PUBLISHERIMPL_H_
+#define ORG_ROS2_RCLJAVA_PUBLISHERIMPL_H_
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 /*
- * Class:     org_ros2_rcljava_Publisher
+ * Class:     org_ros2_rcljava_PublisherImpl
  * Method:    nativePublish
  * Signature: (JLjava/lang/Object;)
  */
-JNIEXPORT void JNICALL Java_org_ros2_rcljava_Publisher_nativePublish
+JNIEXPORT void JNICALL Java_org_ros2_rcljava_PublisherImpl_nativePublish
   (JNIEnv *, jclass, jlong, jobject);
 
 /*
@@ -34,11 +34,11 @@ JNIEXPORT void JNICALL Java_org_ros2_rcljava_Publisher_nativePublish
  * Method:    nativeDispose
  * Signature: (JJ)V
  */
-JNIEXPORT void JNICALL Java_org_ros2_rcljava_Publisher_nativeDispose
+JNIEXPORT void JNICALL Java_org_ros2_rcljava_PublisherImpl_nativeDispose
   (JNIEnv *, jclass, jlong, jlong);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // ORG_ROS2_RCLJAVA_PUBLISHER_H_
+#endif  // ORG_ROS2_RCLJAVA_PUBLISHERIMPL_H_

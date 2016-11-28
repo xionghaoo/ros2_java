@@ -13,48 +13,48 @@
 // limitations under the License.
 
 #include <jni.h>
-/* Header for class org_ros2_rcljava_Node */
+/* Header for class org_ros2_rcljava_NodeImpl */
 
-#ifndef ORG_ROS2_RCLJAVA_NODE_H_
-#define ORG_ROS2_RCLJAVA_NODE_H_
+#ifndef ORG_ROS2_RCLJAVA_NODEIMPL_H_
+#define ORG_ROS2_RCLJAVA_NODEIMPL_H_
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 /*
- * Class:     org_ros2_rcljava_Node
+ * Class:     org_ros2_rcljava_NodeImpl
  * Method:    nativeCreatePublisherHandle
  * Signature: (JLjava/lang/Class;Ljava/lang/String;J)J
  */
-JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_Node_nativeCreatePublisherHandle
+JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_NodeImpl_nativeCreatePublisherHandle
   (JNIEnv *, jclass, jlong, jclass, jstring, jlong);
 
 /*
- * Class:     org_ros2_rcljava_Node
+ * Class:     org_ros2_rcljava_NodeImpl
  * Method:    nativeCreateSubscriptionHandle
  * Signature: (JLjava/lang/Class;Ljava/lang/String;J)J
  */
-JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_Node_nativeCreateSubscriptionHandle
+JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_NodeImpl_nativeCreateSubscriptionHandle
   (JNIEnv *, jclass, jlong, jclass, jstring, jlong);
 
 /*
- * Class:     org_ros2_rcljava_Node
+ * Class:     org_ros2_rcljava_NodeImpl
  * Method:    nativeCreateServiceHandle
  * Signature: (JLjava/lang/Class;Ljava/lang/String;J)J
  */
-JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_Node_nativeCreateServiceHandle
+JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_NodeImpl_nativeCreateServiceHandle
   (JNIEnv *, jclass, jlong, jclass, jstring, jlong);
 
 /*
- * Class:     org_ros2_rcljava_Node
+ * Class:     org_ros2_rcljava_NodeImpl
  * Method:    nativeCreateClientHandle
  * Signature: (JLjava/lang/Class;Ljava/lang/String;J)J
  */
-JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_Node_nativeCreateClientHandle
+JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_NodeImpl_nativeCreateClientHandle
   (JNIEnv *, jclass, jlong, jclass, jstring, jlong);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // ORG_ROS2_RCLJAVA_NODE_H_
+#endif  // ORG_ROS2_RCLJAVA_NODEIMPL_H_

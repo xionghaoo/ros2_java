@@ -27,13 +27,10 @@
 #include "rcljava_common/exceptions.h"
 #include "rcljava_common/signatures.h"
 
-#include "org_ros2_rcljava_Node.h"
+#include "org_ros2_rcljava_NodeImpl.h"
 
-JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_Node_nativeCreatePublisherHandle(JNIEnv * env, jclass,
-  jlong node_handle,
-  jclass jmessage_class,
-  jstring jtopic,
-  jlong qos_profile_handle)
+JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_NodeImpl_nativeCreatePublisherHandle(JNIEnv * env,
+  jclass, jlong node_handle, jclass jmessage_class, jstring jtopic, jlong qos_profile_handle)
 {
   jmethodID mid = env->GetStaticMethodID(jmessage_class, "getTypeSupport", "()J");
   jlong jts = env->CallStaticLongMethod(jmessage_class, mid);
@@ -69,7 +66,7 @@ JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_Node_nativeCreatePublisherHandle(J
   return jpublisher;
 }
 
-JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_Node_nativeCreateSubscriptionHandle(JNIEnv * env,
+JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_NodeImpl_nativeCreateSubscriptionHandle(JNIEnv * env,
   jclass,
   jlong node_handle,
   jclass jmessage_class,
@@ -111,8 +108,8 @@ JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_Node_nativeCreateSubscriptionHandl
   return jsubscription;
 }
 
-JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_Node_nativeCreateServiceHandle(JNIEnv * env, jclass,
-  jlong node_handle, jclass jservice_class, jstring jservice_name, jlong qos_profile_handle)
+JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_NodeImpl_nativeCreateServiceHandle(JNIEnv * env,
+  jclass, jlong node_handle, jclass jservice_class, jstring jservice_name, jlong qos_profile_handle)
 {
   jmethodID mid = env->GetStaticMethodID(jservice_class, "getServiceTypeSupport", "()J");
 
@@ -153,8 +150,9 @@ JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_Node_nativeCreateServiceHandle(JNI
   return jservice;
 }
 
-JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_Node_nativeCreateClientHandle(JNIEnv * env, jclass,
-  jlong node_handle, jclass jservice_class, jstring jservice_name, jlong qos_profile_handle)
+JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_NodeImpl_nativeCreateClientHandle(JNIEnv * env,
+  jclass, jlong node_handle, jclass jservice_class, jstring jservice_name,
+  jlong qos_profile_handle)
 {
   jmethodID mid = env->GetStaticMethodID(jservice_class, "getServiceTypeSupport", "()J");
 

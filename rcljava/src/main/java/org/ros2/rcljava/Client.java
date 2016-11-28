@@ -15,119 +15,20 @@
 
 package org.ros2.rcljava;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.Future;
 
-public class Client<T> {
-  private static final Logger logger = LoggerFactory.getLogger(Client.class);
+import org.ros2.rcljava.interfaces.Disposable;
+import org.ros2.rcljava.interfaces.MessageDefinition;
+import org.ros2.rcljava.interfaces.ServiceDefinition;
 
-  static {
-    try {
-      System.loadLibrary("rcljavaClient__" + RCLJava.getRMWIdentifier());
-    } catch (UnsatisfiedLinkError ule) {
-      logger.error("Native code library failed to load.\n" + ule);
-      System.exit(1);
-    }
-  }
+public interface Client<T extends ServiceDefinition> extends Disposable {
+  long getClientHandle();
 
-  private final WeakReference<Node> nodeReference;
-  private final long nodeHandle;
-  private final long clientHandle;
-  private final Class<T> serviceType;
-  private final String serviceName;
-  private long sequenceNumber = 0;
-  private Map<Long, RCLFuture> pendingRequests;
+  <U extends MessageDefinition> Class<U> getRequestType();
 
-  private long requestFromJavaConverterHandle = 0;
-  private long requestToJavaConverterHandle = 0;
+  <U extends MessageDefinition> Class<U> getResponseType();
 
-  private long responseFromJavaConverterHandle = 0;
-  private long responseToJavaConverterHandle = 0;
+  <U extends MessageDefinition> void handleResponse(RMWRequestId header, U response);
 
-  private final Class requestType;
-  private final Class responseType;
-
-  public Client(final WeakReference<Node> nodeReference,
-      final long nodeHandle, final long clientHandle,
-      final Class<T> serviceType, final String serviceName,
-      final Class requestType, final Class responseType,
-      final long requestFromJavaConverterHandle,
-      final long requestToJavaConverterHandle,
-      final long responseFromJavaConverterHandle,
-      final long responseToJavaConverterHandle) {
-    this.nodeReference = nodeReference;
-    this.nodeHandle = nodeHandle;
-    this.clientHandle = clientHandle;
-    this.serviceType = serviceType;
-    this.serviceName = serviceName;
-    this.requestType = requestType;
-    this.responseType = responseType;
-    this.requestFromJavaConverterHandle = requestFromJavaConverterHandle;
-    this.requestToJavaConverterHandle = requestToJavaConverterHandle;
-    this.responseFromJavaConverterHandle = responseFromJavaConverterHandle;
-    this.responseToJavaConverterHandle = responseToJavaConverterHandle;
-    this.pendingRequests = new HashMap<Long, RCLFuture>();
-  }
-
-  public final <U, V> Future<V> sendRequest(final U request) {
-    synchronized (pendingRequests) {
-      sequenceNumber++;
-      nativeSendClientRequest(clientHandle, sequenceNumber,
-          requestFromJavaConverterHandle, requestToJavaConverterHandle,
-          request);
-      RCLFuture<V> future = new RCLFuture<V>(this.nodeReference);
-      pendingRequests.put(sequenceNumber, future);
-      return future;
-    }
-  }
-
-  public final <U> void handleResponse(final RMWRequestId header,
-      final U response) {
-    synchronized (pendingRequests) {
-      long sequenceNumber = header.sequenceNumber;
-      RCLFuture<U> future = pendingRequests.remove(sequenceNumber);
-      future.set(response);
-    }
-  }
-
-  public final Class<T> getServiceType() {
-    return serviceType;
-  }
-
-  public final long getClientHandle() {
-    return clientHandle;
-  }
-
-  private static native void nativeSendClientRequest(long clientHandle,
-      long sequenceNumber, long requestFromJavaConverterHandle,
-      long requestToJavaConverterHandle, Object requestMessage);
-
-  public final long getRequestFromJavaConverterHandle() {
-    return this.requestFromJavaConverterHandle;
-  }
-
-  public final long getRequestToJavaConverterHandle() {
-    return this.requestToJavaConverterHandle;
-  }
-
-  public final long getResponseFromJavaConverterHandle() {
-    return this.responseFromJavaConverterHandle;
-  }
-
-  public final long getResponseToJavaConverterHandle() {
-    return this.responseToJavaConverterHandle;
-  }
-
-  public final Class getRequestType() {
-    return this.requestType;
-  }
-
-  public final Class getResponseType() {
-    return this.responseType;
-  }
+  <U extends MessageDefinition, V extends MessageDefinition> Future<V> sendRequest(final U request);
 }
