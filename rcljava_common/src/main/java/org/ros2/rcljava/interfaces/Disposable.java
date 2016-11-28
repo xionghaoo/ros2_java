@@ -13,17 +13,11 @@
  * limitations under the License.
  */
 
-package org.ros2.rcljava;
+package org.ros2.rcljava.interfaces;
 
-import org.ros2.rcljava.interfaces.MessageDefinition;
-import org.ros2.rcljava.interfaces.ServiceDefinition;
-
-public interface Service<T extends ServiceDefinition> {
-  long getServiceHandle();
-
-  <U extends MessageDefinition> Class<U> getRequestType();
-
-  <U extends MessageDefinition> Class<U> getResponseType();
-
-  TriConsumer<RMWRequestId, ?, ?> getCallback();
+public interface Disposable {
+  /**
+   * Safely destroy the underlying ROS2 structure.
+   */
+  void dispose();
 }

@@ -15,144 +15,43 @@
 
 package org.ros2.rcljava;
 
+import java.util.Collection;
+
 import org.ros2.rcljava.qos.QoSProfile;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.ref.WeakReference;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
+import org.ros2.rcljava.interfaces.Disposable;
+import org.ros2.rcljava.interfaces.MessageDefinition;
+import org.ros2.rcljava.interfaces.ServiceDefinition;
 
 /**
  * This class serves as a bridge between ROS2's rcl_node_t and RCLJava.
  * A Node must be created via @{link RCLJava#createNode(String)}
  */
-public class Node {
+public interface Node extends Disposable {
+  /**
+   * return All the @{link Client}s that have been created by this instance.
+   */
+  Collection<Client> getClients();
 
-  private static final Logger logger = LoggerFactory.getLogger(Node.class);
+  /**
+   * return All the @{link Service}s that have been created by this instance.
+   */
+  Collection<Service> getServices();
 
-  static {
-    try {
-      System.loadLibrary("rcljavaNode__" + RCLJava.getRMWIdentifier());
-    } catch (UnsatisfiedLinkError ule) {
-      logger.error("Native code library failed to load.\n" + ule);
-      System.exit(1);
-    }
-  }
+  /**
+   * @return All the @{link Subscription}s that were created by this instance.
+   */
+  Collection<Subscription> getSubscriptions();
+
+  /**
+   * @return All the @{link Publisher}s that were created by this instance.
+   */
+  Collection<Publisher> getPublishers();
 
   /**
    * An integer that represents a pointer to the underlying ROS2 node
    * structure (rcl_node_t).
    */
-  private final long nodeHandle;
-
-  /**
-   * All the @{link Subscription}s that have been created through this instance.
-   */
-  private final Queue<Subscription> subscriptions;
-
-  /**
-   * All the @{link Publisher}s that have been created through this instance.
-   */
-  private final Queue<Publisher> publishers;
-
-  /**
-   * All the @{link Service}s that have been created through this instance.
-   */
-  private final Queue<Service> services;
-
-  /**
-   * All the @{link Client}s that have been created through this instance.
-   */
-  private final Queue<Client> clients;
-
-  /**
-   * Constructor.
-   *
-   * @param nodeHandle A pointer to the underlying ROS2 node structure. Must not
-   *     be zero.
-   */
-  public Node(final long nodeHandle) {
-    this.nodeHandle = nodeHandle;
-    this.publishers = new LinkedBlockingQueue<Publisher>();
-    this.subscriptions = new LinkedBlockingQueue<Subscription>();
-    this.services = new LinkedBlockingQueue<Service>();
-    this.clients = new LinkedBlockingQueue<Client>();
-  }
-
-  /**
-   * Create a ROS2 publisher (rcl_publisher_t) and return a pointer to
-   *     it as an integer.
-   *
-   * @param <T> The type of the messages that will be published by the
-   *     created @{link Publisher}.
-   * @param nodeHandle A pointer to the underlying ROS2 node structure.
-   * @param messageType The class of the messages that will be published by the
-   *     created @{link Publisher}.
-   * @param topic The topic to which the created @{link Publisher} will
-   *     publish messages.
-   * @param qosProfileHandle A pointer to the underlying ROS2 QoS profile
-   *     structure.
-   * @return A pointer to the underlying ROS2 publisher structure.
-   */
-  private static native <T> long nativeCreatePublisherHandle(
-      long nodeHandle, Class<T> messageType, String topic,
-      long qosProfileHandle);
-
-  /**
-   * Create a ROS2 subscription (rcl_subscription_t) and return a pointer to
-   *     it as an integer.
-   *
-   * @param <T> The type of the messages that will be received by the
-   *     created @{link Subscription}.
-   * @param nodeHandle A pointer to the underlying ROS2 node structure.
-   * @param messageType The class of the messages that will be received by the
-   *     created @{link Subscription}.
-   * @param topic The topic from which the created @{link Subscription} will
-   *     receive messages.
-   * @param qosProfileHandle A pointer to the underlying ROS2 QoS profile
-   *     structure.
-   * @return A pointer to the underlying ROS2 subscription structure.
-   */
-  private static native <T> long nativeCreateSubscriptionHandle(
-      long nodeHandle, Class<T> messageType, String topic,
-      long qosProfileHandle);
-
-  /**
-   * Create a Publisher&lt;T&gt;.
-   *
-   * @param <T> The type of the messages that will be published by the
-   *     created @{link Publisher}.
-   * @param messageType The class of the messages that will be published by the
-   *     created @{link Publisher}.
-   * @param topic The topic to which the created @{link Publisher} will
-   *     publish messages.
-   * @return A @{link Publisher} that represents the underlying ROS2 publisher
-   *     structure.
-   */
-  public final <T> Publisher<T> createPublisher(
-      final Class<T> messageType, final String topic,
-      final QoSProfile qosProfile) {
-
-    long qosProfileHandle = RCLJava.convertQoSProfileToHandle(qosProfile);
-    long publisherHandle = nativeCreatePublisherHandle(this.nodeHandle,
-        messageType, topic, qosProfileHandle);
-    RCLJava.disposeQoSProfile(qosProfileHandle);
-
-    Publisher<T> publisher = new Publisher<T>(this.nodeHandle,
-        publisherHandle, topic);
-    this.publishers.add(publisher);
-
-    return publisher;
-  }
-
-  public final <T> Publisher<T> createPublisher(
-      final Class<T> messageType, final String topic) {
-    return this.<T>createPublisher(messageType, topic, QoSProfile.DEFAULT);
-  }
+  long getNodeHandle();
 
   /**
    * Create a Subscription&lt;T&gt;.
@@ -168,172 +67,46 @@ public class Node {
    * @return A @{link Subscription} that represents the underlying ROS2
    *     subscription structure.
    */
-  public final <T> Subscription<T> createSubscription(
-      final Class<T> messageType, final String topic,
-      final Consumer<T> callback, final QoSProfile qosProfile) {
+  <T extends MessageDefinition> Subscription<T> createSubscription(
+    final Class<T> messageType, final String topic,
+    final Consumer<T> callback, final QoSProfile qosProfile);
 
-    long qosProfileHandle = RCLJava.convertQoSProfileToHandle(qosProfile);
-    long subscriptionHandle = nativeCreateSubscriptionHandle(
-        this.nodeHandle, messageType, topic, qosProfileHandle);
-    RCLJava.disposeQoSProfile(qosProfileHandle);
-
-    Subscription<T> subscription = new Subscription<T>(
-        this.nodeHandle, subscriptionHandle, messageType, topic, callback);
-
-    this.subscriptions.add(subscription);
-
-    return subscription;
-  }
-
-  public final <T> Subscription<T> createSubscription(
-      final Class<T> messageType, final String topic,
-      final Consumer<T> callback) {
-    return this.<T>createSubscription(messageType, topic, callback,
-      QoSProfile.DEFAULT);
-  }
+  <T extends MessageDefinition> Subscription<T> createSubscription(
+    final Class<T> messageType, final String topic,
+    final Consumer<T> callback);
 
   /**
-   * @return All the @{link Subscription}s that were created by this instance.
+   * Create a Publisher&lt;T&gt;.
+   *
+   * @param <T> The type of the messages that will be published by the
+   *     created @{link Publisher}.
+   * @param messageType The class of the messages that will be published by the
+   *     created @{link Publisher}.
+   * @param topic The topic to which the created @{link Publisher} will
+   *     publish messages.
+   * @return A @{link Publisher} that represents the underlying ROS2 publisher
+   *     structure.
    */
-  public final Queue<Subscription> getSubscriptions() {
-    return this.subscriptions;
-  }
+  <T extends MessageDefinition> Publisher<T> createPublisher(
+    final Class<T> messageType, final String topic,
+    final QoSProfile qosProfile);
 
-  /**
-   * @return All the @{link Publisher}s that were created by this instance.
-   */
-  public final Queue<Publisher> getPublishers() {
-    return this.publishers;
-  }
+  <T extends MessageDefinition> Publisher<T> createPublisher(
+    final Class<T> messageType, final String topic);
 
-  /**
-   * Safely destroy the underlying ROS2 node structure.
-   */
-  public final void dispose() {
-    // TODO(esteve): implement
-  }
+  <T extends ServiceDefinition> Service<T> createService(final Class<T> serviceType,
+    final String serviceName, final TriConsumer<RMWRequestId, ? extends MessageDefinition, ? extends MessageDefinition> callback,
+    final QoSProfile qosProfile) throws NoSuchFieldException, IllegalAccessException;
 
-  public final long getNodeHandle() {
-    return this.nodeHandle;
-  }
+  <T extends ServiceDefinition> Service<T> createService(final Class<T> serviceType,
+    final String serviceName, final TriConsumer<RMWRequestId, ? extends MessageDefinition, ? extends MessageDefinition> callback)
+    throws NoSuchFieldException, IllegalAccessException;
 
-  private static native <T> long nativeCreateServiceHandle(
-      long nodeHandle, Class<T> cls, String serviceName,
-      long qosProfileHandle);
+  <T extends ServiceDefinition> Client<T> createClient(final Class<T> serviceType,
+    final String serviceName, final QoSProfile qosProfile) throws
+    NoSuchFieldException, IllegalAccessException;
 
-  public final <T> Service<T> createService(final Class<T> serviceType,
-      final String serviceName, final TriConsumer<RMWRequestId, ?, ?> callback,
-      final QoSProfile qosProfile) throws NoSuchFieldException,
-      IllegalAccessException, NoSuchMethodException,
-      InvocationTargetException {
-
-    Class requestType = (Class) serviceType.getField("RequestType").get(null);
-
-    Method requestFromJavaConverterMethod = requestType.getDeclaredMethod(
-        "getFromJavaConverter", (Class<?>[]) null);
-    long requestFromJavaConverterHandle =
-        (Long) requestFromJavaConverterMethod.invoke(null, (Class<?>[]) null);
-
-    Method requestToJavaConverterMethod = requestType.getDeclaredMethod(
-        "getToJavaConverter", (Class<?>[]) null);
-    long requestToJavaConverterHandle =
-        (Long) requestToJavaConverterMethod.invoke(null, (Class<?>[]) null);
-
-    Class responseType = (Class) serviceType.getField("ResponseType").get(null);
-
-    Method responseFromJavaConverterMethod = responseType.getDeclaredMethod(
-        "getFromJavaConverter", (Class<?>[]) null);
-    long responseFromJavaConverterHandle =
-        (Long) responseFromJavaConverterMethod.invoke(null, (Class<?>[]) null);
-
-    Method responseToJavaConverterMethod = responseType.getDeclaredMethod(
-        "getToJavaConverter", (Class<?>[]) null);
-    long responseToJavaConverterHandle =
-        (Long) responseToJavaConverterMethod.invoke(null, (Class<?>[]) null);
-
-    long qosProfileHandle = RCLJava.convertQoSProfileToHandle(qosProfile);
-    long serviceHandle = nativeCreateServiceHandle(this.nodeHandle, serviceType, serviceName,
-        qosProfileHandle);
-    RCLJava.disposeQoSProfile(qosProfileHandle);
-
-    Service<T> service = new Service<T>(this.nodeHandle, serviceHandle,
-        serviceType, serviceName,  callback, requestType, responseType,
-        requestFromJavaConverterHandle, requestToJavaConverterHandle,
-        responseFromJavaConverterHandle, responseToJavaConverterHandle);
-    this.services.add(service);
-
-    return service;
-  }
-
-  public <T> Service<T> createService(final Class<T> serviceType,
-      final String serviceName, final TriConsumer<RMWRequestId, ?, ?> callback)
-      throws NoSuchFieldException,
-      IllegalAccessException, NoSuchMethodException,
-      InvocationTargetException {
-    return this.<T>createService(serviceType, serviceName, callback,
-      QoSProfile.SERVICES_DEFAULT);
-  }
-
-  public final Queue<Service> getServices() {
-    return this.services;
-  }
-
-  public final <T> Client<T> createClient(final Class<T> serviceType,
-      final String serviceName, final QoSProfile qosProfile) throws
-      NoSuchFieldException, IllegalAccessException, NoSuchMethodException,
-      InvocationTargetException {
-
-    Class requestType = (Class) serviceType.getField("RequestType").get(null);
-
-    Method requestFromJavaConverterMethod = requestType.getDeclaredMethod(
-        "getFromJavaConverter", (Class<?>[]) null);
-    long requestFromJavaConverterHandle =
-        (Long) requestFromJavaConverterMethod.invoke(null, (Class<?>[]) null);
-
-    Method requestToJavaConverterMethod = requestType.getDeclaredMethod(
-        "getToJavaConverter", (Class<?>[]) null);
-    long requestToJavaConverterHandle =
-        (Long) requestToJavaConverterMethod.invoke(null, (Class<?>[]) null);
-
-    Class responseType = (Class) serviceType.getField("ResponseType").get(null);
-
-    Method responseFromJavaConverterMethod = responseType.getDeclaredMethod(
-        "getFromJavaConverter", (Class<?>[]) null);
-    long responseFromJavaConverterHandle =
-        (Long) responseFromJavaConverterMethod.invoke(null, (Class<?>[]) null);
-
-    Method responseToJavaConverterMethod = responseType.getDeclaredMethod(
-        "getToJavaConverter", (Class<?>[]) null);
-    long responseToJavaConverterHandle =
-        (Long) responseToJavaConverterMethod.invoke(null, (Class<?>[]) null);
-
-    long qosProfileHandle = RCLJava.convertQoSProfileToHandle(qosProfile);
-    long clientHandle = nativeCreateClientHandle(this.nodeHandle, serviceType,
-        serviceName, qosProfileHandle);
-    RCLJava.disposeQoSProfile(qosProfileHandle);
-
-    Client<T> client = new Client<T>(new WeakReference<Node>(this),
-        this.nodeHandle, clientHandle, serviceType, serviceName, requestType,
-        responseType, requestFromJavaConverterHandle,
-        requestToJavaConverterHandle, responseFromJavaConverterHandle,
-        responseToJavaConverterHandle);
-    this.clients.add(client);
-
-    return client;
-  }
-
-  public <T> Client<T> createClient(final Class<T> serviceType,
-      final String serviceName) throws NoSuchFieldException,
-      IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-    return this.<T>createClient(serviceType, serviceName,
-      QoSProfile.SERVICES_DEFAULT);
-  }
-
-  private static native <T> long nativeCreateClientHandle(
-      long nodeHandle, Class<T> cls, String serviceName,
-      long qosProfileHandle);
-
-  public final Queue<Client> getClients() {
-    return this.clients;
-  }
+  <T extends ServiceDefinition> Client<T> createClient(final Class<T> serviceType,
+    final String serviceName) throws NoSuchFieldException,
+    IllegalAccessException;
 }

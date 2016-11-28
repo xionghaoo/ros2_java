@@ -34,7 +34,7 @@ macro(target)
     get_rcl_information("${rmw_implementation}" "rcl${target_suffix}")
   endif()
 
-  set(_jni_classes "RCLJava;Node;Publisher;Client")
+  set(_jni_classes "RCLJava;NodeImpl;PublisherImpl;ClientImpl")
 
   foreach(_jni_class ${_jni_classes})
 
@@ -84,10 +84,13 @@ endmacro()
 set(${PROJECT_NAME}_sources
   "src/main/java/org/ros2/rcljava/BiConsumer.java"
   "src/main/java/org/ros2/rcljava/Client.java"
+  "src/main/java/org/ros2/rcljava/ClientImpl.java"
   "src/main/java/org/ros2/rcljava/Consumer.java"
   "src/main/java/org/ros2/rcljava/Node.java"
+  "src/main/java/org/ros2/rcljava/NodeImpl.java"
   "src/main/java/org/ros2/rcljava/package-info.java"
   "src/main/java/org/ros2/rcljava/Publisher.java"
+  "src/main/java/org/ros2/rcljava/PublisherImpl.java"
   "src/main/java/org/ros2/rcljava/qos/policies/Durability.java"
   "src/main/java/org/ros2/rcljava/qos/policies/History.java"
   "src/main/java/org/ros2/rcljava/qos/policies/QoSPolicy.java"
@@ -97,7 +100,9 @@ set(${PROJECT_NAME}_sources
   "src/main/java/org/ros2/rcljava/RCLJava.java"
   "src/main/java/org/ros2/rcljava/RMWRequestId.java"
   "src/main/java/org/ros2/rcljava/Service.java"
+  "src/main/java/org/ros2/rcljava/ServiceImpl.java"
   "src/main/java/org/ros2/rcljava/Subscription.java"
+  "src/main/java/org/ros2/rcljava/SubscriptionImpl.java"
   "src/main/java/org/ros2/rcljava/TriConsumer.java"
 )
 

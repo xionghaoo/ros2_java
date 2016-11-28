@@ -27,10 +27,10 @@
 #include "rcljava_common/exceptions.h"
 #include "rcljava_common/signatures.h"
 
-#include "org_ros2_rcljava_Client.h"
+#include "org_ros2_rcljava_ClientImpl.h"
 
-JNIEXPORT void JNICALL Java_org_ros2_rcljava_Client_nativeSendClientRequest(JNIEnv * env, jclass,
-  jlong client_handle, jlong sequence_number, jlong jrequest_from_java_converter_handle,
+JNIEXPORT void JNICALL Java_org_ros2_rcljava_ClientImpl_nativeSendClientRequest(JNIEnv * env,
+  jclass, jlong client_handle, jlong sequence_number, jlong jrequest_from_java_converter_handle,
   jlong jrequest_to_java_converter_handle, jobject jrequest_msg)
 {
   assert(client_handle != 0);

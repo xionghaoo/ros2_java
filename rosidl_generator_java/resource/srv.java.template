@@ -1,11 +1,12 @@
 package @(package_name).@(subfolder);
 
 import org.ros2.rcljava.common.RCLJavaProxy;
+import org.ros2.rcljava.interfaces.ServiceDefinition;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class @(type_name) {
+public class @(type_name) implements ServiceDefinition {
 
   private static final Logger logger = LoggerFactory.getLogger(@(type_name).class);
 
