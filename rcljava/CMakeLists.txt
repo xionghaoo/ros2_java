@@ -192,6 +192,8 @@ if(BUILD_TESTING)
       LIBRARY_PATHS
       "${_deps_library_paths}"
     )
+
+    add_dependencies("${PROJECT_NAME}_tests_${testsuite}" "${PROJECT_NAME}_messages_jar")
   endforeach()
 
 endif()
