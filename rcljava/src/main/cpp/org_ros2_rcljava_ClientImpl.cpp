@@ -53,3 +53,33 @@ JNIEXPORT void JNICALL Java_org_ros2_rcljava_ClientImpl_nativeSendClientRequest(
       "Failed to send request from a client: " + std::string(rcl_get_error_string_safe()));
   }
 }
+
+JNIEXPORT void JNICALL Java_org_ros2_rcljava_ClientImpl_nativeDispose(JNIEnv * env, jclass,
+  jlong node_handle, jlong client_handle)
+{
+  if (client_handle == 0) {
+    // everything is ok, already destroyed
+    return;
+  }
+
+  if (node_handle == 0) {
+    // TODO(esteve): handle this, node is null, but client isn't
+    return;
+  }
+
+  rcl_node_t * node = reinterpret_cast<rcl_node_t *>(node_handle);
+
+  assert(node != NULL);
+
+  rcl_client_t * client = reinterpret_cast<rcl_client_t *>(client_handle);
+
+  assert(client != NULL);
+
+  rcl_ret_t ret = rcl_client_fini(client, node);
+
+  if (ret != RCL_RET_OK) {
+    rcljava_throw_exception(
+      env, "java/lang/IllegalStateException",
+      "Failed to destroy client: " + std::string(rcl_get_error_string_safe()));
+  }
+}

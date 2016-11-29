@@ -15,6 +15,8 @@
 
 package org.ros2.rcljava;
 
+import java.lang.ref.WeakReference;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,17 +38,13 @@ public class PublisherImpl<T extends MessageDefinition> implements Publisher<T> 
     }
   }
 
-  /**
-   * An integer that represents a pointer to the underlying ROS2 node
-   * structure (rcl_node_t).
-   */
-  private final long nodeHandle;
+  private final WeakReference<Node> nodeReference;
 
   /**
    * An integer that represents a pointer to the underlying ROS2 publisher
    * structure (rcl_publisher_t).
    */
-  private final long publisherHandle;
+  private long handle;
 
   /**
    * The topic to which this publisher will publish messages.
@@ -56,16 +54,16 @@ public class PublisherImpl<T extends MessageDefinition> implements Publisher<T> 
   /**
    * Constructor.
    *
-   * @param nodeHandle A pointer to the underlying ROS2 node structure that
-   *     created this subscription, as an integer. Must not be zero.
-   * @param publisherHandle A pointer to the underlying ROS2 publisher
+   * @param nodeReference A {@link java.lang.ref.WeakReference} to the
+   *     @{link org.ros2.rcljava.Node} that created this publisher.
+   * @param handle A pointer to the underlying ROS2 publisher
    *     structure, as an integer. Must not be zero.
    * @param topic The topic to which this publisher will publish messages.
    */
-  public PublisherImpl(final long nodeHandle, final long publisherHandle,
+  public PublisherImpl(final WeakReference<Node> nodeReference, final long handle,
       final String topic) {
-    this.nodeHandle = nodeHandle;
-    this.publisherHandle = publisherHandle;
+    this.nodeReference = nodeReference;
+    this.handle = handle;
     this.topic = topic;
   }
 
@@ -73,18 +71,32 @@ public class PublisherImpl<T extends MessageDefinition> implements Publisher<T> 
    * Publish a message via the underlying ROS2 mechanisms.
    *
    * @param <T> The type of the messages that this publisher will publish.
-   * @param publisherHandle A pointer to the underlying ROS2 publisher
+   * @param handle A pointer to the underlying ROS2 publisher
    *     structure, as an integer. Must not be zero.
    * @param message An instance of the &lt;T&gt; parameter.
    */
   private static native <T extends MessageDefinition> void nativePublish(
-      long publisherHandle, T message);
+      long handle, T message);
 
   /**
    * {@inheritDoc}
    */
   public final void publish(final T message) {
-    nativePublish(this.publisherHandle, message);
+    nativePublish(this.handle, message);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public final long getHandle() {
+    return this.handle;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public final WeakReference<Node> getNodeReference() {
+    return this.nodeReference;
   }
 
   /**
@@ -92,30 +104,20 @@ public class PublisherImpl<T extends MessageDefinition> implements Publisher<T> 
    *
    * @param nodeHandle A pointer to the underlying ROS2 node structure that
    *     created this subscription, as an integer. Must not be zero.
-   * @param publisherHandle A pointer to the underlying ROS2 publisher
+   * @param handle A pointer to the underlying ROS2 publisher
    *     structure, as an integer. Must not be zero.
    */
   private static native void nativeDispose(
-      long nodeHandle, long publisherHandle);
+      long nodeHandle, long handle);
 
   /**
    * {@inheritDoc}
    */
   public final void dispose() {
-    nativeDispose(this.nodeHandle, this.publisherHandle);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  public final long getNodeHandle() {
-    return this.nodeHandle;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  public final long getPublisherHandle() {
-    return this.publisherHandle;
+    Node node = this.nodeReference.get();
+    if(node != null) {
+      nativeDispose(node.getHandle(), this.handle);
+      this.handle = 0;
+    }
   }
 }

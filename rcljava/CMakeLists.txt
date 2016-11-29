@@ -34,7 +34,14 @@ macro(target)
     get_rcl_information("${rmw_implementation}" "rcl${target_suffix}")
   endif()
 
-  set(_jni_classes "RCLJava;NodeImpl;PublisherImpl;ClientImpl")
+  set(_jni_classes
+    "ClientImpl"
+    "NodeImpl"
+    "PublisherImpl"
+    "RCLJava"
+    "ServiceImpl"
+    "SubscriptionImpl"
+  )
 
   foreach(_jni_class ${_jni_classes})
 

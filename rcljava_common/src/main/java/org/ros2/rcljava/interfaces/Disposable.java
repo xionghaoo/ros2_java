@@ -20,4 +20,10 @@ public interface Disposable {
    * Safely destroy the underlying ROS2 structure.
    */
   void dispose();
+
+  /**
+   * An integer that represents a pointer to the underlying ROS2
+   * structure.
+   */
+  long getHandle();
 }

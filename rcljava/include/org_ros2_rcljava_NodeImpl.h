@@ -17,7 +17,6 @@
 
 #ifndef ORG_ROS2_RCLJAVA_NODEIMPL_H_
 #define ORG_ROS2_RCLJAVA_NODEIMPL_H_
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -53,8 +52,15 @@ JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_NodeImpl_nativeCreateServiceHandle
 JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_NodeImpl_nativeCreateClientHandle
   (JNIEnv *, jclass, jlong, jclass, jstring, jlong);
 
+/*
+ * Class:     org_ros2_rcljava_NodeImpl
+ * Method:    nativeDispose
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_org_ros2_rcljava_NodeImpl_nativeDispose
+  (JNIEnv *, jclass, jlong);
+
 #ifdef __cplusplus
 }
 #endif
-
 #endif  // ORG_ROS2_RCLJAVA_NODEIMPL_H_

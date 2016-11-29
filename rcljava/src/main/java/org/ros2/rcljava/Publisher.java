@@ -15,6 +15,8 @@
 
 package org.ros2.rcljava;
 
+import java.lang.ref.WeakReference;
+
 import org.ros2.rcljava.interfaces.Disposable;
 import org.ros2.rcljava.interfaces.MessageDefinition;
 
@@ -34,14 +36,8 @@ public interface Publisher<T extends MessageDefinition> extends Disposable {
   void publish(final T message);
 
   /**
-   * An integer that represents a pointer to the underlying ROS2 node
-   * structure (rcl_node_t).
+   * A @{link java.lang.ref.WeakReference} to the @{link org.ros2.rcljava.Node}
+   * that created this publisher.
    */
-  long getNodeHandle();
-
-  /**
-   * An integer that represents a pointer to the underlying ROS2 publisher
-   * structure (rcl_publisher_t).
-   */
-  long getPublisherHandle();
+  WeakReference<Node> getNodeReference();
 }

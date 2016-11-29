@@ -15,6 +15,13 @@
 
 package org.ros2.rcljava;
 
+import java.lang.ref.WeakReference;
+
+import org.ros2.rcljava.interfaces.MessageDefinition;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * This class serves as a bridge between ROS2's rcl_subscription_t and RCLJava.
  * A Subscription must be created via
@@ -22,19 +29,24 @@ package org.ros2.rcljava;
  *
  * @param <T> The type of the messages that this subscription will receive.
  */
-public class SubscriptionImpl<T> implements Subscription<T> {
+public class SubscriptionImpl<T extends MessageDefinition> implements Subscription<T> {
+  private static final Logger logger = LoggerFactory.getLogger(SubscriptionImpl.class);
+
+  static {
+    try {
+      System.loadLibrary("rcljavaSubscriptionImpl__" + RCLJava.getRMWIdentifier());
+    } catch (UnsatisfiedLinkError ule) {
+      logger.error("Native code library failed to load.\n" + ule);
+      System.exit(1);
+    }
+  }
+
+  private final WeakReference<Node> nodeReference;
 
   /**
-   * An integer that represents a pointer to the underlying ROS2 node
-   * structure (rcl_node_t).
+   * @{inheritDoc}
    */
-  private final long nodeHandle;
-
-  /**
-   * An integer that represents a pointer to the underlying ROS2 subscription
-   * structure (rcl_subsription_t).
-   */
-  private final long subscriptionHandle;
+  private long handle;
 
   /**
    * The class of the messages that this subscription may receive.
@@ -55,9 +67,9 @@ public class SubscriptionImpl<T> implements Subscription<T> {
   /**
    * Constructor.
    *
-   * @param nodeHandle A pointer to the underlying ROS2 node structure that
-   *     created this subscription, as an integer. Must not be zero.
-   * @param subscriptionHandle A pointer to the underlying ROS2 subscription
+   * @param nodeReference A {@link java.lang.ref.WeakReference} to the
+   *     @{link org.ros2.rcljava.Node} that created this subscription.
+   * @param handle A pointer to the underlying ROS2 subscription
    *     structure, as an integer. Must not be zero.
    * @param messageType The <code>Class</code> of the messages that this
    *     subscription will receive. We need this because of Java's type erasure,
@@ -67,11 +79,12 @@ public class SubscriptionImpl<T> implements Subscription<T> {
    * @param callback The callback function that will be triggered when a new
    *     message is received.
    */
-  public SubscriptionImpl(final long nodeHandle, final long subscriptionHandle,
-                      final Class<T> messageType, final String topic,
-                      final Consumer<T> callback) {
-    this.nodeHandle = nodeHandle;
-    this.subscriptionHandle = subscriptionHandle;
+  public SubscriptionImpl(
+      final WeakReference<Node> nodeReference, final long handle,
+      final Class<T> messageType, final String topic,
+      final Consumer<T> callback) {
+    this.nodeReference = nodeReference;
+    this.handle = handle;
     this.messageType = messageType;
     this.topic = topic;
     this.callback = callback;
@@ -94,21 +107,36 @@ public class SubscriptionImpl<T> implements Subscription<T> {
   /**
    * {@inheritDoc}
    */
-  public final long getSubscriptionHandle() {
-    return subscriptionHandle;
+  public final long getHandle() {
+    return handle;
   }
 
   /**
    * {@inheritDoc}
    */
-  public final long getNodeHandle() {
-    return this.nodeHandle;
+  public final WeakReference<Node> getNodeReference() {
+    return this.nodeReference;
   }
+
+  /**
+   * Destroy a ROS2 subscription (rcl_subscription_t).
+   *
+   * @param nodeHandle A pointer to the underlying ROS2 node structure that
+   *     created this subscription, as an integer. Must not be zero.
+   * @param handle A pointer to the underlying ROS2 subscription
+   *     structure, as an integer. Must not be zero.
+   */
+  private static native void nativeDispose(
+      long nodeHandle, long handle);
 
   /**
    * {@inheritDoc}
    */
   public final void dispose() {
-    // TODO(esteve): implement
+    Node node = this.nodeReference.get();
+    if(node != null) {
+      nativeDispose(node.getHandle(), this.handle);
+      this.handle = 0;
+    }
   }
 }

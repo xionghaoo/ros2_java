@@ -48,12 +48,6 @@ public interface Node extends Disposable {
   Collection<Publisher> getPublishers();
 
   /**
-   * An integer that represents a pointer to the underlying ROS2 node
-   * structure (rcl_node_t).
-   */
-  long getNodeHandle();
-
-  /**
    * Create a Subscription&lt;T&gt;.
    *
    * @param <T> The type of the messages that will be received by the

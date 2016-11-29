@@ -22,8 +22,6 @@ import org.ros2.rcljava.interfaces.MessageDefinition;
 import org.ros2.rcljava.interfaces.ServiceDefinition;
 
 public interface Client<T extends ServiceDefinition> extends Disposable {
-  long getClientHandle();
-
   <U extends MessageDefinition> Class<U> getRequestType();
 
   <U extends MessageDefinition> Class<U> getResponseType();

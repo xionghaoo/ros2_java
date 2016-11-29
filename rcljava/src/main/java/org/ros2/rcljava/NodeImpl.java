@@ -48,7 +48,7 @@ public class NodeImpl implements Node {
    * An integer that represents a pointer to the underlying ROS2 node
    * structure (rcl_node_t).
    */
-  private final long nodeHandle;
+  private long handle;
 
   /**
    * All the @{link Subscription}s that have been created through this instance.
@@ -73,11 +73,11 @@ public class NodeImpl implements Node {
   /**
    * Constructor.
    *
-   * @param nodeHandle A pointer to the underlying ROS2 node structure. Must not
+   * @param handle A pointer to the underlying ROS2 node structure. Must not
    *     be zero.
    */
-  public NodeImpl(final long nodeHandle) {
-    this.nodeHandle = nodeHandle;
+  public NodeImpl(final long handle) {
+    this.handle = handle;
     this.publishers = new LinkedBlockingQueue<Publisher>();
     this.subscriptions = new LinkedBlockingQueue<Subscription>();
     this.services = new LinkedBlockingQueue<Service>();
@@ -90,7 +90,7 @@ public class NodeImpl implements Node {
    *
    * @param <T> The type of the messages that will be published by the
    *     created @{link Publisher}.
-   * @param nodeHandle A pointer to the underlying ROS2 node structure.
+   * @param handle A pointer to the underlying ROS2 node structure.
    * @param messageType The class of the messages that will be published by the
    *     created @{link Publisher}.
    * @param topic The topic to which the created @{link Publisher} will
@@ -100,7 +100,7 @@ public class NodeImpl implements Node {
    * @return A pointer to the underlying ROS2 publisher structure.
    */
   private static native <T extends MessageDefinition> long nativeCreatePublisherHandle(
-      long nodeHandle, Class<T> messageType, String topic,
+      long handle, Class<T> messageType, String topic,
       long qosProfileHandle);
 
   /**
@@ -109,7 +109,7 @@ public class NodeImpl implements Node {
    *
    * @param <T> The type of the messages that will be received by the
    *     created @{link Subscription}.
-   * @param nodeHandle A pointer to the underlying ROS2 node structure.
+   * @param handle A pointer to the underlying ROS2 node structure.
    * @param messageType The class of the messages that will be received by the
    *     created @{link Subscription}.
    * @param topic The topic from which the created @{link Subscription} will
@@ -119,7 +119,7 @@ public class NodeImpl implements Node {
    * @return A pointer to the underlying ROS2 subscription structure.
    */
   private static native <T extends MessageDefinition> long nativeCreateSubscriptionHandle(
-      long nodeHandle, Class<T> messageType, String topic,
+      long handle, Class<T> messageType, String topic,
       long qosProfileHandle);
 
   /**
@@ -130,11 +130,11 @@ public class NodeImpl implements Node {
       final QoSProfile qosProfile) {
 
     long qosProfileHandle = RCLJava.convertQoSProfileToHandle(qosProfile);
-    long publisherHandle = nativeCreatePublisherHandle(this.nodeHandle,
+    long publisherHandle = nativeCreatePublisherHandle(this.handle,
         messageType, topic, qosProfileHandle);
     RCLJava.disposeQoSProfile(qosProfileHandle);
 
-    Publisher<T> publisher = new PublisherImpl<T>(this.nodeHandle,
+    Publisher<T> publisher = new PublisherImpl<T>(new WeakReference<Node>(this),
         publisherHandle, topic);
     this.publishers.add(publisher);
 
@@ -155,11 +155,11 @@ public class NodeImpl implements Node {
 
     long qosProfileHandle = RCLJava.convertQoSProfileToHandle(qosProfile);
     long subscriptionHandle = nativeCreateSubscriptionHandle(
-        this.nodeHandle, messageType, topic, qosProfileHandle);
+        this.handle, messageType, topic, qosProfileHandle);
     RCLJava.disposeQoSProfile(qosProfileHandle);
 
     Subscription<T> subscription = new SubscriptionImpl<T>(
-        this.nodeHandle, subscriptionHandle, messageType, topic, callback);
+        new WeakReference<Node>(this), subscriptionHandle, messageType, topic, callback);
 
     this.subscriptions.add(subscription);
 
@@ -187,22 +187,8 @@ public class NodeImpl implements Node {
     return this.publishers;
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  public final void dispose() {
-    // TODO(esteve): implement
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  public final long getNodeHandle() {
-    return this.nodeHandle;
-  }
-
   private static native <T extends ServiceDefinition> long nativeCreateServiceHandle(
-      long nodeHandle, Class<T> cls, String serviceName,
+      long handle, Class<T> cls, String serviceName,
       long qosProfileHandle);
 
   public final <T extends ServiceDefinition> Service<T> createService(final Class<T> serviceType,
@@ -214,11 +200,11 @@ public class NodeImpl implements Node {
     Class<MessageDefinition> responseType = (Class) serviceType.getField("ResponseType").get(null);
 
     long qosProfileHandle = RCLJava.convertQoSProfileToHandle(qosProfile);
-    long serviceHandle = nativeCreateServiceHandle(this.nodeHandle, serviceType, serviceName,
+    long serviceHandle = nativeCreateServiceHandle(this.handle, serviceType, serviceName,
         qosProfileHandle);
     RCLJava.disposeQoSProfile(qosProfileHandle);
 
-    Service<T> service = new ServiceImpl<T>(this.nodeHandle, serviceHandle,
+    Service<T> service = new ServiceImpl<T>(new WeakReference<Node>(this), serviceHandle,
         serviceName,  callback, requestType, responseType);
     this.services.add(service);
 
@@ -247,13 +233,12 @@ public class NodeImpl implements Node {
     Class<MessageDefinition> responseType = (Class) serviceType.getField("ResponseType").get(null);
 
     long qosProfileHandle = RCLJava.convertQoSProfileToHandle(qosProfile);
-    long clientHandle = nativeCreateClientHandle(this.nodeHandle, serviceType,
+    long clientHandle = nativeCreateClientHandle(this.handle, serviceType,
         serviceName, qosProfileHandle);
     RCLJava.disposeQoSProfile(qosProfileHandle);
 
     Client<T> client = new ClientImpl<T>(new WeakReference<Node>(this),
-        this.nodeHandle, clientHandle, serviceName, requestType,
-        responseType);
+        clientHandle, serviceName, requestType, responseType);
     this.clients.add(client);
 
     return client;
@@ -266,7 +251,7 @@ public class NodeImpl implements Node {
   }
 
   private static native <T extends ServiceDefinition> long nativeCreateClientHandle(
-      long nodeHandle, Class<T> cls, String serviceName,
+      long handle, Class<T> cls, String serviceName,
       long qosProfileHandle);
 
   /**
@@ -274,5 +259,28 @@ public class NodeImpl implements Node {
    */
   public final Collection<Client> getClients() {
     return this.clients;
+  }
+
+  /**
+   * Destroy a ROS2 node (rcl_node_t).
+   *
+   * @param handle A pointer to the underlying ROS2 node
+   *     structure, as an integer. Must not be zero.
+   */
+  private static native void nativeDispose(long handle);
+
+  /**
+   * {@inheritDoc}
+   */
+  public final void dispose() {
+    nativeDispose(this.handle);
+    this.handle = 0;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public final long getHandle() {
+    return this.handle;
   }
 }

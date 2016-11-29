@@ -20,6 +20,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -76,6 +77,10 @@ public class ClientTest {
     node.dispose();
   }
 
+  @AfterClass
+  public static void tearDownOnce() {
+    RCLJava.shutdown();
+  }
 
   @Test
   public final void testAdd() throws Exception {
@@ -83,7 +88,7 @@ public class ClientTest {
       new RCLFuture<rcljava.srv.AddTwoInts_Response>(new WeakReference<Node>(node));
 
     TestClientConsumer clientConsumer = new TestClientConsumer(future);
- 
+
     Service<rcljava.srv.AddTwoInts> service = node.<
         rcljava.srv.AddTwoInts
         >createService(
@@ -105,5 +110,9 @@ public class ClientTest {
     }
 
     assertEquals(5, future.get().getSum());
+    client.dispose();
+    assertEquals(0, client.getHandle());
+    service.dispose();
+    assertEquals(0, service.getHandle());
   }
 }

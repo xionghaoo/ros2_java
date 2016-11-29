@@ -15,12 +15,11 @@
 
 package org.ros2.rcljava;
 
+import org.ros2.rcljava.interfaces.Disposable;
 import org.ros2.rcljava.interfaces.MessageDefinition;
 import org.ros2.rcljava.interfaces.ServiceDefinition;
 
-public interface Service<T extends ServiceDefinition> {
-  long getServiceHandle();
-
+public interface Service<T extends ServiceDefinition> extends Disposable {
   <U extends MessageDefinition> Class<U> getRequestType();
 
   <U extends MessageDefinition> Class<U> getResponseType();

@@ -17,20 +17,19 @@
 
 #ifndef ORG_ROS2_RCLJAVA_PUBLISHERIMPL_H_
 #define ORG_ROS2_RCLJAVA_PUBLISHERIMPL_H_
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 /*
  * Class:     org_ros2_rcljava_PublisherImpl
  * Method:    nativePublish
- * Signature: (JLjava/lang/Object;)
+ * Signature: (JLorg/ros2/rcljava/interfaces/MessageDefinition;)V
  */
 JNIEXPORT void JNICALL Java_org_ros2_rcljava_PublisherImpl_nativePublish
   (JNIEnv *, jclass, jlong, jobject);
 
 /*
- * Class:     org_ros2_rcljava_Node
+ * Class:     org_ros2_rcljava_PublisherImpl
  * Method:    nativeDispose
  * Signature: (JJ)V
  */
@@ -40,5 +39,4 @@ JNIEXPORT void JNICALL Java_org_ros2_rcljava_PublisherImpl_nativeDispose
 #ifdef __cplusplus
 }
 #endif
-
 #endif  // ORG_ROS2_RCLJAVA_PUBLISHERIMPL_H_

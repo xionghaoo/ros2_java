@@ -15,26 +15,41 @@
 
 package org.ros2.rcljava;
 
+import java.lang.ref.WeakReference;
+
 import org.ros2.rcljava.interfaces.MessageDefinition;
 import org.ros2.rcljava.interfaces.ServiceDefinition;
 
-public class ServiceImpl<T extends ServiceDefinition> implements Service<T> {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-  private final long nodeHandle;
-  private final long serviceHandle;
+public class ServiceImpl<T extends ServiceDefinition> implements Service<T> {
+  private static final Logger logger = LoggerFactory.getLogger(ServiceImpl.class);
+
+  static {
+    try {
+      System.loadLibrary("rcljavaServiceImpl__" + RCLJava.getRMWIdentifier());
+    } catch (UnsatisfiedLinkError ule) {
+      logger.error("Native code library failed to load.\n" + ule);
+      System.exit(1);
+    }
+  }
+
+  private final WeakReference<Node> nodeReference;
+  private long handle;
   private final String serviceName;
   private final TriConsumer<RMWRequestId, ?, ?> callback;
 
   private final Class<MessageDefinition> requestType;
   private final Class<MessageDefinition> responseType;
 
-  public ServiceImpl(final long nodeHandle, final long serviceHandle,
-      final String serviceName,
+  public ServiceImpl(final WeakReference<Node> nodeReference,
+      final long handle, final String serviceName,
       final TriConsumer<RMWRequestId, ?, ?> callback,
       final Class<MessageDefinition> requestType,
       final Class<MessageDefinition> responseType) {
-    this.nodeHandle = nodeHandle;
-    this.serviceHandle = serviceHandle;
+    this.nodeReference = nodeReference;
+    this.handle = handle;
     this.serviceName = serviceName;
     this.callback = callback;
     this.requestType = requestType;
@@ -45,15 +60,40 @@ public class ServiceImpl<T extends ServiceDefinition> implements Service<T> {
     return callback;
   }
 
-  public final long getServiceHandle() {
-    return serviceHandle;
-  }
-
   public final Class<MessageDefinition> getRequestType() {
     return this.requestType;
   }
 
   public final Class<MessageDefinition> getResponseType() {
     return this.responseType;
+  }
+
+  /**
+   * Destroy a ROS2 service (rcl_service_t).
+   *
+   * @param nodeHandle A pointer to the underlying ROS2 node structure that
+   *     created this service, as an integer. Must not be zero.
+   * @param handle A pointer to the underlying ROS2 service
+   *     structure, as an integer. Must not be zero.
+   */
+  private static native void nativeDispose(
+      long nodeHandle, long handle);
+
+  /**
+   * {@inheritDoc}
+   */
+  public final void dispose() {
+    Node node = this.nodeReference.get();
+    if(node != null) {
+      nativeDispose(node.getHandle(), this.handle);
+      this.handle = 0;
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public final long getHandle() {
+    return handle;
   }
 }
