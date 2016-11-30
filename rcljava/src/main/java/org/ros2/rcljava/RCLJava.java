@@ -45,6 +45,29 @@ public final class RCLJava {
    */
   private static Collection<Node> nodes;
 
+  private static void cleanup() {
+    for (Node node : nodes) {
+      for (Subscription subscription : node.getSubscriptions()) {
+        subscription.dispose();
+      }
+
+      for (Publisher publisher : node.getPublishers()) {
+        publisher.dispose();
+      }
+
+      for (Service service : node.getServices()) {
+        service.dispose();
+      }
+
+      for (Client client : node.getClients()) {
+        client.dispose();
+      }
+
+      node.dispose();
+    }
+  }
+
+
   static {
     nodes = new LinkedBlockingQueue<Node>();
 
@@ -58,9 +81,7 @@ public final class RCLJava {
 
     Runtime.getRuntime().addShutdownHook(new Thread() {
       public void run() {
-        for (Node node : nodes) {
-          node.dispose();
-        }
+        cleanup();
       }
     });
   }
@@ -305,6 +326,7 @@ public final class RCLJava {
   private static native void nativeShutdown();
 
   public static void shutdown() {
+    cleanup();
     nativeShutdown();
   }
 
