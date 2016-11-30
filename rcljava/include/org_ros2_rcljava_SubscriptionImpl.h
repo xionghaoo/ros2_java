@@ -13,30 +13,22 @@
 // limitations under the License.
 
 #include <jni.h>
-/* Header for class org_ros2_rcljava_ClientImpl */
+/* Header for class org_ros2_rcljava_SubscriptionImpl */
 
-#ifndef ORG_ROS2_RCLJAVA_CLIENTIMPL_H_
-#define ORG_ROS2_RCLJAVA_CLIENTIMPL_H_
+#ifndef ORG_ROS2_RCLJAVA_SUBSCRIPTIONIMPL_H_
+#define ORG_ROS2_RCLJAVA_SUBSCRIPTIONIMPL_H_
 #ifdef __cplusplus
 extern "C" {
 #endif
 /*
- * Class:     org_ros2_rcljava_ClientImpl
- * Method:    nativeSendClientRequest
- * Signature: (JJJJLorg/ros2/rcljava/interfaces/MessageDefinition;)V
- */
-JNIEXPORT void JNICALL Java_org_ros2_rcljava_ClientImpl_nativeSendClientRequest
-  (JNIEnv *, jclass, jlong, jlong, jlong, jlong, jobject);
-
-/*
- * Class:     org_ros2_rcljava_ClientImpl
+ * Class:     org_ros2_rcljava_SubscriptionImpl
  * Method:    nativeDispose
  * Signature: (JJ)V
  */
-JNIEXPORT void JNICALL Java_org_ros2_rcljava_ClientImpl_nativeDispose
+JNIEXPORT void JNICALL Java_org_ros2_rcljava_SubscriptionImpl_nativeDispose
   (JNIEnv *, jclass, jlong, jlong);
 
 #ifdef __cplusplus
 }
 #endif
-#endif  // ORG_ROS2_RCLJAVA_CLIENTIMPL_H_
+#endif  // ORG_ROS2_RCLJAVA_SUBSCRIPTIONIMPL_H_

@@ -15,16 +15,16 @@
 
 package org.ros2.rcljava;
 
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Future;
+
 import org.ros2.rcljava.interfaces.MessageDefinition;
 import org.ros2.rcljava.interfaces.ServiceDefinition;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Future;
 
 public class ClientImpl<T extends ServiceDefinition> implements Client<T> {
   private static final Logger logger = LoggerFactory.getLogger(ClientImpl.class);
@@ -39,8 +39,7 @@ public class ClientImpl<T extends ServiceDefinition> implements Client<T> {
   }
 
   private final WeakReference<Node> nodeReference;
-  private final long nodeHandle;
-  private final long clientHandle;
+  private long handle;
   private final String serviceName;
   private long sequenceNumber = 0;
   private Map<Long, RCLFuture> pendingRequests;
@@ -49,13 +48,12 @@ public class ClientImpl<T extends ServiceDefinition> implements Client<T> {
   private final Class<MessageDefinition> responseType;
 
   public ClientImpl(final WeakReference<Node> nodeReference,
-      final long nodeHandle, final long clientHandle,
+      final long handle,
       final String serviceName,
       final Class<MessageDefinition> requestType,
       final Class<MessageDefinition> responseType) {
     this.nodeReference = nodeReference;
-    this.nodeHandle = nodeHandle;
-    this.clientHandle = clientHandle;
+    this.handle = handle;
     this.serviceName = serviceName;
     this.requestType = requestType;
     this.responseType = responseType;
@@ -66,7 +64,7 @@ public class ClientImpl<T extends ServiceDefinition> implements Client<T> {
       Future<V> sendRequest(final U request) {
     synchronized (pendingRequests) {
       sequenceNumber++;
-      nativeSendClientRequest(clientHandle, sequenceNumber,
+      nativeSendClientRequest(handle, sequenceNumber,
           request.getFromJavaConverterInstance(), request.getToJavaConverterInstance(),
           request);
       RCLFuture<V> future = new RCLFuture<V>(this.nodeReference);
@@ -84,11 +82,7 @@ public class ClientImpl<T extends ServiceDefinition> implements Client<T> {
     }
   }
 
-  public final long getClientHandle() {
-    return clientHandle;
-  }
-
-  private static native void nativeSendClientRequest(long clientHandle,
+  private static native void nativeSendClientRequest(long handle,
       long sequenceNumber, long requestFromJavaConverterHandle,
       long requestToJavaConverterHandle, MessageDefinition requestMessage);
 
@@ -101,9 +95,31 @@ public class ClientImpl<T extends ServiceDefinition> implements Client<T> {
   }
 
   /**
+   * Destroy a ROS2 client (rcl_client_t).
+   *
+   * @param nodeHandle A pointer to the underlying ROS2 node structure that
+   *     created this client, as an integer. Must not be zero.
+   * @param handle A pointer to the underlying ROS2 client
+   *     structure, as an integer. Must not be zero.
+   */
+  private static native void nativeDispose(
+      long nodeHandle, long handle);
+
+  /**
    * {@inheritDoc}
    */
   public final void dispose() {
-    // TODO(esteve): implement
+    Node node = this.nodeReference.get();
+    if(node != null) {
+      nativeDispose(node.getHandle(), this.handle);
+      this.handle = 0;
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public final long getHandle() {
+    return this.handle;
   }
 }

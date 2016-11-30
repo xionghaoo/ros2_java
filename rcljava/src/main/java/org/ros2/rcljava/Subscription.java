@@ -15,6 +15,8 @@
 
 package org.ros2.rcljava;
 
+import java.lang.ref.WeakReference;
+
 import org.ros2.rcljava.interfaces.Disposable;
 
 /**
@@ -25,11 +27,6 @@ import org.ros2.rcljava.interfaces.Disposable;
  * @param <T> The type of the messages that this subscription will receive.
  */
 public interface Subscription<T> extends Disposable {
-  /**
-   * @return The pointer to the underlying ROS2 subscription structure.
-   */
-  long getSubscriptionHandle();
-
   /**
    * @return The type of the messages that this subscription may receive.
    */
@@ -42,7 +39,8 @@ public interface Subscription<T> extends Disposable {
   Consumer<T> getCallback();
 
   /**
-   * @return The pointer to the underlying ROS2 node structure.
+   * @return A @{link java.lang.ref.WeakReference} to the
+   * @{link org.ros2.rcljava.Node}that created this subscription.
    */
-  long getNodeHandle();
+  WeakReference<Node> getNodeReference();
 }

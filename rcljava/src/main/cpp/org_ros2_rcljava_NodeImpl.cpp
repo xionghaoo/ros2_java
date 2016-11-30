@@ -192,3 +192,22 @@ JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_NodeImpl_nativeCreateClientHandle(
   jlong jclient = reinterpret_cast<jlong>(client);
   return jclient;
 }
+
+JNIEXPORT void JNICALL Java_org_ros2_rcljava_NodeImpl_nativeDispose(JNIEnv * env, jclass,
+  jlong node_handle)
+{
+  if (node_handle == 0) {
+    // already destroyed
+    return;
+  }
+
+  rcl_node_t * node = reinterpret_cast<rcl_node_t *>(node_handle);
+
+  rcl_ret_t ret = rcl_node_fini(node);
+
+  if (ret != RCL_RET_OK) {
+    rcljava_throw_exception(
+      env, "java/lang/IllegalStateException",
+      "Failed to destroy node: " + std::string(rcl_get_error_string_safe()));
+  }
+}

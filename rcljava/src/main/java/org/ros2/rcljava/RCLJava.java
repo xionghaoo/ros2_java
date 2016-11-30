@@ -45,6 +45,29 @@ public final class RCLJava {
    */
   private static Collection<Node> nodes;
 
+  private static void cleanup() {
+    for (Node node : nodes) {
+      for (Subscription subscription : node.getSubscriptions()) {
+        subscription.dispose();
+      }
+
+      for (Publisher publisher : node.getPublishers()) {
+        publisher.dispose();
+      }
+
+      for (Service service : node.getServices()) {
+        service.dispose();
+      }
+
+      for (Client client : node.getClients()) {
+        client.dispose();
+      }
+
+      node.dispose();
+    }
+  }
+
+
   static {
     nodes = new LinkedBlockingQueue<Node>();
 
@@ -58,9 +81,7 @@ public final class RCLJava {
 
     Runtime.getRuntime().addShutdownHook(new Thread() {
       public void run() {
-        for (Node node : nodes) {
-          node.dispose();
-        }
+        cleanup();
       }
     });
   }
@@ -204,22 +225,22 @@ public final class RCLJava {
 
     for (Subscription<MessageDefinition> subscription : node.getSubscriptions()) {
       nativeWaitSetAddSubscription(
-          waitSetHandle, subscription.getSubscriptionHandle());
+          waitSetHandle, subscription.getHandle());
     }
 
     for (Service<ServiceDefinition> service : node.getServices()) {
-      nativeWaitSetAddService(waitSetHandle, service.getServiceHandle());
+      nativeWaitSetAddService(waitSetHandle, service.getHandle());
     }
 
     for (Client<ServiceDefinition> client : node.getClients()) {
-      nativeWaitSetAddClient(waitSetHandle, client.getClientHandle());
+      nativeWaitSetAddClient(waitSetHandle, client.getHandle());
     }
 
     nativeWait(waitSetHandle);
 
     for (Subscription<MessageDefinition> subscription : node.getSubscriptions()) {
       MessageDefinition message = nativeTake(
-          subscription.getSubscriptionHandle(),
+          subscription.getHandle(),
           subscription.getMessageType());
       if (message != null) {
         subscription.getCallback().accept(message);
@@ -254,12 +275,12 @@ public final class RCLJava {
           responseMessage.getToJavaConverterInstance();
 
       RMWRequestId rmwRequestId =
-          nativeTakeRequest(service.getServiceHandle(),
+          nativeTakeRequest(service.getHandle(),
           requestFromJavaConverterHandle, requestToJavaConverterHandle,
           requestMessage);
       if (rmwRequestId != null) {
         service.getCallback().accept(rmwRequestId, requestMessage, responseMessage);
-        nativeSendServiceResponse(service.getServiceHandle(), rmwRequestId,
+        nativeSendServiceResponse(service.getHandle(), rmwRequestId,
             responseFromJavaConverterHandle, responseToJavaConverterHandle,
             responseMessage);
       }
@@ -293,7 +314,7 @@ public final class RCLJava {
           responseMessage.getToJavaConverterInstance();
 
       RMWRequestId rmwRequestId = nativeTakeResponse(
-          client.getClientHandle(), responseFromJavaConverterHandle,
+          client.getHandle(), responseFromJavaConverterHandle,
           responseToJavaConverterHandle, responseMessage);
 
       if (rmwRequestId != null) {
@@ -305,6 +326,7 @@ public final class RCLJava {
   private static native void nativeShutdown();
 
   public static void shutdown() {
+    cleanup();
     nativeShutdown();
   }
 
