@@ -18,6 +18,7 @@ package org.ros2.rcljava.service;
 import java.lang.ref.WeakReference;
 
 import org.ros2.rcljava.RCLJava;
+import org.ros2.rcljava.common.JNIUtils;
 import org.ros2.rcljava.consumers.TriConsumer;
 import org.ros2.rcljava.interfaces.MessageDefinition;
 import org.ros2.rcljava.interfaces.ServiceDefinition;
@@ -31,7 +32,7 @@ public class ServiceImpl<T extends ServiceDefinition> implements Service<T> {
 
   static {
     try {
-      System.loadLibrary("rcljavaServiceImpl__" + RCLJava.getRMWIdentifier());
+      JNIUtils.loadLibrary(ServiceImpl.class, RCLJava.getRMWIdentifier());
     } catch (UnsatisfiedLinkError ule) {
       logger.error("Native code library failed to load.\n" + ule);
       System.exit(1);

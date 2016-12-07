@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.ros2.rcljava.client.Client;
+import org.ros2.rcljava.common.JNIUtils;
 import org.ros2.rcljava.interfaces.MessageDefinition;
 import org.ros2.rcljava.interfaces.ServiceDefinition;
 import org.ros2.rcljava.node.Node;
@@ -170,7 +171,7 @@ public final class RCLJava {
       final String rmwImplementation) throws Exception {
 
     synchronized (RCLJava.class) {
-      System.loadLibrary("rcljavaRCLJava__" + rmwImplementation);
+      JNIUtils.loadLibrary(RCLJava.class, rmwImplementation);
       RCLJava.rmwImplementation = rmwImplementation;
     }
   }

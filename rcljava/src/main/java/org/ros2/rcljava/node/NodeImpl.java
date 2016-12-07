@@ -18,6 +18,7 @@ package org.ros2.rcljava.node;
 import org.ros2.rcljava.RCLJava;
 import org.ros2.rcljava.client.Client;
 import org.ros2.rcljava.client.ClientImpl;
+import org.ros2.rcljava.common.JNIUtils;
 import org.ros2.rcljava.consumers.Consumer;
 import org.ros2.rcljava.consumers.TriConsumer;
 import org.ros2.rcljava.qos.QoSProfile;
@@ -49,7 +50,7 @@ public class NodeImpl implements Node {
 
   static {
     try {
-      System.loadLibrary("rcljavaNodeImpl__" + RCLJava.getRMWIdentifier());
+      JNIUtils.loadLibrary(NodeImpl.class, RCLJava.getRMWIdentifier());
     } catch (UnsatisfiedLinkError ule) {
       logger.error("Native code library failed to load.\n" + ule);
       System.exit(1);

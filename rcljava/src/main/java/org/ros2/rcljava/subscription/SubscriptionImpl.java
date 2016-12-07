@@ -18,6 +18,7 @@ package org.ros2.rcljava.subscription;
 import java.lang.ref.WeakReference;
 
 import org.ros2.rcljava.RCLJava;
+import org.ros2.rcljava.common.JNIUtils;
 import org.ros2.rcljava.consumers.Consumer;
 import org.ros2.rcljava.interfaces.MessageDefinition;
 import org.ros2.rcljava.node.Node;
@@ -37,7 +38,7 @@ public class SubscriptionImpl<T extends MessageDefinition> implements Subscripti
 
   static {
     try {
-      System.loadLibrary("rcljavaSubscriptionImpl__" + RCLJava.getRMWIdentifier());
+      JNIUtils.loadLibrary(SubscriptionImpl.class, RCLJava.getRMWIdentifier());
     } catch (UnsatisfiedLinkError ule) {
       logger.error("Native code library failed to load.\n" + ule);
       System.exit(1);

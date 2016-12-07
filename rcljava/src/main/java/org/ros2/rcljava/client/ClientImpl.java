@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.concurrent.Future;
 
 import org.ros2.rcljava.RCLJava;
+import org.ros2.rcljava.common.JNIUtils;
 import org.ros2.rcljava.concurrent.RCLFuture;
 import org.ros2.rcljava.interfaces.MessageDefinition;
 import org.ros2.rcljava.interfaces.ServiceDefinition;
@@ -35,7 +36,7 @@ public class ClientImpl<T extends ServiceDefinition> implements Client<T> {
 
   static {
     try {
-      System.loadLibrary("rcljavaClientImpl__" + RCLJava.getRMWIdentifier());
+      JNIUtils.loadLibrary(ClientImpl.class, RCLJava.getRMWIdentifier());
     } catch (UnsatisfiedLinkError ule) {
       logger.error("Native code library failed to load.\n" + ule);
       System.exit(1);

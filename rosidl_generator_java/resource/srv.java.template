@@ -1,5 +1,6 @@
 package @(package_name).@(subfolder);
 
+import org.ros2.rcljava.common.JNIUtils;
 import org.ros2.rcljava.common.RCLJavaProxy;
 import org.ros2.rcljava.interfaces.ServiceDefinition;
 
@@ -16,7 +17,7 @@ public class @(type_name) implements ServiceDefinition {
       logger.debug("Typesupport identifier can't be found");
     } else {
       try {
-        System.loadLibrary("@(spec.pkg_name)_@(type_name)_s__" + typesupportIdentifier);
+        JNIUtils.loadLibrary(@(type_name).class, typesupportIdentifier);
       } catch (UnsatisfiedLinkError ule) {
         logger.error("Native code library failed to load.\n" + ule);
         System.exit(1);

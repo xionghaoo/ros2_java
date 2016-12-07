@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.ros2.rcljava.RCLJava;
+import org.ros2.rcljava.common.JNIUtils;
 import org.ros2.rcljava.interfaces.MessageDefinition;
 import org.ros2.rcljava.node.Node;
 
@@ -33,7 +34,7 @@ public class PublisherImpl<T extends MessageDefinition> implements Publisher<T> 
 
   static {
     try {
-      System.loadLibrary("rcljavaPublisherImpl__" + RCLJava.getRMWIdentifier());
+      JNIUtils.loadLibrary(PublisherImpl.class, RCLJava.getRMWIdentifier());
     } catch (UnsatisfiedLinkError ule) {
       logger.error("Native code library failed to load.\n" + ule);
       System.exit(1);
