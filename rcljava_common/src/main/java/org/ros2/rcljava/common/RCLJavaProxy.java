@@ -36,7 +36,7 @@ public final class RCLJavaProxy {
       Class cls = Class.forName("org.ros2.rcljava.RCLJava");
       Method meth = cls.getDeclaredMethod(
           "getTypesupportIdentifier", (Class<?>[]) null);
-      Object obj = meth.invoke(null, (Class<?>[]) null);
+      Object obj = meth.invoke(null);
       return (String) obj;
     } catch (Exception exc) {
       // Just return null if we can't find the typesupport identifier
@@ -52,7 +52,7 @@ public final class RCLJavaProxy {
       Class cls = Class.forName("org.ros2.rcljava.RCLJava");
       Method meth = cls.getDeclaredMethod(
           "getRMWIdentifier", (Class<?>[]) null);
-      Object obj = meth.invoke(null, (Class<?>[]) null);
+      Object obj = meth.invoke(null);
       return (String) obj;
     } catch (Exception exc) {
       // Just return null if we can't find the RMW identifier

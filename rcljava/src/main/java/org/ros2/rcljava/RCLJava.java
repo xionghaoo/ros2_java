@@ -15,8 +15,6 @@
 
 package org.ros2.rcljava;
 
-import org.ros2.rcljava.qos.QoSProfile;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,8 +23,16 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.ros2.rcljava.client.Client;
 import org.ros2.rcljava.interfaces.MessageDefinition;
 import org.ros2.rcljava.interfaces.ServiceDefinition;
+import org.ros2.rcljava.node.Node;
+import org.ros2.rcljava.node.NodeImpl;
+import org.ros2.rcljava.publisher.Publisher;
+import org.ros2.rcljava.qos.QoSProfile;
+import org.ros2.rcljava.service.RMWRequestId;
+import org.ros2.rcljava.service.Service;
+import org.ros2.rcljava.subscription.Subscription;
 
 /**
  * Entry point for the ROS2 Java API, similar to the rclcpp API.

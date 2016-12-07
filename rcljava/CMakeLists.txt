@@ -34,22 +34,24 @@ macro(target)
     get_rcl_information("${rmw_implementation}" "rcl${target_suffix}")
   endif()
 
-  set(_jni_classes
-    "ClientImpl"
-    "NodeImpl"
-    "PublisherImpl"
-    "RCLJava"
-    "ServiceImpl"
-    "SubscriptionImpl"
+  set(${PROJECT_NAME}_jni_sources
+    "src/main/cpp/org_ros2_rcljava_RCLJava.cpp"
+    "src/main/cpp/org_ros2_rcljava_client_ClientImpl.cpp"
+    "src/main/cpp/org_ros2_rcljava_node_NodeImpl.cpp"
+    "src/main/cpp/org_ros2_rcljava_publisher_PublisherImpl.cpp"
+    "src/main/cpp/org_ros2_rcljava_service_ServiceImpl.cpp"
+    "src/main/cpp/org_ros2_rcljava_subscription_SubscriptionImpl.cpp"
   )
 
-  foreach(_jni_class ${_jni_classes})
+  foreach(_jni_source ${${PROJECT_NAME}_jni_sources})
 
-    set(_target_name "${PROJECT_NAME}${_jni_class}${target_suffix}")
+    get_filename_component(_target_name "${_jni_source}" NAME_WE)
+    set(_target_name "${_target_name}${target_suffix}")
+    string_camel_case_to_lower_case_underscore("${_target_name}" _target_name)
 
     add_library(
       ${_target_name}
-      SHARED src/main/cpp/org_ros2_rcljava_${_jni_class}.cpp
+      SHARED ${_jni_source}
     )
     target_compile_definitions(${_target_name}
       PRIVATE "RMW_IMPLEMENTATION_SUFFIX=${target_suffix}")
@@ -89,28 +91,27 @@ macro(target)
 endmacro()
 
 set(${PROJECT_NAME}_sources
-  "src/main/java/org/ros2/rcljava/BiConsumer.java"
-  "src/main/java/org/ros2/rcljava/Client.java"
-  "src/main/java/org/ros2/rcljava/ClientImpl.java"
-  "src/main/java/org/ros2/rcljava/Consumer.java"
-  "src/main/java/org/ros2/rcljava/Node.java"
-  "src/main/java/org/ros2/rcljava/NodeImpl.java"
-  "src/main/java/org/ros2/rcljava/package-info.java"
-  "src/main/java/org/ros2/rcljava/Publisher.java"
-  "src/main/java/org/ros2/rcljava/PublisherImpl.java"
+  "src/main/java/org/ros2/rcljava/RCLJava.java"
+  "src/main/java/org/ros2/rcljava/client/ClientImpl.java"
+  "src/main/java/org/ros2/rcljava/client/Client.java"
+  "src/main/java/org/ros2/rcljava/concurrent/RCLFuture.java"
+  "src/main/java/org/ros2/rcljava/consumers/BiConsumer.java"
+  "src/main/java/org/ros2/rcljava/consumers/Consumer.java"
+  "src/main/java/org/ros2/rcljava/consumers/TriConsumer.java"
+  "src/main/java/org/ros2/rcljava/node/NodeImpl.java"
+  "src/main/java/org/ros2/rcljava/node/Node.java"
+  "src/main/java/org/ros2/rcljava/publisher/PublisherImpl.java"
+  "src/main/java/org/ros2/rcljava/publisher/Publisher.java"
   "src/main/java/org/ros2/rcljava/qos/policies/Durability.java"
   "src/main/java/org/ros2/rcljava/qos/policies/History.java"
   "src/main/java/org/ros2/rcljava/qos/policies/QoSPolicy.java"
   "src/main/java/org/ros2/rcljava/qos/policies/Reliability.java"
   "src/main/java/org/ros2/rcljava/qos/QoSProfile.java"
-  "src/main/java/org/ros2/rcljava/RCLFuture.java"
-  "src/main/java/org/ros2/rcljava/RCLJava.java"
-  "src/main/java/org/ros2/rcljava/RMWRequestId.java"
-  "src/main/java/org/ros2/rcljava/Service.java"
-  "src/main/java/org/ros2/rcljava/ServiceImpl.java"
-  "src/main/java/org/ros2/rcljava/Subscription.java"
-  "src/main/java/org/ros2/rcljava/SubscriptionImpl.java"
-  "src/main/java/org/ros2/rcljava/TriConsumer.java"
+  "src/main/java/org/ros2/rcljava/service/RMWRequestId.java"
+  "src/main/java/org/ros2/rcljava/service/ServiceImpl.java"
+  "src/main/java/org/ros2/rcljava/service/Service.java"
+  "src/main/java/org/ros2/rcljava/subscription/SubscriptionImpl.java"
+  "src/main/java/org/ros2/rcljava/subscription/Subscription.java"
 )
 
 add_jar("${PROJECT_NAME}_jar"
@@ -165,19 +166,19 @@ if(BUILD_TESTING)
     PROPERTY "JAR_FILE")
 
   set(${PROJECT_NAME}_test_sources
-    "src/test/java/org/ros2/rcljava/ClientTest.java"
-    "src/test/java/org/ros2/rcljava/NodeTest.java"
-    "src/test/java/org/ros2/rcljava/PublisherTest.java"
     "src/test/java/org/ros2/rcljava/RCLJavaTest.java"
-    "src/test/java/org/ros2/rcljava/SubscriptionTest.java"
+    "src/test/java/org/ros2/rcljava/client/ClientTest.java"
+    "src/test/java/org/ros2/rcljava/node/NodeTest.java"
+    "src/test/java/org/ros2/rcljava/publisher/PublisherTest.java"
+    "src/test/java/org/ros2/rcljava/subscription/SubscriptionTest.java"
   )
 
   set(${PROJECT_NAME}_testsuites
-    "org.ros2.rcljava.ClientTest"
-    "org.ros2.rcljava.NodeTest"
-    "org.ros2.rcljava.PublisherTest"
     "org.ros2.rcljava.RCLJavaTest"
-    "org.ros2.rcljava.SubscriptionTest"
+    "org.ros2.rcljava.client.ClientTest"
+    "org.ros2.rcljava.node.NodeTest"
+    "org.ros2.rcljava.publisher.PublisherTest"
+    "org.ros2.rcljava.subscription.SubscriptionTest"
   )
 
   set(_deps_library_paths "")
