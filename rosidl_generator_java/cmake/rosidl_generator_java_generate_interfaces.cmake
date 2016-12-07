@@ -96,10 +96,10 @@ endforeach()
 set(target_dependencies
   "${rosidl_generator_java_BIN}"
   ${rosidl_generator_java_GENERATOR_FILES}
-  "${rosidl_generator_java_TEMPLATE_DIR}/msg_support.entry_point.cpp.template"
-  "${rosidl_generator_java_TEMPLATE_DIR}/srv_support.entry_point.cpp.template"
-  "${rosidl_generator_java_TEMPLATE_DIR}/msg.java.template"
-  "${rosidl_generator_java_TEMPLATE_DIR}/srv.java.template"
+  "${rosidl_generator_java_TEMPLATE_DIR}/msg.cpp.em"
+  "${rosidl_generator_java_TEMPLATE_DIR}/srv.cpp.em"
+  "${rosidl_generator_java_TEMPLATE_DIR}/msg.java.em"
+  "${rosidl_generator_java_TEMPLATE_DIR}/srv.java.em"
   ${rosidl_generate_interfaces_IDL_FILES}
   ${_dependency_files})
 foreach(dep ${target_dependencies})
