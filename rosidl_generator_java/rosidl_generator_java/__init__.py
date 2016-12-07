@@ -34,17 +34,17 @@ def generate_java(generator_arguments_file, typesupport_impl, typesupport_impls)
 
     template_dir = args['template_dir']
     type_support_impl_by_filename = {
-        '%s_s.ep.{0}.cpp'.format(impl): impl for impl in typesupport_impls
+        '%s.ep.{0}.cpp'.format(impl): impl for impl in typesupport_impls
     }
     mapping_msgs = {
-        os.path.join(template_dir, 'msg.java.template'): ['%s.java'],
-        os.path.join(template_dir, 'msg_support.entry_point.cpp.template'):
+        os.path.join(template_dir, 'msg.java.em'): ['%s.java'],
+        os.path.join(template_dir, 'msg.cpp.em'):
         type_support_impl_by_filename.keys(),
     }
 
     mapping_srvs = {
-        os.path.join(template_dir, 'srv.java.template'): ['%s.java'],
-        os.path.join(template_dir, 'srv_support.entry_point.cpp.template'):
+        os.path.join(template_dir, 'srv.java.em'): ['%s.java'],
+        os.path.join(template_dir, 'srv.cpp.em'):
         type_support_impl_by_filename.keys(),
     }
 

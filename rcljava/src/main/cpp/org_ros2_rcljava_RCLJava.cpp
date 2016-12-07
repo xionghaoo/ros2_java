@@ -379,7 +379,7 @@ JNIEXPORT jobject JNICALL Java_org_ros2_rcljava_RCLJava_nativeTakeResponse(JNIEn
 
 jobject convert_rmw_request_id_to_java(JNIEnv * env, rmw_request_id_t * request_id)
 {
-  jclass jrequest_id_class = env->FindClass("org/ros2/rcljava/RMWRequestId");
+  jclass jrequest_id_class = env->FindClass("org/ros2/rcljava/service/RMWRequestId");
   assert(jrequest_id_class != nullptr);
 
   jmethodID jconstructor = env->GetMethodID(jrequest_id_class, "<init>", "()V");
