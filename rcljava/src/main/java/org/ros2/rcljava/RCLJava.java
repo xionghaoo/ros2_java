@@ -132,9 +132,9 @@ public final class RCLJava {
               setRMWImplementation(entry.getKey());
               break;
             } catch (UnsatisfiedLinkError ule) {
-              // TODO(esteve): handle exception
+              logger.info("UnsatisfiedLinkError", ule);
             } catch (Exception exc) {
-              // TODO(esteve): handle exception
+              logger.info("Exception", exc);
             }
           }
         }

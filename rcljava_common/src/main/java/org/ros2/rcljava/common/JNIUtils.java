@@ -15,7 +15,13 @@
 
 package org.ros2.rcljava.common;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public final class JNIUtils {
+
+  private static final Logger logger = LoggerFactory.getLogger(JNIUtils.class);
+
   /**
    * Private constructor so this cannot be instantiated.
    */
@@ -33,6 +39,8 @@ public final class JNIUtils {
         .toLowerCase();
 
     libraryName = libraryName + "__" + typesupportIdentifier;
+
+    logger.info("Loading library: " + libraryName);
 
     System.loadLibrary(libraryName);
   }

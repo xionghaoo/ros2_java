@@ -37,15 +37,6 @@ set(${PROJECT_NAME}_cpp_sources
   "src/main/cpp/rcljava_common.cpp"
 )
 
-add_jar("${PROJECT_NAME}_jar"
-  "${${PROJECT_NAME}_java_sources}"
-  OUTPUT_NAME
-  "${PROJECT_NAME}"
-)
-
-install_jar("${PROJECT_NAME}_jar" "share/${PROJECT_NAME}/java")
-ament_export_jars("share/${PROJECT_NAME}/java/${PROJECT_NAME}.jar")
-
 find_jar(SFL4J_JAR NAMES slf4j-api)
 if(${SFL4J_JAR})
   ament_export_jars(${SFL4J_JAR})
@@ -61,6 +52,7 @@ else()
     DESTINATION
     "share/${PROJECT_NAME}/java")
 
+  set(SFL4J_JAR "${slf4j_api_jar_path}")
   ament_export_jars("share/${PROJECT_NAME}/java/slf4j-api-${slf4j_version}.jar")
 
   if(ANDROID)
@@ -110,6 +102,17 @@ else()
     ament_export_jars("share/${PROJECT_NAME}/java/slf4j-jdk14-${slf4j_version}.jar")
   endif()
 endif()
+
+add_jar("${PROJECT_NAME}_jar"
+  "${${PROJECT_NAME}_java_sources}"
+  OUTPUT_NAME
+  "${PROJECT_NAME}"
+  INCLUDE_JARS
+  "${SFL4J_JAR}"
+)
+
+install_jar("${PROJECT_NAME}_jar" "share/${PROJECT_NAME}/java")
+ament_export_jars("share/${PROJECT_NAME}/java/${PROJECT_NAME}.jar")
 
 include_directories(include)
 
