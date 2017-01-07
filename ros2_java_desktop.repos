@@ -14,7 +14,7 @@ repositories:
   ros/geometry2:
     type: git
     url: https://github.com/ros/geometry2.git
-    version: ros2_alpha
+    version: ros2
   ros/poco_vendor:
     type: git
     url: https://github.com/ros2/poco_vendor.git
