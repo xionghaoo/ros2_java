@@ -30,6 +30,7 @@ include(UseJava)
 
 if(NOT WIN32)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
+  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
 endif()
 
 set(CMAKE_JAVA_COMPILE_FLAGS "-source" "1.6" "-target" "1.6")
@@ -224,7 +225,8 @@ foreach(generated_source_file ${generated_source_files})
 
   target_link_libraries(
     "${_library_name}"
-    ${PROJECT_NAME}__${_typesupport_impl}
+    "${PROJECT_NAME}__${_typesupport_impl}"
+    "${PROJECT_NAME}__rosidl_typesupport_c"
   )
 
   target_include_directories("${_library_name}"
@@ -237,7 +239,7 @@ foreach(generated_source_file ${generated_source_files})
   foreach(_pkg_name ${rosidl_generate_interfaces_DEPENDENCY_PACKAGE_NAMES})
     ament_target_dependencies(
       "${_library_name}"
-      ${_pkg_name}
+      "${_pkg_name}"
     )
   endforeach()
 

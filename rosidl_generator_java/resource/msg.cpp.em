@@ -9,7 +9,7 @@ static_assert(sizeof(jlong) >= sizeof(std::intptr_t), "jlong must be able to sto
 #include <string>
 
 #include <@(spec.base_type.pkg_name)/@(subfolder)/@(module_name).h>
-#include <rosidl_generator_c/message_type_support.h>
+#include <rosidl_generator_c/message_type_support_struct.h>
 
 #include <rosidl_generator_c/string.h>
 #include <rosidl_generator_c/string_functions.h>
@@ -514,6 +514,6 @@ JNIEXPORT jlong JNICALL Java_@(jni_package_name)_@(subfolder)_@(jni_type_name)_g
 JNIEXPORT jlong JNICALL Java_@(jni_package_name)_@(subfolder)_@(jni_type_name)_getTypeSupport
   (JNIEnv *, jclass)
 {
-  jlong ptr = reinterpret_cast<jlong>(ROSIDL_GET_TYPE_SUPPORT(@(spec.base_type.pkg_name), @(subfolder), @(spec.msg_name)));
+  jlong ptr = reinterpret_cast<jlong>(ROSIDL_GET_MSG_TYPE_SUPPORT(@(spec.base_type.pkg_name), @(subfolder), @(spec.msg_name)));
   return ptr;
 }
