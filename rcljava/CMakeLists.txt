@@ -24,71 +24,71 @@ include(JavaExtra)
 set(CMAKE_JAVA_COMPILE_FLAGS "-source" "1.6" "-target" "1.6")
 
 if(NOT WIN32)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -Wextra")
 endif()
 
 include_directories(include)
 
-macro(target)
-  if(NOT "${target_suffix} " STREQUAL " ")
-    get_rcl_information("${rmw_implementation}" "rcl${target_suffix}")
-  endif()
+function(set_properties _targetname _build_type)
+  set_target_properties(${_targetname} PROPERTIES
+    PREFIX ""
+    LIBRARY_OUTPUT_DIRECTORY${_build_type} "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}"
+    RUNTIME_OUTPUT_DIRECTORY${_build_type} "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}"
+  )
+endfunction()
 
-  set(${PROJECT_NAME}_jni_sources
-    "src/main/cpp/org_ros2_rcljava_RCLJava.cpp"
-    "src/main/cpp/org_ros2_rcljava_client_ClientImpl.cpp"
-    "src/main/cpp/org_ros2_rcljava_node_NodeImpl.cpp"
-    "src/main/cpp/org_ros2_rcljava_publisher_PublisherImpl.cpp"
-    "src/main/cpp/org_ros2_rcljava_service_ServiceImpl.cpp"
-    "src/main/cpp/org_ros2_rcljava_subscription_SubscriptionImpl.cpp"
+# Only build the library if a C typesupport exists
+get_rmw_typesupport(typesupport_impls "rmw_implementation" LANGUAGE "c")
+if(typesupport_impls STREQUAL "")
+  message(STATUS "Skipping rcljava because no C typesupport library was found.")
+  return()
+endif()
+
+set(${PROJECT_NAME}_jni_sources
+  "src/main/cpp/org_ros2_rcljava_RCLJava.cpp"
+  "src/main/cpp/org_ros2_rcljava_client_ClientImpl.cpp"
+  "src/main/cpp/org_ros2_rcljava_node_NodeImpl.cpp"
+  "src/main/cpp/org_ros2_rcljava_publisher_PublisherImpl.cpp"
+  "src/main/cpp/org_ros2_rcljava_service_ServiceImpl.cpp"
+  "src/main/cpp/org_ros2_rcljava_subscription_SubscriptionImpl.cpp"
+)
+
+foreach(_jni_source ${${PROJECT_NAME}_jni_sources})
+
+  get_filename_component(_target_name "${_jni_source}" NAME_WE)
+  string_camel_case_to_lower_case_underscore("${_target_name}" _target_name)
+
+  add_library(
+    ${_target_name}
+    SHARED ${_jni_source}
   )
 
-  foreach(_jni_source ${${PROJECT_NAME}_jni_sources})
+  set_properties("${target_name}" "")
+  if(WIN32)
+    set_properties("${target_name}" "_DEBUG")
+    set_properties("${target_name}" "_MINSIZEREL")
+    set_properties("${target_name}" "_RELEASE")
+    set_properties("${target_name}" "_RELWITHDEBINFO")
+  endif()
 
-    get_filename_component(_target_name "${_jni_source}" NAME_WE)
-    set(_target_name "${_target_name}${target_suffix}")
-    string_camel_case_to_lower_case_underscore("${_target_name}" _target_name)
+  ament_target_dependencies(${_target_name}
+    "rcl"
+    "rcljava_common"
+  )
 
-    add_library(
-      ${_target_name}
-      SHARED ${_jni_source}
-    )
-    target_compile_definitions(${_target_name}
-      PRIVATE "RMW_IMPLEMENTATION_SUFFIX=${target_suffix}")
+  target_include_directories(${_target_name}
+    PUBLIC
+    ${JNI_INCLUDE_DIRS}
+  )
 
-    if(WIN32)
-      set(_build_types ";_DEBUG;_MINSIZEREL;_RELEASE;_RELWITHDEBINFO")
-    else()
-      set(_build_types "")
-    endif()
+  ament_export_libraries(${_target_name})
 
-    foreach(_build_type ${_build_types})
-      set_target_properties(${_target_name} PROPERTIES
-        LIBRARY_OUTPUT_DIRECTORY${_build_type} "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}"
-        RUNTIME_OUTPUT_DIRECTORY${_build_type} "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}"
-      )
-    endforeach()
+  install(TARGETS ${_target_name}
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+  )
 
-    ament_target_dependencies(${_target_name}
-      "rcl${target_suffix}"
-      "rcljava_common"
-    )
-
-    target_include_directories(${_target_name}
-      PUBLIC
-      ${JNI_INCLUDE_DIRS}
-    )
-
-    ament_export_libraries(${_target_name})
-
-    install(TARGETS ${_target_name}
-      ARCHIVE DESTINATION lib
-      LIBRARY DESTINATION lib
-    )
-
-  endforeach()
-
-endmacro()
+endforeach()
 
 set(${PROJECT_NAME}_sources
   "src/main/java/org/ros2/rcljava/RCLJava.java"
@@ -121,8 +121,6 @@ add_jar("${PROJECT_NAME}_jar"
   INCLUDE_JARS
   "${rcljava_common_JARS}"
 )
-
-call_for_each_rmw_implementation(target)
 
 install_jar("${PROJECT_NAME}_jar" "share/${PROJECT_NAME}/java")
 ament_export_jars("share/${PROJECT_NAME}/java/${PROJECT_NAME}.jar")

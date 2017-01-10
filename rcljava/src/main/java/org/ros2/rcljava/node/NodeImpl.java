@@ -50,7 +50,7 @@ public class NodeImpl implements Node {
 
   static {
     try {
-      JNIUtils.loadLibrary(NodeImpl.class, RCLJava.getRMWIdentifier());
+      JNIUtils.loadLibrary(NodeImpl.class);
     } catch (UnsatisfiedLinkError ule) {
       logger.error("Native code library failed to load.\n" + ule);
       System.exit(1);

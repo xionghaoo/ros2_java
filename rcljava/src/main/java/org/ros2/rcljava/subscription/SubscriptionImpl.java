@@ -38,7 +38,7 @@ public class SubscriptionImpl<T extends MessageDefinition> implements Subscripti
 
   static {
     try {
-      JNIUtils.loadLibrary(SubscriptionImpl.class, RCLJava.getRMWIdentifier());
+      JNIUtils.loadLibrary(SubscriptionImpl.class);
     } catch (UnsatisfiedLinkError ule) {
       logger.error("Native code library failed to load.\n" + ule);
       System.exit(1);

@@ -171,8 +171,8 @@ public final class RCLJava {
       final String rmwImplementation) throws Exception {
 
     synchronized (RCLJava.class) {
-      JNIUtils.loadLibrary(RCLJava.class, rmwImplementation);
-      RCLJava.rmwImplementation = rmwImplementation;
+      JNIUtils.loadLibrary(RCLJava.class);
+      RCLJava.rmwImplementation = RCLJava.getRMWIdentifier();
     }
   }
 

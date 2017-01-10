@@ -27,6 +27,10 @@ public final class JNIUtils {
    */
   private JNIUtils() { }
 
+  public static void loadLibrary(Class cls) {
+    JNIUtils.loadLibrary(cls, null);
+  }
+
   public static void loadLibrary(Class cls, String typesupportIdentifier) {
     String className = cls.getCanonicalName();
 
@@ -38,7 +42,9 @@ public final class JNIUtils {
         .replaceAll("([a-z0-9])([A-Z])", "$1_$2")
         .toLowerCase();
 
-    libraryName = libraryName + "__" + typesupportIdentifier;
+    if(typesupportIdentifier != null) {
+      libraryName = libraryName + "__" + typesupportIdentifier;
+    }
 
     logger.info("Loading library: " + libraryName);
 
