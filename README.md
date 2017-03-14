@@ -8,15 +8,15 @@ Build status
 
 **Android** [![Build Status](https://travis-ci.org/esteve/ros2_android.svg?branch=master)](https://travis-ci.org/esteve/ros2_android)
 
-What is this?
--------------
+Introduction
+------------
 
 This is a set of projects (bindings, code generator, examples and more) that enables developers to write ROS2
 applications for the JVM and Android.
 
 Besides this repository itself, there's also:
 - https://github.com/esteve/ament_java, which adds support for Gradle to Ament
-- https://github.com/esteve/ament_gradle_plugin, a Gradle plugin that makes it easier to use ROS2 in Java and Android project, and which can be found published at the Gradle Central at https://plugins.gradle.org/plugin/org.ros2.tools.gradle
+- https://github.com/esteve/ament_gradle_plugin, a Gradle plugin that makes it easier to use ROS2 in Java and Android project. The Gradle plugin can be installed from Gradle Central https://plugins.gradle.org/plugin/org.ros2.tools.gradle
 - https://github.com/esteve/ros2_java_examples, examples for the Java Runtime Environment
 - https://github.com/esteve/ros2_android_examples, examples for Android
 
@@ -28,7 +28,7 @@ No, any language that targets the JVM can be used to write ROS2 applications.
 Including Android?
 ------------------
 
-Yep! Make sure to use [this fork](https://github.com/eProsima/Fast-RTPS/pull/26) as your DDS vendor.
+Yep! Make sure to use Fast-RTPS as your DDS vendor and at least [this revision](https://github.com/eProsima/Fast-RTPS/commit/5301ef203d45528a083821c3ba582164d782360b).
 
 Features
 --------
@@ -53,9 +53,7 @@ vcs import ~/ament_ws/src < ament_java.repos
 src/ament/ament_tools/scripts/ament.py build --symlink-install --isolated
 ```
 
-You may wonder why this is needed if the ROS2 instructions already fetch Ament on the same workspace as ROS2.
-
-The reason is that this includes an additional build type for Gradle projects, and you'll need Ament to pick it up so it can build the examples, so this has to happen in a separate step.
+We need to split the build process between Ament and the rest of `ros2_java` workspace so that the additional build type for Gradle projects is picked up by Ament.
 
 The following sections deal with building the `ros2_java` codebase for the desktop Java runtime and for Android.
 
@@ -125,7 +123,7 @@ Android
 
 The Android setup is slightly more complex, you'll need the SDK and NDK installed, and an Android device where you can run the examples.
 
-Make sure to download at least the SDK for Android Lollipop (or greater), the examples require the API level 21 at least.
+Make sure to download at least the SDK for Android Lollipop (or greater), the examples require the API level 21 at least and NDK 14.
 
 You may download the Android NDK from [the official](https://developer.android.com/ndk/downloads/index.html) website, let's assume you unpack it to `~/android_ndk`
 
@@ -145,19 +143,29 @@ git submodule update
 cd ~/ros2_android_ws
 . ~/ament_ws/install_isolated/local_setup.sh
 ament build --isolated --cmake-args \
-  -DPYTHON_EXECUTABLE=/usr/bin/python3 -DCMAKE_TOOLCHAIN_FILE=$HOME/android_ndk/android-ndk-r13b/build/cmake/android.toolchain.cmake \
-  -DANDROID_FUNCTION_LEVEL_LINKING=OFF -DANDROID_NATIVE_API_LEVEL=android-21 \
+  -DPYTHON_EXECUTABLE=/usr/bin/python3 \
+  -DEPROSIMA_BUILD=ON -DCOMPILE_EXAMPLES=OFF \
+  -DCMAKE_FIND_ROOT_PATH="$HOME/ament_ws/install_isolated;$HOME/ros2_android_ws/install_isolated" \
+  -DANDROID_FUNCTION_LEVEL_LINKING=OFF \
   -DANDROID_TOOLCHAIN_NAME=arm-linux-androideabi-clang -DANDROID_STL=gnustl_shared \
-  -DANDROID_ABI=armeabi-v7a -DANDROID_NDK=$HOME/android_ndk/android-ndk-r13b -DTHIRDPARTY=ON -DCOMPILE_EXAMPLES=OFF -DCMAKE_FIND_ROOT_PATH="$HOME/ament_ws/install_isolated;$HOME/ros2_android_ws/install_isolated" \
-  -DANDROID_CPP_FEATURES="exceptions rtti" -- \
+  -DANDROID_ABI=armeabi-v7a \
+  -DANDROID_NDK=$HOME/android_ndk/android-ndk-r14 \
+  -DANDROID_NATIVE_API_LEVEL=android-21 \
+  -DCMAKE_TOOLCHAIN_FILE=$HOME/android_ndk/android-ndk-r14/build/cmake/android.toolchain.cmake \
+  -- \
   --ament-cmake-args \
-  -DPYTHON_EXECUTABLE=/usr/bin/python3 -DCMAKE_TOOLCHAIN_FILE=$HOME/android_ndk/android-ndk-r13b/build/cmake/android.toolchain.cmake \
-  -DANDROID_FUNCTION_LEVEL_LINKING=OFF -DANDROID_NATIVE_API_LEVEL=android-21 \
+  -DPYTHON_EXECUTABLE=/usr/bin/python3 \
+  -DEPROSIMA_BUILD=ON -DCOMPILE_EXAMPLES=OFF \
+  -DCMAKE_FIND_ROOT_PATH="$HOME/ament_ws/install_isolated;$HOME/ros2_android_ws/install_isolated" \
+  -DANDROID_FUNCTION_LEVEL_LINKING=OFF \
   -DANDROID_TOOLCHAIN_NAME=arm-linux-androideabi-clang -DANDROID_STL=gnustl_shared \
-  -DANDROID_ABI=armeabi-v7a -DANDROID_NDK=$HOME/android_ndk/android-ndk-r13b -DTHIRDPARTY=ON -DCOMPILE_EXAMPLES=OFF -DCMAKE_FIND_ROOT_PATH="$HOME/ament_ws/install_isolated;$HOME/ros2_android_ws/install_isolated" \
-  -DANDROID_CPP_FEATURES="exceptions rtti" -- \
+  -DANDROID_ABI=armeabi-v7a \
+  -DANDROID_NDK=$HOME/android_ndk/android-ndk-r14 \
+  -DANDROID_NATIVE_API_LEVEL=android-21 \
+  -DCMAKE_TOOLCHAIN_FILE=$HOME/android_ndk/android-ndk-r14/build/cmake/android.toolchain.cmake \
+  -- \
   --ament-gradle-args \
-  -Pament.android_stl=gnustl_shared -Pament.android_abi=armeabi-v7a -Pament.android_ndk=$HOME/android_ndk/android-ndk-r13b --
+  -Pament.android_stl=gnustl_shared -Pament.android_abi=armeabi-v7a -Pament.android_ndk=$HOME/android_ndk/android-ndk-r14 --
 ```
 
 The talker and listener example Android apps can be installed via adb, plug your Android device to your computer with a USB cable and type the following:
@@ -177,13 +185,6 @@ adb install ~/ros2_android_ws/install_isolated/ros2_listener_android/ros2_listen
 You can try out running the talker on the desktop and the listener on your Android device or viceversa.
 
 Enjoy!
-
-Acknowledgements
-----------------
-
-Thanks all those who have contributed:
-
-Mickael Gaillard (https://github.com/Theosakamg)
 
 TODO
 ----
