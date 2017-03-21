@@ -25,40 +25,39 @@ extern "C" {
  * Method:    nativeCreatePublisherHandle
  * Signature: (JLjava/lang/Class;Ljava/lang/String;J)J
  */
-JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_node_NodeImpl_nativeCreatePublisherHandle
-  (JNIEnv *, jclass, jlong, jclass, jstring, jlong);
+JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_node_NodeImpl_nativeCreatePublisherHandle(
+  JNIEnv *, jclass, jlong, jclass, jstring, jlong);
 
 /*
  * Class:     org_ros2_rcljava_node_NodeImpl
  * Method:    nativeCreateSubscriptionHandle
  * Signature: (JLjava/lang/Class;Ljava/lang/String;J)J
  */
-JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_node_NodeImpl_nativeCreateSubscriptionHandle
-  (JNIEnv *, jclass, jlong, jclass, jstring, jlong);
+JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_node_NodeImpl_nativeCreateSubscriptionHandle(
+  JNIEnv *, jclass, jlong, jclass, jstring, jlong);
 
 /*
  * Class:     org_ros2_rcljava_node_NodeImpl
  * Method:    nativeCreateServiceHandle
  * Signature: (JLjava/lang/Class;Ljava/lang/String;J)J
  */
-JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_node_NodeImpl_nativeCreateServiceHandle
-  (JNIEnv *, jclass, jlong, jclass, jstring, jlong);
+JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_node_NodeImpl_nativeCreateServiceHandle(
+  JNIEnv *, jclass, jlong, jclass, jstring, jlong);
 
 /*
  * Class:     org_ros2_rcljava_node_NodeImpl
  * Method:    nativeCreateClientHandle
  * Signature: (JLjava/lang/Class;Ljava/lang/String;J)J
  */
-JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_node_NodeImpl_nativeCreateClientHandle
-  (JNIEnv *, jclass, jlong, jclass, jstring, jlong);
+JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_node_NodeImpl_nativeCreateClientHandle(
+  JNIEnv *, jclass, jlong, jclass, jstring, jlong);
 
 /*
  * Class:     org_ros2_rcljava_node_NodeImpl
  * Method:    nativeDispose
  * Signature: (J)V
  */
-JNIEXPORT void JNICALL Java_org_ros2_rcljava_node_NodeImpl_nativeDispose
-  (JNIEnv *, jclass, jlong);
+JNIEXPORT void JNICALL Java_org_ros2_rcljava_node_NodeImpl_nativeDispose(JNIEnv *, jclass, jlong);
 
 #ifdef __cplusplus
 }

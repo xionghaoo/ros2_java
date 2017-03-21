@@ -47,10 +47,8 @@ public class ServiceImpl<T extends ServiceDefinition> implements Service<T> {
   private final Class<MessageDefinition> requestType;
   private final Class<MessageDefinition> responseType;
 
-  public ServiceImpl(final WeakReference<Node> nodeReference,
-      final long handle, final String serviceName,
-      final TriConsumer<RMWRequestId, ?, ?> callback,
-      final Class<MessageDefinition> requestType,
+  public ServiceImpl(final WeakReference<Node> nodeReference, final long handle, final String serviceName,
+      final TriConsumer<RMWRequestId, ?, ?> callback, final Class<MessageDefinition> requestType,
       final Class<MessageDefinition> responseType) {
     this.nodeReference = nodeReference;
     this.handle = handle;
@@ -80,15 +78,14 @@ public class ServiceImpl<T extends ServiceDefinition> implements Service<T> {
    * @param handle A pointer to the underlying ROS2 service
    *     structure, as an integer. Must not be zero.
    */
-  private static native void nativeDispose(
-      long nodeHandle, long handle);
+  private static native void nativeDispose(long nodeHandle, long handle);
 
   /**
    * {@inheritDoc}
    */
   public final void dispose() {
     Node node = this.nodeReference.get();
-    if(node != null) {
+    if (node != null) {
       nativeDispose(node.getHandle(), this.handle);
       this.handle = 0;
     }

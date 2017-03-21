@@ -18,10 +18,10 @@
 #include <cstdlib>
 #include <string>
 
-#include "rmw/rmw.h"
 #include "rcl/error_handling.h"
-#include "rcl/rcl.h"
 #include "rcl/node.h"
+#include "rcl/rcl.h"
+#include "rmw/rmw.h"
 #include "rosidl_generator_c/message_type_support_struct.h"
 
 #include "rcljava_common/exceptions.h"
@@ -33,7 +33,8 @@ jobject convert_rmw_request_id_to_java(JNIEnv *, rmw_request_id_t *);
 
 rmw_request_id_t * convert_rmw_request_id_from_java(JNIEnv *, jobject);
 
-JNIEXPORT void JNICALL Java_org_ros2_rcljava_RCLJava_nativeRCLJavaInit(JNIEnv * env, jclass)
+JNIEXPORT void JNICALL
+Java_org_ros2_rcljava_RCLJava_nativeRCLJavaInit(JNIEnv * env, jclass)
 {
   // TODO(esteve): parse args
   rcl_ret_t ret = rcl_init(0, nullptr, rcl_get_default_allocator());
@@ -44,8 +45,8 @@ JNIEXPORT void JNICALL Java_org_ros2_rcljava_RCLJava_nativeRCLJavaInit(JNIEnv * 
   }
 }
 
-JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_RCLJava_nativeCreateNodeHandle(JNIEnv * env, jclass,
-  jstring jnode_name)
+JNIEXPORT jlong JNICALL
+Java_org_ros2_rcljava_RCLJava_nativeCreateNodeHandle(JNIEnv * env, jclass, jstring jnode_name)
 {
   const char * node_name_tmp = env->GetStringUTFChars(jnode_name, 0);
 
@@ -67,42 +68,34 @@ JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_RCLJava_nativeCreateNodeHandle(JNI
   return node_handle;
 }
 
-JNIEXPORT jstring JNICALL Java_org_ros2_rcljava_RCLJava_nativeGetRMWIdentifier(JNIEnv * env, jclass)
+JNIEXPORT jstring JNICALL
+Java_org_ros2_rcljava_RCLJava_nativeGetRMWIdentifier(JNIEnv * env, jclass)
 {
   const char * rmw_implementation_identifier = rmw_get_implementation_identifier();
 
   return env->NewStringUTF(rmw_implementation_identifier);
 }
 
-JNIEXPORT jboolean JNICALL Java_org_ros2_rcljava_RCLJava_nativeOk(JNIEnv *, jclass)
+JNIEXPORT jboolean JNICALL
+Java_org_ros2_rcljava_RCLJava_nativeOk(JNIEnv *, jclass)
 {
   return rcl_ok();
 }
 
-JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_RCLJava_nativeGetZeroInitializedWaitSet(JNIEnv *,
-  jclass)
+JNIEXPORT jlong JNICALL
+Java_org_ros2_rcljava_RCLJava_nativeGetZeroInitializedWaitSet(JNIEnv *, jclass)
 {
   rcl_wait_set_t * wait_set = static_cast<rcl_wait_set_t *>(malloc(sizeof(rcl_wait_set_t)));
-  wait_set->subscriptions = nullptr;
-  wait_set->size_of_subscriptions = 0;
-  wait_set->guard_conditions = nullptr;
-  wait_set->size_of_guard_conditions = 0;
-  wait_set->timers = nullptr;
-  wait_set->size_of_timers = 0;
-  wait_set->clients = nullptr;
-  wait_set->size_of_clients = 0;
-  wait_set->services = nullptr;
-  wait_set->size_of_services = 0;
-  wait_set->impl = nullptr;
+  *wait_set = rcl_get_zero_initialized_wait_set();
   jlong wait_set_handle = reinterpret_cast<jlong>(wait_set);
   return wait_set_handle;
 }
 
-JNIEXPORT void JNICALL Java_org_ros2_rcljava_RCLJava_nativeWaitSetInit(JNIEnv * env, jclass,
-  jlong wait_set_handle,
-  jint number_of_subscriptions,
-  jint number_of_guard_conditions, jint number_of_timers,
-  jint number_of_clients, jint number_of_services)
+JNIEXPORT void JNICALL
+Java_org_ros2_rcljava_RCLJava_nativeWaitSetInit(
+  JNIEnv * env, jclass, jlong wait_set_handle, jint number_of_subscriptions,
+  jint number_of_guard_conditions, jint number_of_timers, jint number_of_clients,
+  jint number_of_services)
 {
   rcl_wait_set_t * wait_set = reinterpret_cast<rcl_wait_set_t *>(wait_set_handle);
 
@@ -116,9 +109,9 @@ JNIEXPORT void JNICALL Java_org_ros2_rcljava_RCLJava_nativeWaitSetInit(JNIEnv * 
   }
 }
 
-JNIEXPORT void JNICALL Java_org_ros2_rcljava_RCLJava_nativeWaitSetClearSubscriptions(JNIEnv * env,
-  jclass,
-  jlong wait_set_handle)
+JNIEXPORT void JNICALL
+Java_org_ros2_rcljava_RCLJava_nativeWaitSetClearSubscriptions(
+  JNIEnv * env, jclass, jlong wait_set_handle)
 {
   rcl_wait_set_t * wait_set = reinterpret_cast<rcl_wait_set_t *>(wait_set_handle);
   rcl_ret_t ret = rcl_wait_set_clear_subscriptions(wait_set);
@@ -129,10 +122,9 @@ JNIEXPORT void JNICALL Java_org_ros2_rcljava_RCLJava_nativeWaitSetClearSubscript
   }
 }
 
-JNIEXPORT void JNICALL Java_org_ros2_rcljava_RCLJava_nativeWaitSetAddSubscription(JNIEnv * env,
-  jclass,
-  jlong wait_set_handle,
-  jlong subscription_handle)
+JNIEXPORT void JNICALL
+Java_org_ros2_rcljava_RCLJava_nativeWaitSetAddSubscription(
+  JNIEnv * env, jclass, jlong wait_set_handle, jlong subscription_handle)
 {
   rcl_wait_set_t * wait_set = reinterpret_cast<rcl_wait_set_t *>(wait_set_handle);
   rcl_subscription_t * subscription = reinterpret_cast<rcl_subscription_t *>(subscription_handle);
@@ -144,8 +136,8 @@ JNIEXPORT void JNICALL Java_org_ros2_rcljava_RCLJava_nativeWaitSetAddSubscriptio
   }
 }
 
-JNIEXPORT void JNICALL Java_org_ros2_rcljava_RCLJava_nativeWait(JNIEnv * env, jclass,
-  jlong wait_set_handle)
+JNIEXPORT void JNICALL
+Java_org_ros2_rcljava_RCLJava_nativeWait(JNIEnv * env, jclass, jlong wait_set_handle)
 {
   rcl_wait_set_t * wait_set = reinterpret_cast<rcl_wait_set_t *>(wait_set_handle);
   rcl_ret_t ret = rcl_wait(wait_set, RCL_S_TO_NS(1));
@@ -156,9 +148,9 @@ JNIEXPORT void JNICALL Java_org_ros2_rcljava_RCLJava_nativeWait(JNIEnv * env, jc
   }
 }
 
-JNIEXPORT jobject JNICALL Java_org_ros2_rcljava_RCLJava_nativeTake(JNIEnv * env, jclass,
-  jlong subscription_handle,
-  jclass jmessage_class)
+JNIEXPORT jobject JNICALL
+Java_org_ros2_rcljava_RCLJava_nativeTake(
+  JNIEnv * env, jclass, jlong subscription_handle, jclass jmessage_class)
 {
   rcl_subscription_t * subscription = reinterpret_cast<rcl_subscription_t *>(subscription_handle);
 
@@ -197,7 +189,8 @@ JNIEXPORT jobject JNICALL Java_org_ros2_rcljava_RCLJava_nativeTake(JNIEnv * env,
   return nullptr;
 }
 
-JNIEXPORT void JNICALL Java_org_ros2_rcljava_RCLJava_nativeShutdown(JNIEnv * env, jclass)
+JNIEXPORT void JNICALL
+Java_org_ros2_rcljava_RCLJava_nativeShutdown(JNIEnv * env, jclass)
 {
   rcl_ret_t ret = rcl_shutdown();
   if (ret != RCL_RET_OK) {
@@ -207,9 +200,9 @@ JNIEXPORT void JNICALL Java_org_ros2_rcljava_RCLJava_nativeShutdown(JNIEnv * env
   }
 }
 
-JNIEXPORT void JNICALL Java_org_ros2_rcljava_RCLJava_nativeWaitSetClearServices(JNIEnv * env,
-  jclass,
-  jlong wait_set_handle)
+JNIEXPORT void JNICALL
+Java_org_ros2_rcljava_RCLJava_nativeWaitSetClearServices(
+  JNIEnv * env, jclass, jlong wait_set_handle)
 {
   rcl_wait_set_t * wait_set = reinterpret_cast<rcl_wait_set_t *>(wait_set_handle);
   rcl_ret_t ret = rcl_wait_set_clear_services(wait_set);
@@ -220,9 +213,9 @@ JNIEXPORT void JNICALL Java_org_ros2_rcljava_RCLJava_nativeWaitSetClearServices(
   }
 }
 
-JNIEXPORT void JNICALL Java_org_ros2_rcljava_RCLJava_nativeWaitSetAddService(JNIEnv * env, jclass,
-  jlong wait_set_handle,
-  jlong service_handle)
+JNIEXPORT void JNICALL
+Java_org_ros2_rcljava_RCLJava_nativeWaitSetAddService(
+  JNIEnv * env, jclass, jlong wait_set_handle, jlong service_handle)
 {
   rcl_wait_set_t * wait_set = reinterpret_cast<rcl_wait_set_t *>(wait_set_handle);
   rcl_service_t * service = reinterpret_cast<rcl_service_t *>(service_handle);
@@ -234,9 +227,8 @@ JNIEXPORT void JNICALL Java_org_ros2_rcljava_RCLJava_nativeWaitSetAddService(JNI
   }
 }
 
-JNIEXPORT void JNICALL Java_org_ros2_rcljava_RCLJava_nativeWaitSetClearClients(JNIEnv * env,
-  jclass,
-  jlong wait_set_handle)
+JNIEXPORT void JNICALL
+Java_org_ros2_rcljava_RCLJava_nativeWaitSetClearClients(JNIEnv * env, jclass, jlong wait_set_handle)
 {
   rcl_wait_set_t * wait_set = reinterpret_cast<rcl_wait_set_t *>(wait_set_handle);
   rcl_ret_t ret = rcl_wait_set_clear_clients(wait_set);
@@ -247,9 +239,9 @@ JNIEXPORT void JNICALL Java_org_ros2_rcljava_RCLJava_nativeWaitSetClearClients(J
   }
 }
 
-JNIEXPORT void JNICALL Java_org_ros2_rcljava_RCLJava_nativeWaitSetAddClient(JNIEnv * env, jclass,
-  jlong wait_set_handle,
-  jlong client_handle)
+JNIEXPORT void JNICALL
+Java_org_ros2_rcljava_RCLJava_nativeWaitSetAddClient(
+  JNIEnv * env, jclass, jlong wait_set_handle, jlong client_handle)
 {
   rcl_wait_set_t * wait_set = reinterpret_cast<rcl_wait_set_t *>(wait_set_handle);
   rcl_client_t * client = reinterpret_cast<rcl_client_t *>(client_handle);
@@ -261,9 +253,9 @@ JNIEXPORT void JNICALL Java_org_ros2_rcljava_RCLJava_nativeWaitSetAddClient(JNIE
   }
 }
 
-JNIEXPORT jobject JNICALL Java_org_ros2_rcljava_RCLJava_nativeTakeRequest(JNIEnv * env, jclass,
-  jlong service_handle,
-  jlong jrequest_from_java_converter_handle,
+JNIEXPORT jobject JNICALL
+Java_org_ros2_rcljava_RCLJava_nativeTakeRequest(
+  JNIEnv * env, jclass, jlong service_handle, jlong jrequest_from_java_converter_handle,
   jlong jrequest_to_java_converter_handle, jobject jrequest_msg)
 {
   assert(service_handle != 0);
@@ -304,9 +296,9 @@ JNIEXPORT jobject JNICALL Java_org_ros2_rcljava_RCLJava_nativeTakeRequest(JNIEnv
   return nullptr;
 }
 
-JNIEXPORT void JNICALL Java_org_ros2_rcljava_RCLJava_nativeSendServiceResponse(JNIEnv * env, jclass,
-  jlong service_handle,
-  jobject jrequest_id,
+JNIEXPORT void JNICALL
+Java_org_ros2_rcljava_RCLJava_nativeSendServiceResponse(
+  JNIEnv * env, jclass, jlong service_handle, jobject jrequest_id,
   jlong jresponse_from_java_converter_handle, jlong jresponse_to_java_converter_handle,
   jobject jresponse_msg)
 {
@@ -333,9 +325,9 @@ JNIEXPORT void JNICALL Java_org_ros2_rcljava_RCLJava_nativeSendServiceResponse(J
   }
 }
 
-JNIEXPORT jobject JNICALL Java_org_ros2_rcljava_RCLJava_nativeTakeResponse(JNIEnv * env, jclass,
-  jlong client_handle,
-  jlong jresponse_from_java_converter_handle,
+JNIEXPORT jobject JNICALL
+Java_org_ros2_rcljava_RCLJava_nativeTakeResponse(
+  JNIEnv * env, jclass, jlong client_handle, jlong jresponse_from_java_converter_handle,
   jlong jresponse_to_java_converter_handle, jobject jresponse_msg)
 {
   assert(client_handle != 0);
@@ -376,8 +368,8 @@ JNIEXPORT jobject JNICALL Java_org_ros2_rcljava_RCLJava_nativeTakeResponse(JNIEn
   return nullptr;
 }
 
-
-jobject convert_rmw_request_id_to_java(JNIEnv * env, rmw_request_id_t * request_id)
+jobject
+convert_rmw_request_id_to_java(JNIEnv * env, rmw_request_id_t * request_id)
 {
   jclass jrequest_id_class = env->FindClass("org/ros2/rcljava/service/RMWRequestId");
   assert(jrequest_id_class != nullptr);
@@ -407,7 +399,8 @@ jobject convert_rmw_request_id_to_java(JNIEnv * env, rmw_request_id_t * request_
   return jrequest_id;
 }
 
-rmw_request_id_t * convert_rmw_request_id_from_java(JNIEnv * env, jobject jrequest_id)
+rmw_request_id_t *
+convert_rmw_request_id_from_java(JNIEnv * env, jobject jrequest_id)
 {
   assert(jrequest_id != nullptr);
 
@@ -433,8 +426,8 @@ rmw_request_id_t * convert_rmw_request_id_from_java(JNIEnv * env, jobject jreque
   return request_id;
 }
 
-
-JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_RCLJava_nativeConvertQoSProfileToHandle(
+JNIEXPORT jlong JNICALL
+Java_org_ros2_rcljava_RCLJava_nativeConvertQoSProfileToHandle(
   JNIEnv *, jclass, jint history, jint depth, jint reliability, jint durability)
 {
   rmw_qos_profile_t * qos_profile =
@@ -446,10 +439,9 @@ JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_RCLJava_nativeConvertQoSProfileToH
   return reinterpret_cast<jlong>(qos_profile);
 }
 
-JNIEXPORT void JNICALL Java_org_ros2_rcljava_RCLJava_nativeDisposeQoSProfile(JNIEnv *, jclass,
-  jlong qos_profile_handle)
+JNIEXPORT void JNICALL
+Java_org_ros2_rcljava_RCLJava_nativeDisposeQoSProfile(JNIEnv *, jclass, jlong qos_profile_handle)
 {
-  rmw_qos_profile_t * qos_profile =
-    reinterpret_cast<rmw_qos_profile_t *>(qos_profile_handle);
+  rmw_qos_profile_t * qos_profile = reinterpret_cast<rmw_qos_profile_t *>(qos_profile_handle);
   free(qos_profile);
 }

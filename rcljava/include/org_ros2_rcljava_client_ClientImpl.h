@@ -25,16 +25,16 @@ extern "C" {
  * Method:    nativeSendClientRequest
  * Signature: (JJJJLorg/ros2/rcljava/interfaces/MessageDefinition;)V
  */
-JNIEXPORT void JNICALL Java_org_ros2_rcljava_client_ClientImpl_nativeSendClientRequest
-  (JNIEnv *, jclass, jlong, jlong, jlong, jlong, jobject);
+JNIEXPORT void JNICALL Java_org_ros2_rcljava_client_ClientImpl_nativeSendClientRequest(
+  JNIEnv *, jclass, jlong, jlong, jlong, jlong, jobject);
 
 /*
  * Class:     org_ros2_rcljava_client_ClientImpl
  * Method:    nativeDispose
  * Signature: (JJ)V
  */
-JNIEXPORT void JNICALL Java_org_ros2_rcljava_client_ClientImpl_nativeDispose
-  (JNIEnv *, jclass, jlong, jlong);
+JNIEXPORT void JNICALL
+  Java_org_ros2_rcljava_client_ClientImpl_nativeDispose(JNIEnv *, jclass, jlong, jlong);
 
 #ifdef __cplusplus
 }
