@@ -26,7 +26,7 @@ public final class RCLJavaProxy {
   /**
    * Private constructor so this cannot be instantiated.
    */
-  private RCLJavaProxy() { }
+  private RCLJavaProxy() {}
 
   /**
    * @return a pointer to the underlying typesupport via reflection.
@@ -34,8 +34,7 @@ public final class RCLJavaProxy {
   public static synchronized String getTypesupportIdentifier() {
     try {
       Class cls = Class.forName("org.ros2.rcljava.RCLJava");
-      Method meth = cls.getDeclaredMethod(
-          "getTypesupportIdentifier", (Class<?>[]) null);
+      Method meth = cls.getDeclaredMethod("getTypesupportIdentifier", (Class<?>[]) null);
       Object obj = meth.invoke(null);
       return (String) obj;
     } catch (Exception exc) {
@@ -50,8 +49,7 @@ public final class RCLJavaProxy {
   public static synchronized String getRMWIdentifier() {
     try {
       Class cls = Class.forName("org.ros2.rcljava.RCLJava");
-      Method meth = cls.getDeclaredMethod(
-          "getRMWIdentifier", (Class<?>[]) null);
+      Method meth = cls.getDeclaredMethod("getRMWIdentifier", (Class<?>[]) null);
       Object obj = meth.invoke(null);
       return (String) obj;
     } catch (Exception exc) {

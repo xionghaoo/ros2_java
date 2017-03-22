@@ -68,13 +68,11 @@ public interface Node extends Disposable {
    * @return A @{link Subscription} that represents the underlying ROS2
    *     subscription structure.
    */
-  <T extends MessageDefinition> Subscription<T> createSubscription(
-    final Class<T> messageType, final String topic,
-    final Consumer<T> callback, final QoSProfile qosProfile);
+  <T extends MessageDefinition> Subscription<T> createSubscription(final Class<T> messageType,
+      final String topic, final Consumer<T> callback, final QoSProfile qosProfile);
 
   <T extends MessageDefinition> Subscription<T> createSubscription(
-    final Class<T> messageType, final String topic,
-    final Consumer<T> callback);
+      final Class<T> messageType, final String topic, final Consumer<T> callback);
 
   /**
    * Create a Publisher&lt;T&gt;.
@@ -89,25 +87,26 @@ public interface Node extends Disposable {
    *     structure.
    */
   <T extends MessageDefinition> Publisher<T> createPublisher(
-    final Class<T> messageType, final String topic,
-    final QoSProfile qosProfile);
+      final Class<T> messageType, final String topic, final QoSProfile qosProfile);
 
   <T extends MessageDefinition> Publisher<T> createPublisher(
-    final Class<T> messageType, final String topic);
+      final Class<T> messageType, final String topic);
 
   <T extends ServiceDefinition> Service<T> createService(final Class<T> serviceType,
-    final String serviceName, final TriConsumer<RMWRequestId, ? extends MessageDefinition, ? extends MessageDefinition> callback,
-    final QoSProfile qosProfile) throws NoSuchFieldException, IllegalAccessException;
+      final String serviceName,
+      final TriConsumer<RMWRequestId, ? extends MessageDefinition, ? extends MessageDefinition>
+          callback,
+      final QoSProfile qosProfile) throws NoSuchFieldException, IllegalAccessException;
 
   <T extends ServiceDefinition> Service<T> createService(final Class<T> serviceType,
-    final String serviceName, final TriConsumer<RMWRequestId, ? extends MessageDefinition, ? extends MessageDefinition> callback)
-    throws NoSuchFieldException, IllegalAccessException;
+      final String serviceName,
+      final TriConsumer<RMWRequestId, ? extends MessageDefinition, ? extends MessageDefinition>
+          callback) throws NoSuchFieldException, IllegalAccessException;
+
+  <T extends ServiceDefinition> Client<T> createClient(
+      final Class<T> serviceType, final String serviceName, final QoSProfile qosProfile)
+      throws NoSuchFieldException, IllegalAccessException;
 
   <T extends ServiceDefinition> Client<T> createClient(final Class<T> serviceType,
-    final String serviceName, final QoSProfile qosProfile) throws
-    NoSuchFieldException, IllegalAccessException;
-
-  <T extends ServiceDefinition> Client<T> createClient(final Class<T> serviceType,
-    final String serviceName) throws NoSuchFieldException,
-    IllegalAccessException;
+      final String serviceName) throws NoSuchFieldException, IllegalAccessException;
 }

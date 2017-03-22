@@ -52,10 +52,8 @@ public class ClientImpl<T extends ServiceDefinition> implements Client<T> {
   private final Class<MessageDefinition> requestType;
   private final Class<MessageDefinition> responseType;
 
-  public ClientImpl(final WeakReference<Node> nodeReference,
-      final long handle,
-      final String serviceName,
-      final Class<MessageDefinition> requestType,
+  public ClientImpl(final WeakReference<Node> nodeReference, final long handle,
+      final String serviceName, final Class<MessageDefinition> requestType,
       final Class<MessageDefinition> responseType) {
     this.nodeReference = nodeReference;
     this.handle = handle;
@@ -65,21 +63,20 @@ public class ClientImpl<T extends ServiceDefinition> implements Client<T> {
     this.pendingRequests = new HashMap<Long, RCLFuture>();
   }
 
-  public final <U extends MessageDefinition, V extends MessageDefinition>
-      Future<V> sendRequest(final U request) {
+  public final <U extends MessageDefinition, V extends MessageDefinition> Future<V> sendRequest(
+      final U request) {
     synchronized (pendingRequests) {
       sequenceNumber++;
-      nativeSendClientRequest(handle, sequenceNumber,
-          request.getFromJavaConverterInstance(), request.getToJavaConverterInstance(),
-          request);
+      nativeSendClientRequest(handle, sequenceNumber, request.getFromJavaConverterInstance(),
+          request.getToJavaConverterInstance(), request);
       RCLFuture<V> future = new RCLFuture<V>(this.nodeReference);
       pendingRequests.put(sequenceNumber, future);
       return future;
     }
   }
 
-  public final <U extends MessageDefinition> void handleResponse(final RMWRequestId header,
-      final U response) {
+  public final <U extends MessageDefinition> void handleResponse(
+      final RMWRequestId header, final U response) {
     synchronized (pendingRequests) {
       long sequenceNumber = header.sequenceNumber;
       RCLFuture<U> future = pendingRequests.remove(sequenceNumber);
@@ -87,9 +84,9 @@ public class ClientImpl<T extends ServiceDefinition> implements Client<T> {
     }
   }
 
-  private static native void nativeSendClientRequest(long handle,
-      long sequenceNumber, long requestFromJavaConverterHandle,
-      long requestToJavaConverterHandle, MessageDefinition requestMessage);
+  private static native void nativeSendClientRequest(long handle, long sequenceNumber,
+      long requestFromJavaConverterHandle, long requestToJavaConverterHandle,
+      MessageDefinition requestMessage);
 
   public final Class<MessageDefinition> getRequestType() {
     return this.requestType;
@@ -107,15 +104,14 @@ public class ClientImpl<T extends ServiceDefinition> implements Client<T> {
    * @param handle A pointer to the underlying ROS2 client
    *     structure, as an integer. Must not be zero.
    */
-  private static native void nativeDispose(
-      long nodeHandle, long handle);
+  private static native void nativeDispose(long nodeHandle, long handle);
 
   /**
    * {@inheritDoc}
    */
   public final void dispose() {
     Node node = this.nodeReference.get();
-    if(node != null) {
+    if (node != null) {
       nativeDispose(node.getHandle(), this.handle);
       this.handle = 0;
     }

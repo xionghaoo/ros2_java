@@ -45,8 +45,8 @@ public class RCLFuture<V> implements Future<V> {
     return value;
   }
 
-  public final V get(final long timeout, final TimeUnit unit) throws
-      InterruptedException, ExecutionException, TimeoutException {
+  public final V get(final long timeout, final TimeUnit unit)
+      throws InterruptedException, ExecutionException, TimeoutException {
     if (isDone()) {
       return value;
     }

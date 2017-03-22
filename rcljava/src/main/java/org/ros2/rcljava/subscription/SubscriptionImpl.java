@@ -83,8 +83,8 @@ public class SubscriptionImpl<T extends MessageDefinition> implements Subscripti
    * @param callback The callback function that will be triggered when a new
    *     message is received.
    */
-  public SubscriptionImpl(final WeakReference<Node> nodeReference, final long handle, final Class<T> messageType,
-      final String topic, final Consumer<T> callback) {
+  public SubscriptionImpl(final WeakReference<Node> nodeReference, final long handle,
+      final Class<T> messageType, final String topic, final Consumer<T> callback) {
     this.nodeReference = nodeReference;
     this.handle = handle;
     this.messageType = messageType;

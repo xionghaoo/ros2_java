@@ -29,7 +29,6 @@ import org.ros2.rcljava.node.Node;
  * {@inheritDoc}
  */
 public class PublisherImpl<T extends MessageDefinition> implements Publisher<T> {
-
   private static final Logger logger = LoggerFactory.getLogger(PublisherImpl.class);
 
   static {
@@ -63,8 +62,8 @@ public class PublisherImpl<T extends MessageDefinition> implements Publisher<T> 
    *     structure, as an integer. Must not be zero.
    * @param topic The topic to which this publisher will publish messages.
    */
-  public PublisherImpl(final WeakReference<Node> nodeReference, final long handle,
-      final String topic) {
+  public PublisherImpl(
+      final WeakReference<Node> nodeReference, final long handle, final String topic) {
     this.nodeReference = nodeReference;
     this.handle = handle;
     this.topic = topic;
@@ -78,8 +77,7 @@ public class PublisherImpl<T extends MessageDefinition> implements Publisher<T> 
    *     structure, as an integer. Must not be zero.
    * @param message An instance of the &lt;T&gt; parameter.
    */
-  private static native <T extends MessageDefinition> void nativePublish(
-      long handle, T message);
+  private static native <T extends MessageDefinition> void nativePublish(long handle, T message);
 
   /**
    * {@inheritDoc}
@@ -110,15 +108,14 @@ public class PublisherImpl<T extends MessageDefinition> implements Publisher<T> 
    * @param handle A pointer to the underlying ROS2 publisher
    *     structure, as an integer. Must not be zero.
    */
-  private static native void nativeDispose(
-      long nodeHandle, long handle);
+  private static native void nativeDispose(long nodeHandle, long handle);
 
   /**
    * {@inheritDoc}
    */
   public final void dispose() {
     Node node = this.nodeReference.get();
-    if(node != null) {
+    if (node != null) {
       nativeDispose(node.getHandle(), this.handle);
       this.handle = 0;
     }

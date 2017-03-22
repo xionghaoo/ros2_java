@@ -24,14 +24,12 @@ import org.ros2.rcljava.RCLJava;
 import org.ros2.rcljava.node.Node;
 
 public class PublisherTest {
-
   @Test
   public final void testCreate() {
     RCLJava.rclJavaInit();
     Node node = RCLJava.createNode("test_node");
-    Publisher<std_msgs.msg.String> publisher = node
-        .<std_msgs.msg.String>createPublisher(std_msgs.msg.String.class,
-        "test_topic");
+    Publisher<std_msgs.msg.String> publisher =
+        node.<std_msgs.msg.String>createPublisher(std_msgs.msg.String.class, "test_topic");
     assertEquals(node.getHandle(), publisher.getNodeReference().get().getHandle());
     assertNotEquals(0, publisher.getNodeReference().get().getHandle());
     assertNotEquals(0, publisher.getHandle());

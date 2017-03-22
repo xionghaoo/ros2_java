@@ -47,9 +47,9 @@ public class ServiceImpl<T extends ServiceDefinition> implements Service<T> {
   private final Class<MessageDefinition> requestType;
   private final Class<MessageDefinition> responseType;
 
-  public ServiceImpl(final WeakReference<Node> nodeReference, final long handle, final String serviceName,
-      final TriConsumer<RMWRequestId, ?, ?> callback, final Class<MessageDefinition> requestType,
-      final Class<MessageDefinition> responseType) {
+  public ServiceImpl(final WeakReference<Node> nodeReference, final long handle,
+      final String serviceName, final TriConsumer<RMWRequestId, ?, ?> callback,
+      final Class<MessageDefinition> requestType, final Class<MessageDefinition> responseType) {
     this.nodeReference = nodeReference;
     this.handle = handle;
     this.serviceName = serviceName;
