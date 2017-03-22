@@ -16,7 +16,6 @@
 package org.ros2.rcljava.interfaces;
 
 public interface MessageDefinition {
-
   public long getFromJavaConverterInstance();
 
   public long getToJavaConverterInstance();

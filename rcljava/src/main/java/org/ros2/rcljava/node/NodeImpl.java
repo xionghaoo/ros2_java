@@ -45,7 +45,6 @@ import java.util.concurrent.LinkedBlockingQueue;
  * {@inheritDoc}
  */
 public class NodeImpl implements Node {
-
   private static final Logger logger = LoggerFactory.getLogger(NodeImpl.class);
 
   static {
@@ -113,8 +112,7 @@ public class NodeImpl implements Node {
    * @return A pointer to the underlying ROS2 publisher structure.
    */
   private static native <T extends MessageDefinition> long nativeCreatePublisherHandle(
-      long handle, Class<T> messageType, String topic,
-      long qosProfileHandle);
+      long handle, Class<T> messageType, String topic, long qosProfileHandle);
 
   /**
    * Create a ROS2 subscription (rcl_subscription_t) and return a pointer to
@@ -132,23 +130,20 @@ public class NodeImpl implements Node {
    * @return A pointer to the underlying ROS2 subscription structure.
    */
   private static native <T extends MessageDefinition> long nativeCreateSubscriptionHandle(
-      long handle, Class<T> messageType, String topic,
-      long qosProfileHandle);
+      long handle, Class<T> messageType, String topic, long qosProfileHandle);
 
   /**
    * {@inheritDoc}
    */
   public final <T extends MessageDefinition> Publisher<T> createPublisher(
-      final Class<T> messageType, final String topic,
-      final QoSProfile qosProfile) {
-
+      final Class<T> messageType, final String topic, final QoSProfile qosProfile) {
     long qosProfileHandle = RCLJava.convertQoSProfileToHandle(qosProfile);
-    long publisherHandle = nativeCreatePublisherHandle(this.handle,
-        messageType, topic, qosProfileHandle);
+    long publisherHandle =
+        nativeCreatePublisherHandle(this.handle, messageType, topic, qosProfileHandle);
     RCLJava.disposeQoSProfile(qosProfileHandle);
 
-    Publisher<T> publisher = new PublisherImpl<T>(new WeakReference<Node>(this),
-        publisherHandle, topic);
+    Publisher<T> publisher =
+        new PublisherImpl<T>(new WeakReference<Node>(this), publisherHandle, topic);
     this.publishers.add(publisher);
 
     return publisher;
@@ -163,12 +158,11 @@ public class NodeImpl implements Node {
    * {@inheritDoc}
    */
   public final <T extends MessageDefinition> Subscription<T> createSubscription(
-      final Class<T> messageType, final String topic,
-      final Consumer<T> callback, final QoSProfile qosProfile) {
-
+      final Class<T> messageType, final String topic, final Consumer<T> callback,
+      final QoSProfile qosProfile) {
     long qosProfileHandle = RCLJava.convertQoSProfileToHandle(qosProfile);
-    long subscriptionHandle = nativeCreateSubscriptionHandle(
-        this.handle, messageType, topic, qosProfileHandle);
+    long subscriptionHandle =
+        nativeCreateSubscriptionHandle(this.handle, messageType, topic, qosProfileHandle);
     RCLJava.disposeQoSProfile(qosProfileHandle);
 
     Subscription<T> subscription = new SubscriptionImpl<T>(
@@ -180,10 +174,8 @@ public class NodeImpl implements Node {
   }
 
   public final <T extends MessageDefinition> Subscription<T> createSubscription(
-      final Class<T> messageType, final String topic,
-      final Consumer<T> callback) {
-    return this.<T>createSubscription(messageType, topic, callback,
-      QoSProfile.DEFAULT);
+      final Class<T> messageType, final String topic, final Consumer<T> callback) {
+    return this.<T>createSubscription(messageType, topic, callback, QoSProfile.DEFAULT);
   }
 
   /**
@@ -201,34 +193,34 @@ public class NodeImpl implements Node {
   }
 
   private static native <T extends ServiceDefinition> long nativeCreateServiceHandle(
-      long handle, Class<T> cls, String serviceName,
-      long qosProfileHandle);
+      long handle, Class<T> cls, String serviceName, long qosProfileHandle);
 
   public final <T extends ServiceDefinition> Service<T> createService(final Class<T> serviceType,
-      final String serviceName, final TriConsumer<RMWRequestId, ? extends MessageDefinition, ? extends MessageDefinition> callback,
+      final String serviceName,
+      final TriConsumer<RMWRequestId, ? extends MessageDefinition, ? extends MessageDefinition>
+          callback,
       final QoSProfile qosProfile) throws NoSuchFieldException, IllegalAccessException {
-
     Class<MessageDefinition> requestType = (Class) serviceType.getField("RequestType").get(null);
 
     Class<MessageDefinition> responseType = (Class) serviceType.getField("ResponseType").get(null);
 
     long qosProfileHandle = RCLJava.convertQoSProfileToHandle(qosProfile);
-    long serviceHandle = nativeCreateServiceHandle(this.handle, serviceType, serviceName,
-        qosProfileHandle);
+    long serviceHandle =
+        nativeCreateServiceHandle(this.handle, serviceType, serviceName, qosProfileHandle);
     RCLJava.disposeQoSProfile(qosProfileHandle);
 
     Service<T> service = new ServiceImpl<T>(new WeakReference<Node>(this), serviceHandle,
-        serviceName,  callback, requestType, responseType);
+        serviceName, callback, requestType, responseType);
     this.services.add(service);
 
     return service;
   }
 
   public <T extends ServiceDefinition> Service<T> createService(final Class<T> serviceType,
-      final String serviceName, final TriConsumer<RMWRequestId, ? extends MessageDefinition, ? extends MessageDefinition> callback)
-      throws NoSuchFieldException, IllegalAccessException {
-    return this.<T>createService(serviceType, serviceName, callback,
-      QoSProfile.SERVICES_DEFAULT);
+      final String serviceName,
+      final TriConsumer<RMWRequestId, ? extends MessageDefinition, ? extends MessageDefinition>
+          callback) throws NoSuchFieldException, IllegalAccessException {
+    return this.<T>createService(serviceType, serviceName, callback, QoSProfile.SERVICES_DEFAULT);
   }
 
   /**
@@ -238,20 +230,20 @@ public class NodeImpl implements Node {
     return this.services;
   }
 
-  public final <T extends ServiceDefinition> Client<T> createClient(final Class<T> serviceType,
-      final String serviceName, final QoSProfile qosProfile) throws NoSuchFieldException, IllegalAccessException {
-
+  public final <T extends ServiceDefinition> Client<T> createClient(
+      final Class<T> serviceType, final String serviceName, final QoSProfile qosProfile)
+      throws NoSuchFieldException, IllegalAccessException {
     Class<MessageDefinition> requestType = (Class) serviceType.getField("RequestType").get(null);
 
     Class<MessageDefinition> responseType = (Class) serviceType.getField("ResponseType").get(null);
 
     long qosProfileHandle = RCLJava.convertQoSProfileToHandle(qosProfile);
-    long clientHandle = nativeCreateClientHandle(this.handle, serviceType,
-        serviceName, qosProfileHandle);
+    long clientHandle =
+        nativeCreateClientHandle(this.handle, serviceType, serviceName, qosProfileHandle);
     RCLJava.disposeQoSProfile(qosProfileHandle);
 
-    Client<T> client = new ClientImpl<T>(new WeakReference<Node>(this),
-        clientHandle, serviceName, requestType, responseType);
+    Client<T> client = new ClientImpl<T>(
+        new WeakReference<Node>(this), clientHandle, serviceName, requestType, responseType);
     this.clients.add(client);
 
     return client;
@@ -259,13 +251,11 @@ public class NodeImpl implements Node {
 
   public <T extends ServiceDefinition> Client<T> createClient(final Class<T> serviceType,
       final String serviceName) throws NoSuchFieldException, IllegalAccessException {
-    return this.<T>createClient(serviceType, serviceName,
-      QoSProfile.SERVICES_DEFAULT);
+    return this.<T>createClient(serviceType, serviceName, QoSProfile.SERVICES_DEFAULT);
   }
 
   private static native <T extends ServiceDefinition> long nativeCreateClientHandle(
-      long handle, Class<T> cls, String serviceName,
-      long qosProfileHandle);
+      long handle, Class<T> cls, String serviceName, long qosProfileHandle);
 
   /**
    * {@inheritDoc}

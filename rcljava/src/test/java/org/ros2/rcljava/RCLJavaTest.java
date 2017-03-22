@@ -21,7 +21,6 @@ import static org.junit.Assert.assertNotEquals;
 import org.junit.Test;
 
 public class RCLJavaTest {
-
   @Test
   public final void testInit() {
     assertEquals(false, RCLJava.isInitialized());

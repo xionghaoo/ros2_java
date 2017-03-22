@@ -15,7 +15,4 @@
 
 package org.ros2.rcljava.qos.policies;
 
-public interface QoSPolicy {
-
-  public int getValue();
-}
+public interface QoSPolicy { public int getValue(); }

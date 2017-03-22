@@ -19,13 +19,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class JNIUtils {
-
   private static final Logger logger = LoggerFactory.getLogger(JNIUtils.class);
 
   /**
    * Private constructor so this cannot be instantiated.
    */
-  private JNIUtils() { }
+  private JNIUtils() {}
 
   public static void loadLibrary(Class cls) {
     JNIUtils.loadLibrary(cls, null);
@@ -36,13 +35,12 @@ public final class JNIUtils {
 
     // Convert from camel case to underscores using the same regex as:
     // https://raw.githubusercontent.com/ros2/rosidl/master/rosidl_cmake/cmake/string_camel_case_to_lower_case_underscore.cmake
-    String libraryName = className
-        .replaceAll("\\.", "_")
-        .replaceAll("(.)([A-Z][a-z]+)", "$1_$2")
-        .replaceAll("([a-z0-9])([A-Z])", "$1_$2")
-        .toLowerCase();
+    String libraryName = className.replaceAll("\\.", "_")
+                             .replaceAll("(.)([A-Z][a-z]+)", "$1_$2")
+                             .replaceAll("([a-z0-9])([A-Z])", "$1_$2")
+                             .toLowerCase();
 
-    if(typesupportIdentifier != null) {
+    if (typesupportIdentifier != null) {
       libraryName = libraryName + "__" + typesupportIdentifier;
     }
 

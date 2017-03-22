@@ -25,18 +25,14 @@ import org.ros2.rcljava.consumers.Consumer;
 import org.ros2.rcljava.node.Node;
 
 public class SubscriptionTest {
-
   @Test
   public final void testCreate() {
     RCLJava.rclJavaInit();
     Node node = RCLJava.createNode("test_node");
-    Subscription<std_msgs.msg.String> subscription = node
-        .<std_msgs.msg.String>createSubscription(std_msgs.msg.String.class,
-        "test_topic", new Consumer<std_msgs.msg.String>() {
-          public void accept(final std_msgs.msg.String msg) {
-          }
-        }
-    );
+    Subscription<std_msgs.msg.String> subscription = node.<std_msgs.msg.String>createSubscription(
+        std_msgs.msg.String.class, "test_topic", new Consumer<std_msgs.msg.String>() {
+          public void accept(final std_msgs.msg.String msg) {}
+        });
     assertEquals(node.getHandle(), subscription.getNodeReference().get().getHandle());
     assertNotEquals(0, subscription.getNodeReference().get().getHandle());
     assertNotEquals(0, subscription.getHandle());

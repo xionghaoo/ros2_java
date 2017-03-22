@@ -26,16 +26,13 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-
 public class InterfacesTest {
-
   @BeforeClass
   public static void setupOnce() {
     org.apache.log4j.BasicConfigurator.configure();
   }
 
-  @Rule
-  public ExpectedException thrown= ExpectedException.none();
+  @Rule public ExpectedException thrown = ExpectedException.none();
 
   @Test
   public final void testBool() {
@@ -207,12 +204,13 @@ public class InterfacesTest {
 
     rosidl_generator_java.msg.Various b = new rosidl_generator_java.msg.Various();
     assertEquals(Arrays.asList(new Short[] {5, 23}), b.getTwoUint16Value());
-    assertEquals(Arrays.asList(new Integer[] {5, 23}), b.getUpToThreeInt32ValuesWithDefaultValues());
+    assertEquals(
+        Arrays.asList(new Integer[] {5, 23}), b.getUpToThreeInt32ValuesWithDefaultValues());
 
     assertEquals('\u0001', b.getCharValue());
     assertNotEquals('1', b.getCharValue());
-    assertEquals((byte)'\u0001', b.getByteValue());
-    assertNotEquals((byte)'1', b.getByteValue());
+    assertEquals((byte) '\u0001', b.getByteValue());
+    assertNotEquals((byte) '1', b.getByteValue());
   }
 
   @Test
@@ -242,7 +240,8 @@ public class InterfacesTest {
     b.setPrimitives(primitives);
     assertEquals(primitives, b.getPrimitives());
 
-    List listOfPrimitives = Arrays.asList(new rosidl_generator_java.msg.Primitives[] {primitives, primitives});
+    List listOfPrimitives =
+        Arrays.asList(new rosidl_generator_java.msg.Primitives[] {primitives, primitives});
     b.setTwoPrimitives(listOfPrimitives);
     assertEquals(listOfPrimitives, b.getTwoPrimitives());
 
@@ -255,25 +254,35 @@ public class InterfacesTest {
     rosidl_generator_java.msg.Nested b = new rosidl_generator_java.msg.Nested();
     rosidl_generator_java.msg.Primitives primitives = new rosidl_generator_java.msg.Primitives();
     b.setUpToThreePrimitives(Arrays.asList(new rosidl_generator_java.msg.Primitives[] {}));
-    assertEquals(Arrays.asList(new rosidl_generator_java.msg.Primitives[] {}), b.getUpToThreePrimitives());
-    b.setUpToThreePrimitives(Arrays.asList(new rosidl_generator_java.msg.Primitives[] {primitives}));
-    assertEquals(Arrays.asList(new rosidl_generator_java.msg.Primitives[] {primitives}), b.getUpToThreePrimitives());
-    b.setUpToThreePrimitives(Arrays.asList(new rosidl_generator_java.msg.Primitives[] {primitives, primitives}));
-    assertEquals(Arrays.asList(new rosidl_generator_java.msg.Primitives[] {primitives, primitives}), b.getUpToThreePrimitives());
-    b.setUpToThreePrimitives(Arrays.asList(new rosidl_generator_java.msg.Primitives[] {primitives, primitives, primitives}));
-    assertEquals(Arrays.asList(new rosidl_generator_java.msg.Primitives[] {primitives, primitives, primitives}), b.getUpToThreePrimitives());
-
+    assertEquals(
+        Arrays.asList(new rosidl_generator_java.msg.Primitives[] {}), b.getUpToThreePrimitives());
+    b.setUpToThreePrimitives(
+        Arrays.asList(new rosidl_generator_java.msg.Primitives[] {primitives}));
+    assertEquals(Arrays.asList(new rosidl_generator_java.msg.Primitives[] {primitives}),
+        b.getUpToThreePrimitives());
+    b.setUpToThreePrimitives(
+        Arrays.asList(new rosidl_generator_java.msg.Primitives[] {primitives, primitives}));
+    assertEquals(Arrays.asList(new rosidl_generator_java.msg.Primitives[] {primitives, primitives}),
+        b.getUpToThreePrimitives());
+    b.setUpToThreePrimitives(Arrays.asList(
+        new rosidl_generator_java.msg.Primitives[] {primitives, primitives, primitives}));
+    assertEquals(Arrays.asList(new rosidl_generator_java.msg.Primitives[] {
+                     primitives, primitives, primitives}),
+        b.getUpToThreePrimitives());
 
     thrown.expect(IllegalArgumentException.class);
-    b.setUpToThreePrimitives(Arrays.asList(new rosidl_generator_java.msg.Primitives[] {primitives, primitives, primitives, primitives}));
+    b.setUpToThreePrimitives(Arrays.asList(new rosidl_generator_java.msg.Primitives[] {
+        primitives, primitives, primitives, primitives}));
   }
 
   @Test
   public final void testCheckUnboundedArrays() {
     rosidl_generator_java.msg.Nested b = new rosidl_generator_java.msg.Nested();
     rosidl_generator_java.msg.Primitives primitives = new rosidl_generator_java.msg.Primitives();
-    b.setUnboundedPrimitives(Arrays.asList(new rosidl_generator_java.msg.Primitives[] {primitives, primitives}));
-    assertEquals(Arrays.asList(new rosidl_generator_java.msg.Primitives[] {primitives, primitives}), b.getUnboundedPrimitives());
+    b.setUnboundedPrimitives(
+        Arrays.asList(new rosidl_generator_java.msg.Primitives[] {primitives, primitives}));
+    assertEquals(Arrays.asList(new rosidl_generator_java.msg.Primitives[] {primitives, primitives}),
+        b.getUnboundedPrimitives());
   }
 
   @Test

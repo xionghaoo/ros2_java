@@ -21,7 +21,6 @@ import org.ros2.rcljava.qos.policies.QoSPolicy;
 import org.ros2.rcljava.qos.policies.Reliability;
 
 public class QoSProfile {
-
   private final History history;
 
   private final int depth;
@@ -55,21 +54,21 @@ public class QoSProfile {
 
   public static final int DEPTH_SYSTEM_DEFAULT = 0;
 
-  public static final QoSProfile SENSOR_DATA = new QoSProfile(History.KEEP_LAST, 5, Reliability.BEST_EFFORT,
-      Durability.SYSTEM_DEFAULT);
+  public static final QoSProfile SENSOR_DATA =
+      new QoSProfile(History.KEEP_LAST, 5, Reliability.BEST_EFFORT, Durability.SYSTEM_DEFAULT);
 
-  public static final QoSProfile PARAMETER = new QoSProfile(History.KEEP_LAST, 1000, Reliability.RELIABLE,
-      Durability.SYSTEM_DEFAULT);
+  public static final QoSProfile PARAMETER =
+      new QoSProfile(History.KEEP_LAST, 1000, Reliability.RELIABLE, Durability.SYSTEM_DEFAULT);
 
-  public static final QoSProfile DEFAULT = new QoSProfile(History.KEEP_ALL, 10, Reliability.RELIABLE,
-      Durability.SYSTEM_DEFAULT);
+  public static final QoSProfile DEFAULT =
+      new QoSProfile(History.KEEP_ALL, 10, Reliability.RELIABLE, Durability.SYSTEM_DEFAULT);
 
-  public static final QoSProfile SERVICES_DEFAULT = new QoSProfile(History.KEEP_LAST, 10, Reliability.RELIABLE,
-      Durability.TRANSIENT_LOCAL);
+  public static final QoSProfile SERVICES_DEFAULT =
+      new QoSProfile(History.KEEP_LAST, 10, Reliability.RELIABLE, Durability.TRANSIENT_LOCAL);
 
-  public static final QoSProfile PARAMETER_EVENTS = new QoSProfile(History.KEEP_ALL, 1000, Reliability.RELIABLE,
-      Durability.SYSTEM_DEFAULT);
+  public static final QoSProfile PARAMETER_EVENTS =
+      new QoSProfile(History.KEEP_ALL, 1000, Reliability.RELIABLE, Durability.SYSTEM_DEFAULT);
 
-  public static final QoSProfile SYSTEM_DEFAULT = new QoSProfile(History.SYSTEM_DEFAULT, DEPTH_SYSTEM_DEFAULT,
-      Reliability.SYSTEM_DEFAULT, Durability.SYSTEM_DEFAULT);
+  public static final QoSProfile SYSTEM_DEFAULT = new QoSProfile(History.SYSTEM_DEFAULT,
+      DEPTH_SYSTEM_DEFAULT, Reliability.SYSTEM_DEFAULT, Durability.SYSTEM_DEFAULT);
 }

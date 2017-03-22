@@ -38,7 +38,6 @@ import org.ros2.rcljava.publisher.Publisher;
 import org.ros2.rcljava.subscription.Subscription;
 
 public class NodeTest {
-
   private Node node;
   private rcljava.msg.Primitives primitives1;
   private rcljava.msg.Primitives primitives2;
@@ -58,12 +57,10 @@ public class NodeTest {
   private long uint64Value1, uint64Value2;
   private String stringValue1, stringValue2;
 
-  boolean checkPrimitives(rcljava.msg.Primitives primitives,
-    boolean booleanValue, byte byteValue, char charValue, float float32Value,
-    double float64Value, byte int8Value, byte uint8Value, short int16Value,
-    short uint16Value, int int32Value, int uint32Value, long int64Value,
-    long uint64Value, String stringValue) {
-
+  boolean checkPrimitives(rcljava.msg.Primitives primitives, boolean booleanValue, byte byteValue,
+      char charValue, float float32Value, double float64Value, byte int8Value, byte uint8Value,
+      short int16Value, short uint16Value, int int32Value, int uint32Value, long int64Value,
+      long uint64Value, String stringValue) {
     boolean result = true;
     result = result && (primitives.getBoolValue() == booleanValue);
     result = result && (primitives.getByteValue() == byteValue);
@@ -97,7 +94,7 @@ public class NodeTest {
     }
 
     public final void accept(final T msg) {
-      if(!this.future.isDone()) {
+      if (!this.future.isDone()) {
         this.future.set(msg);
       }
     }
@@ -111,14 +108,14 @@ public class NodeTest {
     primitives2 = new rcljava.msg.Primitives();
 
     boolValue1 = true;
-    byteValue1 = (byte)123;
+    byteValue1 = (byte) 123;
     charValue1 = '\u0012';
     float32Value1 = 12.34f;
     float64Value1 = 43.21;
-    int8Value1 = (byte)-12;
-    uint8Value1 = (byte)34;
-    int16Value1 = (short)-1234;
-    uint16Value1 = (short)4321;
+    int8Value1 = (byte) -12;
+    uint8Value1 = (byte) 34;
+    int16Value1 = (short) -1234;
+    uint16Value1 = (short) 4321;
     int32Value1 = -75536;
     uint32Value1 = 85536;
     int64Value1 = -5294967296l;
@@ -141,14 +138,14 @@ public class NodeTest {
     primitives1.setStringValue(stringValue1);
 
     boolValue2 = false;
-    byteValue2 = (byte)42;
+    byteValue2 = (byte) 42;
     charValue2 = '\u0021';
     float32Value2 = 13.34f;
     float64Value2 = 44.21;
-    int8Value2 = (byte)-13;
-    uint8Value2 = (byte)35;
-    int16Value2 = (short)-1235;
-    uint16Value2 = (short)4321;
+    int8Value2 = (byte) -13;
+    uint8Value2 = (byte) 35;
+    int16Value2 = (short) -1235;
+    uint16Value2 = (short) 4321;
     int32Value2 = -75536;
     uint32Value2 = 85536;
     int64Value2 = -5294967296l;
@@ -188,15 +185,14 @@ public class NodeTest {
 
   @Test
   public final void testPubSubStdString() throws Exception {
-    Publisher<std_msgs.msg.String> publisher = node
-        .<std_msgs.msg.String>createPublisher(std_msgs.msg.String.class,
-        "test_topic");
+    Publisher<std_msgs.msg.String> publisher =
+        node.<std_msgs.msg.String>createPublisher(std_msgs.msg.String.class, "test_topic");
 
-    RCLFuture<std_msgs.msg.String> future = new RCLFuture<std_msgs.msg.String>(new WeakReference<Node>(node));
+    RCLFuture<std_msgs.msg.String> future =
+        new RCLFuture<std_msgs.msg.String>(new WeakReference<Node>(node));
 
-    Subscription<std_msgs.msg.String> subscription = node
-        .<std_msgs.msg.String>createSubscription(std_msgs.msg.String.class,
-        "test_topic", new TestConsumer<std_msgs.msg.String>(future));
+    Subscription<std_msgs.msg.String> subscription = node.<std_msgs.msg.String>createSubscription(
+        std_msgs.msg.String.class, "test_topic", new TestConsumer<std_msgs.msg.String>(future));
 
     std_msgs.msg.String msg = new std_msgs.msg.String();
     msg.setData("Hello");
@@ -217,18 +213,17 @@ public class NodeTest {
 
   @Test
   public final void testPubSubBoundedArrayNested() throws Exception {
-    Publisher<rcljava.msg.BoundedArrayNested> publisher = node
-        .<rcljava.msg.BoundedArrayNested>createPublisher(
-        rcljava.msg.BoundedArrayNested.class, "test_topic");
+    Publisher<rcljava.msg.BoundedArrayNested> publisher =
+        node.<rcljava.msg.BoundedArrayNested>createPublisher(
+            rcljava.msg.BoundedArrayNested.class, "test_topic");
 
     RCLFuture<rcljava.msg.BoundedArrayNested> future =
-      new RCLFuture<rcljava.msg.BoundedArrayNested>(new WeakReference<Node>(node));
+        new RCLFuture<rcljava.msg.BoundedArrayNested>(new WeakReference<Node>(node));
 
-    Subscription<rcljava.msg.BoundedArrayNested> subscription = node
-        .<rcljava.msg.BoundedArrayNested>createSubscription(
-        rcljava.msg.BoundedArrayNested.class,
-        "test_topic",
-        new TestConsumer<rcljava.msg.BoundedArrayNested>(future));
+    Subscription<rcljava.msg.BoundedArrayNested> subscription =
+        node.<rcljava.msg.BoundedArrayNested>createSubscription(
+            rcljava.msg.BoundedArrayNested.class, "test_topic",
+            new TestConsumer<rcljava.msg.BoundedArrayNested>(future));
 
     rcljava.msg.BoundedArrayNested msg = new rcljava.msg.BoundedArrayNested();
     msg.setPrimitiveValues(Arrays.asList(new rcljava.msg.Primitives[] {primitives1, primitives2}));
@@ -244,17 +239,13 @@ public class NodeTest {
     rcljava.msg.Primitives primitivesValue1 = value.getPrimitiveValues().get(0);
     rcljava.msg.Primitives primitivesValue2 = value.getPrimitiveValues().get(1);
 
-    assertTrue(
-      checkPrimitives(primitivesValue1, boolValue1, byteValue1, charValue1,
-        float32Value1, float64Value1, int8Value1, uint8Value1, int16Value1,
-        uint16Value1, int32Value1, uint32Value1, int64Value1, uint64Value1,
-        stringValue1));
+    assertTrue(checkPrimitives(primitivesValue1, boolValue1, byteValue1, charValue1, float32Value1,
+        float64Value1, int8Value1, uint8Value1, int16Value1, uint16Value1, int32Value1,
+        uint32Value1, int64Value1, uint64Value1, stringValue1));
 
-    assertTrue(
-      checkPrimitives(primitivesValue2, boolValue2, byteValue2, charValue2,
-        float32Value2, float64Value2, int8Value2, uint8Value2, int16Value2,
-        uint16Value2, int32Value2, uint32Value2, int64Value2, uint64Value2,
-        stringValue2));
+    assertTrue(checkPrimitives(primitivesValue2, boolValue2, byteValue2, charValue2, float32Value2,
+        float64Value2, int8Value2, uint8Value2, int16Value2, uint16Value2, int32Value2,
+        uint32Value2, int64Value2, uint64Value2, stringValue2));
 
     publisher.dispose();
     assertEquals(0, publisher.getHandle());
@@ -264,18 +255,17 @@ public class NodeTest {
 
   @Test
   public final void testPubSubBoundedArrayPrimitives() throws Exception {
-    Publisher<rcljava.msg.BoundedArrayPrimitives> publisher = node
-        .<rcljava.msg.BoundedArrayPrimitives>createPublisher(
-        rcljava.msg.BoundedArrayPrimitives.class, "test_topic");
+    Publisher<rcljava.msg.BoundedArrayPrimitives> publisher =
+        node.<rcljava.msg.BoundedArrayPrimitives>createPublisher(
+            rcljava.msg.BoundedArrayPrimitives.class, "test_topic");
 
     RCLFuture<rcljava.msg.BoundedArrayPrimitives> future =
-      new RCLFuture<rcljava.msg.BoundedArrayPrimitives>(new WeakReference<Node>(node));
+        new RCLFuture<rcljava.msg.BoundedArrayPrimitives>(new WeakReference<Node>(node));
 
-    Subscription<rcljava.msg.BoundedArrayPrimitives> subscription = node
-        .<rcljava.msg.BoundedArrayPrimitives>createSubscription(
-        rcljava.msg.BoundedArrayPrimitives.class,
-        "test_topic",
-        new TestConsumer<rcljava.msg.BoundedArrayPrimitives>(future));
+    Subscription<rcljava.msg.BoundedArrayPrimitives> subscription =
+        node.<rcljava.msg.BoundedArrayPrimitives>createSubscription(
+            rcljava.msg.BoundedArrayPrimitives.class, "test_topic",
+            new TestConsumer<rcljava.msg.BoundedArrayPrimitives>(future));
 
     rcljava.msg.BoundedArrayPrimitives msg = new rcljava.msg.BoundedArrayPrimitives();
 
@@ -339,18 +329,14 @@ public class NodeTest {
 
   @Test
   public final void testPubSubBuiltins() throws Exception {
-    Publisher<rcljava.msg.Builtins> publisher = node
-        .<rcljava.msg.Builtins>createPublisher(
-        rcljava.msg.Builtins.class, "test_topic");
+    Publisher<rcljava.msg.Builtins> publisher =
+        node.<rcljava.msg.Builtins>createPublisher(rcljava.msg.Builtins.class, "test_topic");
 
     RCLFuture<rcljava.msg.Builtins> future =
-      new RCLFuture<rcljava.msg.Builtins>(new WeakReference<Node>(node));
+        new RCLFuture<rcljava.msg.Builtins>(new WeakReference<Node>(node));
 
-    Subscription<rcljava.msg.Builtins> subscription = node
-        .<rcljava.msg.Builtins>createSubscription(
-        rcljava.msg.Builtins.class,
-        "test_topic",
-        new TestConsumer<rcljava.msg.Builtins>(future));
+    Subscription<rcljava.msg.Builtins> subscription = node.<rcljava.msg.Builtins>createSubscription(
+        rcljava.msg.Builtins.class, "test_topic", new TestConsumer<rcljava.msg.Builtins>(future));
 
     rcljava.msg.Builtins msg = new rcljava.msg.Builtins();
 
@@ -388,18 +374,17 @@ public class NodeTest {
 
   @Test
   public final void testPubSubDynamicArrayNested() throws Exception {
-    Publisher<rcljava.msg.DynamicArrayNested> publisher = node
-        .<rcljava.msg.DynamicArrayNested>createPublisher(
-        rcljava.msg.DynamicArrayNested.class, "test_topic");
+    Publisher<rcljava.msg.DynamicArrayNested> publisher =
+        node.<rcljava.msg.DynamicArrayNested>createPublisher(
+            rcljava.msg.DynamicArrayNested.class, "test_topic");
 
     RCLFuture<rcljava.msg.DynamicArrayNested> future =
-      new RCLFuture<rcljava.msg.DynamicArrayNested>(new WeakReference<Node>(node));
+        new RCLFuture<rcljava.msg.DynamicArrayNested>(new WeakReference<Node>(node));
 
-    Subscription<rcljava.msg.DynamicArrayNested> subscription = node
-        .<rcljava.msg.DynamicArrayNested>createSubscription(
-        rcljava.msg.DynamicArrayNested.class,
-        "test_topic",
-        new TestConsumer<rcljava.msg.DynamicArrayNested>(future));
+    Subscription<rcljava.msg.DynamicArrayNested> subscription =
+        node.<rcljava.msg.DynamicArrayNested>createSubscription(
+            rcljava.msg.DynamicArrayNested.class, "test_topic",
+            new TestConsumer<rcljava.msg.DynamicArrayNested>(future));
 
     rcljava.msg.DynamicArrayNested msg = new rcljava.msg.DynamicArrayNested();
     msg.setPrimitiveValues(Arrays.asList(new rcljava.msg.Primitives[] {primitives1, primitives2}));
@@ -415,17 +400,13 @@ public class NodeTest {
     rcljava.msg.Primitives primitivesValue1 = value.getPrimitiveValues().get(0);
     rcljava.msg.Primitives primitivesValue2 = value.getPrimitiveValues().get(1);
 
-    assertTrue(
-      checkPrimitives(primitivesValue1, boolValue1, byteValue1, charValue1,
-        float32Value1, float64Value1, int8Value1, uint8Value1, int16Value1,
-        uint16Value1, int32Value1, uint32Value1, int64Value1, uint64Value1,
-        stringValue1));
+    assertTrue(checkPrimitives(primitivesValue1, boolValue1, byteValue1, charValue1, float32Value1,
+        float64Value1, int8Value1, uint8Value1, int16Value1, uint16Value1, int32Value1,
+        uint32Value1, int64Value1, uint64Value1, stringValue1));
 
-    assertTrue(
-      checkPrimitives(primitivesValue2, boolValue2, byteValue2, charValue2,
-        float32Value2, float64Value2, int8Value2, uint8Value2, int16Value2,
-        uint16Value2, int32Value2, uint32Value2, int64Value2, uint64Value2,
-        stringValue2));
+    assertTrue(checkPrimitives(primitivesValue2, boolValue2, byteValue2, charValue2, float32Value2,
+        float64Value2, int8Value2, uint8Value2, int16Value2, uint16Value2, int32Value2,
+        uint32Value2, int64Value2, uint64Value2, stringValue2));
 
     publisher.dispose();
     assertEquals(0, publisher.getHandle());
@@ -435,18 +416,17 @@ public class NodeTest {
 
   @Test
   public final void testPubSubDynamicArrayPrimitives() throws Exception {
-    Publisher<rcljava.msg.DynamicArrayPrimitives> publisher = node
-        .<rcljava.msg.DynamicArrayPrimitives>createPublisher(
-        rcljava.msg.DynamicArrayPrimitives.class, "test_topic");
+    Publisher<rcljava.msg.DynamicArrayPrimitives> publisher =
+        node.<rcljava.msg.DynamicArrayPrimitives>createPublisher(
+            rcljava.msg.DynamicArrayPrimitives.class, "test_topic");
 
     RCLFuture<rcljava.msg.DynamicArrayPrimitives> future =
-      new RCLFuture<rcljava.msg.DynamicArrayPrimitives>(new WeakReference<Node>(node));
+        new RCLFuture<rcljava.msg.DynamicArrayPrimitives>(new WeakReference<Node>(node));
 
-    Subscription<rcljava.msg.DynamicArrayPrimitives> subscription = node
-        .<rcljava.msg.DynamicArrayPrimitives>createSubscription(
-        rcljava.msg.DynamicArrayPrimitives.class,
-        "test_topic",
-        new TestConsumer<rcljava.msg.DynamicArrayPrimitives>(future));
+    Subscription<rcljava.msg.DynamicArrayPrimitives> subscription =
+        node.<rcljava.msg.DynamicArrayPrimitives>createSubscription(
+            rcljava.msg.DynamicArrayPrimitives.class, "test_topic",
+            new TestConsumer<rcljava.msg.DynamicArrayPrimitives>(future));
 
     rcljava.msg.DynamicArrayPrimitives msg = new rcljava.msg.DynamicArrayPrimitives();
 
@@ -510,18 +490,14 @@ public class NodeTest {
 
   @Test
   public final void testPubSubEmpty() throws Exception {
-    Publisher<rcljava.msg.Empty> publisher = node
-        .<rcljava.msg.Empty>createPublisher(
-        rcljava.msg.Empty.class, "test_topic");
+    Publisher<rcljava.msg.Empty> publisher =
+        node.<rcljava.msg.Empty>createPublisher(rcljava.msg.Empty.class, "test_topic");
 
     RCLFuture<rcljava.msg.Empty> future =
-      new RCLFuture<rcljava.msg.Empty>(new WeakReference<Node>(node));
+        new RCLFuture<rcljava.msg.Empty>(new WeakReference<Node>(node));
 
-    Subscription<rcljava.msg.Empty> subscription = node
-        .<rcljava.msg.Empty>createSubscription(
-        rcljava.msg.Empty.class,
-        "test_topic",
-        new TestConsumer<rcljava.msg.Empty>(future));
+    Subscription<rcljava.msg.Empty> subscription = node.<rcljava.msg.Empty>createSubscription(
+        rcljava.msg.Empty.class, "test_topic", new TestConsumer<rcljava.msg.Empty>(future));
 
     rcljava.msg.Empty msg = new rcljava.msg.Empty();
 
@@ -541,18 +517,17 @@ public class NodeTest {
 
   @Test
   public final void testPubSubFieldsWithSameType() throws Exception {
-    Publisher<rcljava.msg.FieldsWithSameType> publisher = node
-        .<rcljava.msg.FieldsWithSameType>createPublisher(
-        rcljava.msg.FieldsWithSameType.class, "test_topic");
+    Publisher<rcljava.msg.FieldsWithSameType> publisher =
+        node.<rcljava.msg.FieldsWithSameType>createPublisher(
+            rcljava.msg.FieldsWithSameType.class, "test_topic");
 
     RCLFuture<rcljava.msg.FieldsWithSameType> future =
-      new RCLFuture<rcljava.msg.FieldsWithSameType>(new WeakReference<Node>(node));
+        new RCLFuture<rcljava.msg.FieldsWithSameType>(new WeakReference<Node>(node));
 
-    Subscription<rcljava.msg.FieldsWithSameType> subscription = node
-        .<rcljava.msg.FieldsWithSameType>createSubscription(
-        rcljava.msg.FieldsWithSameType.class,
-        "test_topic",
-        new TestConsumer<rcljava.msg.FieldsWithSameType>(future));
+    Subscription<rcljava.msg.FieldsWithSameType> subscription =
+        node.<rcljava.msg.FieldsWithSameType>createSubscription(
+            rcljava.msg.FieldsWithSameType.class, "test_topic",
+            new TestConsumer<rcljava.msg.FieldsWithSameType>(future));
 
     rcljava.msg.FieldsWithSameType msg = new rcljava.msg.FieldsWithSameType();
 
@@ -571,17 +546,13 @@ public class NodeTest {
     rcljava.msg.Primitives primitivesValue1 = value.getPrimitiveValues1();
     rcljava.msg.Primitives primitivesValue2 = value.getPrimitiveValues2();
 
-    assertTrue(
-      checkPrimitives(primitivesValue1, boolValue1, byteValue1, charValue1,
-        float32Value1, float64Value1, int8Value1, uint8Value1, int16Value1,
-        uint16Value1, int32Value1, uint32Value1, int64Value1, uint64Value1,
-        stringValue1));
+    assertTrue(checkPrimitives(primitivesValue1, boolValue1, byteValue1, charValue1, float32Value1,
+        float64Value1, int8Value1, uint8Value1, int16Value1, uint16Value1, int32Value1,
+        uint32Value1, int64Value1, uint64Value1, stringValue1));
 
-    assertTrue(
-      checkPrimitives(primitivesValue2, boolValue2, byteValue2, charValue2,
-        float32Value2, float64Value2, int8Value2, uint8Value2, int16Value2,
-        uint16Value2, int32Value2, uint32Value2, int64Value2, uint64Value2,
-        stringValue2));
+    assertTrue(checkPrimitives(primitivesValue2, boolValue2, byteValue2, charValue2, float32Value2,
+        float64Value2, int8Value2, uint8Value2, int16Value2, uint16Value2, int32Value2,
+        uint32Value2, int64Value2, uint64Value2, stringValue2));
 
     publisher.dispose();
     assertEquals(0, publisher.getHandle());
@@ -591,18 +562,14 @@ public class NodeTest {
 
   @Test
   public final void testPubSubNested() throws Exception {
-    Publisher<rcljava.msg.Nested> publisher = node
-        .<rcljava.msg.Nested>createPublisher(
-        rcljava.msg.Nested.class, "test_topic");
+    Publisher<rcljava.msg.Nested> publisher =
+        node.<rcljava.msg.Nested>createPublisher(rcljava.msg.Nested.class, "test_topic");
 
     RCLFuture<rcljava.msg.Nested> future =
-      new RCLFuture<rcljava.msg.Nested>(new WeakReference<Node>(node));
+        new RCLFuture<rcljava.msg.Nested>(new WeakReference<Node>(node));
 
-    Subscription<rcljava.msg.Nested> subscription = node
-        .<rcljava.msg.Nested>createSubscription(
-        rcljava.msg.Nested.class,
-        "test_topic",
-        new TestConsumer<rcljava.msg.Nested>(future));
+    Subscription<rcljava.msg.Nested> subscription = node.<rcljava.msg.Nested>createSubscription(
+        rcljava.msg.Nested.class, "test_topic", new TestConsumer<rcljava.msg.Nested>(future));
 
     rcljava.msg.Nested msg = new rcljava.msg.Nested();
     msg.setPrimitiveValues(primitives1);
@@ -617,11 +584,9 @@ public class NodeTest {
 
     rcljava.msg.Primitives primitivesValues = value.getPrimitiveValues();
 
-    assertTrue(
-      checkPrimitives(primitivesValues, boolValue1, byteValue1, charValue1,
-        float32Value1, float64Value1, int8Value1, uint8Value1, int16Value1,
-        uint16Value1, int32Value1, uint32Value1, int64Value1, uint64Value1,
-        stringValue1));
+    assertTrue(checkPrimitives(primitivesValues, boolValue1, byteValue1, charValue1, float32Value1,
+        float64Value1, int8Value1, uint8Value1, int16Value1, uint16Value1, int32Value1,
+        uint32Value1, int64Value1, uint64Value1, stringValue1));
 
     publisher.dispose();
     assertEquals(0, publisher.getHandle());
@@ -631,18 +596,15 @@ public class NodeTest {
 
   @Test
   public final void testPubSubPrimitives() throws Exception {
-    Publisher<rcljava.msg.Primitives> publisher = node
-        .<rcljava.msg.Primitives>createPublisher(
-        rcljava.msg.Primitives.class, "test_topic");
+    Publisher<rcljava.msg.Primitives> publisher =
+        node.<rcljava.msg.Primitives>createPublisher(rcljava.msg.Primitives.class, "test_topic");
 
     RCLFuture<rcljava.msg.Primitives> future =
-      new RCLFuture<rcljava.msg.Primitives>(new WeakReference<Node>(node));
+        new RCLFuture<rcljava.msg.Primitives>(new WeakReference<Node>(node));
 
-    Subscription<rcljava.msg.Primitives> subscription = node
-        .<rcljava.msg.Primitives>createSubscription(
-        rcljava.msg.Primitives.class,
-        "test_topic",
-        new TestConsumer<rcljava.msg.Primitives>(future));
+    Subscription<rcljava.msg.Primitives> subscription =
+        node.<rcljava.msg.Primitives>createSubscription(rcljava.msg.Primitives.class, "test_topic",
+            new TestConsumer<rcljava.msg.Primitives>(future));
 
     while (RCLJava.ok() && !future.isDone()) {
       publisher.publish(primitives1);
@@ -652,11 +614,9 @@ public class NodeTest {
     rcljava.msg.Primitives primitivesValues = future.get();
     assertNotEquals(null, primitivesValues);
 
-    assertTrue(
-      checkPrimitives(primitivesValues, boolValue1, byteValue1, charValue1,
-        float32Value1, float64Value1, int8Value1, uint8Value1, int16Value1,
-        uint16Value1, int32Value1, uint32Value1, int64Value1, uint64Value1,
-        stringValue1));
+    assertTrue(checkPrimitives(primitivesValues, boolValue1, byteValue1, charValue1, float32Value1,
+        float64Value1, int8Value1, uint8Value1, int16Value1, uint16Value1, int32Value1,
+        uint32Value1, int64Value1, uint64Value1, stringValue1));
 
     publisher.dispose();
     assertEquals(0, publisher.getHandle());
@@ -666,21 +626,20 @@ public class NodeTest {
 
   @Test
   public final void testPubSubStaticArrayNested() throws Exception {
-    Publisher<rcljava.msg.StaticArrayNested> publisher = node
-        .<rcljava.msg.StaticArrayNested>createPublisher(
-        rcljava.msg.StaticArrayNested.class, "test_topic");
+    Publisher<rcljava.msg.StaticArrayNested> publisher =
+        node.<rcljava.msg.StaticArrayNested>createPublisher(
+            rcljava.msg.StaticArrayNested.class, "test_topic");
 
     RCLFuture<rcljava.msg.StaticArrayNested> future =
-      new RCLFuture<rcljava.msg.StaticArrayNested>(new WeakReference<Node>(node));
+        new RCLFuture<rcljava.msg.StaticArrayNested>(new WeakReference<Node>(node));
 
-    Subscription<rcljava.msg.StaticArrayNested> subscription = node
-        .<rcljava.msg.StaticArrayNested>createSubscription(
-        rcljava.msg.StaticArrayNested.class,
-        "test_topic",
-        new TestConsumer<rcljava.msg.StaticArrayNested>(future));
+    Subscription<rcljava.msg.StaticArrayNested> subscription =
+        node.<rcljava.msg.StaticArrayNested>createSubscription(rcljava.msg.StaticArrayNested.class,
+            "test_topic", new TestConsumer<rcljava.msg.StaticArrayNested>(future));
 
     rcljava.msg.StaticArrayNested msg = new rcljava.msg.StaticArrayNested();
-    msg.setPrimitiveValues(Arrays.asList(new rcljava.msg.Primitives[] {primitives1, primitives2, primitives1, primitives2}));
+    msg.setPrimitiveValues(Arrays.asList(
+        new rcljava.msg.Primitives[] {primitives1, primitives2, primitives1, primitives2}));
 
     while (RCLJava.ok() && !future.isDone()) {
       publisher.publish(msg);
@@ -697,29 +656,21 @@ public class NodeTest {
     rcljava.msg.Primitives primitivesValue3 = value.getPrimitiveValues().get(2);
     rcljava.msg.Primitives primitivesValue4 = value.getPrimitiveValues().get(3);
 
-    assertTrue(
-      checkPrimitives(primitivesValue1, boolValue1, byteValue1, charValue1,
-        float32Value1, float64Value1, int8Value1, uint8Value1, int16Value1,
-        uint16Value1, int32Value1, uint32Value1, int64Value1, uint64Value1,
-        stringValue1));
+    assertTrue(checkPrimitives(primitivesValue1, boolValue1, byteValue1, charValue1, float32Value1,
+        float64Value1, int8Value1, uint8Value1, int16Value1, uint16Value1, int32Value1,
+        uint32Value1, int64Value1, uint64Value1, stringValue1));
 
-    assertTrue(
-      checkPrimitives(primitivesValue2, boolValue2, byteValue2, charValue2,
-        float32Value2, float64Value2, int8Value2, uint8Value2, int16Value2,
-        uint16Value2, int32Value2, uint32Value2, int64Value2, uint64Value2,
-        stringValue2));
+    assertTrue(checkPrimitives(primitivesValue2, boolValue2, byteValue2, charValue2, float32Value2,
+        float64Value2, int8Value2, uint8Value2, int16Value2, uint16Value2, int32Value2,
+        uint32Value2, int64Value2, uint64Value2, stringValue2));
 
-    assertTrue(
-      checkPrimitives(primitivesValue3, boolValue1, byteValue1, charValue1,
-        float32Value1, float64Value1, int8Value1, uint8Value1, int16Value1,
-        uint16Value1, int32Value1, uint32Value1, int64Value1, uint64Value1,
-        stringValue1));
+    assertTrue(checkPrimitives(primitivesValue3, boolValue1, byteValue1, charValue1, float32Value1,
+        float64Value1, int8Value1, uint8Value1, int16Value1, uint16Value1, int32Value1,
+        uint32Value1, int64Value1, uint64Value1, stringValue1));
 
-    assertTrue(
-      checkPrimitives(primitivesValue4, boolValue2, byteValue2, charValue2,
-        float32Value2, float64Value2, int8Value2, uint8Value2, int16Value2,
-        uint16Value2, int32Value2, uint32Value2, int64Value2, uint64Value2,
-        stringValue2));
+    assertTrue(checkPrimitives(primitivesValue4, boolValue2, byteValue2, charValue2, float32Value2,
+        float64Value2, int8Value2, uint8Value2, int16Value2, uint16Value2, int32Value2,
+        uint32Value2, int64Value2, uint64Value2, stringValue2));
 
     publisher.dispose();
     assertEquals(0, publisher.getHandle());
@@ -729,18 +680,17 @@ public class NodeTest {
 
   @Test
   public final void testPubSubStaticArrayPrimitives() throws Exception {
-    Publisher<rcljava.msg.StaticArrayPrimitives> publisher = node
-        .<rcljava.msg.StaticArrayPrimitives>createPublisher(
-        rcljava.msg.StaticArrayPrimitives.class, "test_topic");
+    Publisher<rcljava.msg.StaticArrayPrimitives> publisher =
+        node.<rcljava.msg.StaticArrayPrimitives>createPublisher(
+            rcljava.msg.StaticArrayPrimitives.class, "test_topic");
 
     RCLFuture<rcljava.msg.StaticArrayPrimitives> future =
-      new RCLFuture<rcljava.msg.StaticArrayPrimitives>(new WeakReference<Node>(node));
+        new RCLFuture<rcljava.msg.StaticArrayPrimitives>(new WeakReference<Node>(node));
 
-    Subscription<rcljava.msg.StaticArrayPrimitives> subscription = node
-        .<rcljava.msg.StaticArrayPrimitives>createSubscription(
-        rcljava.msg.StaticArrayPrimitives.class,
-        "test_topic",
-        new TestConsumer<rcljava.msg.StaticArrayPrimitives>(future));
+    Subscription<rcljava.msg.StaticArrayPrimitives> subscription =
+        node.<rcljava.msg.StaticArrayPrimitives>createSubscription(
+            rcljava.msg.StaticArrayPrimitives.class, "test_topic",
+            new TestConsumer<rcljava.msg.StaticArrayPrimitives>(future));
 
     rcljava.msg.StaticArrayPrimitives msg = new rcljava.msg.StaticArrayPrimitives();
 
@@ -757,7 +707,8 @@ public class NodeTest {
     List<Integer> uint32Values = Arrays.asList(new Integer[] {85536, 85537, 85535});
     List<Long> int64Values = Arrays.asList(new Long[] {-5294967296l, -5294967297l, -5294967295l});
     List<Long> uint64Values = Arrays.asList(new Long[] {6294967296l, 6294967297l, 6294967296l});
-    List<String> stringValues = Arrays.asList(new String[] {"hello world", "bye world", "hey world"});
+    List<String> stringValues =
+        Arrays.asList(new String[] {"hello world", "bye world", "hey world"});
 
     msg.setBoolValues(boolValues);
     msg.setByteValues(byteValues);
@@ -804,15 +755,14 @@ public class NodeTest {
 
   @Test
   public final void testPubUInt32() throws Exception {
-    Publisher<rcljava.msg.UInt32> publisher = node
-        .<rcljava.msg.UInt32>createPublisher(rcljava.msg.UInt32.class,
-        "test_topic");
+    Publisher<rcljava.msg.UInt32> publisher =
+        node.<rcljava.msg.UInt32>createPublisher(rcljava.msg.UInt32.class, "test_topic");
 
-    RCLFuture<rcljava.msg.UInt32> future = new RCLFuture<rcljava.msg.UInt32>(new WeakReference<Node>(node));
+    RCLFuture<rcljava.msg.UInt32> future =
+        new RCLFuture<rcljava.msg.UInt32>(new WeakReference<Node>(node));
 
-    Subscription<rcljava.msg.UInt32> subscription = node
-        .<rcljava.msg.UInt32>createSubscription(rcljava.msg.UInt32.class,
-        "test_topic", new TestConsumer<rcljava.msg.UInt32>(future));
+    Subscription<rcljava.msg.UInt32> subscription = node.<rcljava.msg.UInt32>createSubscription(
+        rcljava.msg.UInt32.class, "test_topic", new TestConsumer<rcljava.msg.UInt32>(future));
 
     rcljava.msg.UInt32 msg = new rcljava.msg.UInt32();
     msg.setData(12345);

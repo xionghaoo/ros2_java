@@ -38,7 +38,6 @@ import org.ros2.rcljava.service.RMWRequestId;
 import org.ros2.rcljava.service.Service;
 
 public class ClientTest {
-
   private Node node;
 
   @BeforeClass
@@ -47,23 +46,18 @@ public class ClientTest {
     org.apache.log4j.BasicConfigurator.configure();
   }
 
-  public class TestClientConsumer implements TriConsumer<
-      RMWRequestId,
-      rcljava.srv.AddTwoInts_Request,
-      rcljava.srv.AddTwoInts_Response> {
-
+  public class TestClientConsumer implements TriConsumer<RMWRequestId,
+      rcljava.srv.AddTwoInts_Request, rcljava.srv.AddTwoInts_Response> {
     private final RCLFuture<rcljava.srv.AddTwoInts_Response> future;
 
     TestClientConsumer(final RCLFuture<rcljava.srv.AddTwoInts_Response> future) {
       this.future = future;
     }
 
-    public final void accept(
-        final RMWRequestId header,
+    public final void accept(final RMWRequestId header,
         final rcljava.srv.AddTwoInts_Request request,
         final rcljava.srv.AddTwoInts_Response response) {
-
-      if(!this.future.isDone()) {
+      if (!this.future.isDone()) {
         response.setSum(request.getA() + request.getB());
         this.future.set(response);
       }
@@ -88,24 +82,19 @@ public class ClientTest {
   @Test
   public final void testAdd() throws Exception {
     RCLFuture<rcljava.srv.AddTwoInts_Response> future =
-      new RCLFuture<rcljava.srv.AddTwoInts_Response>(new WeakReference<Node>(node));
+        new RCLFuture<rcljava.srv.AddTwoInts_Response>(new WeakReference<Node>(node));
 
     TestClientConsumer clientConsumer = new TestClientConsumer(future);
 
-    Service<rcljava.srv.AddTwoInts> service = node.<
-        rcljava.srv.AddTwoInts
-        >createService(
-          rcljava.srv.AddTwoInts.class, "add_two_ints",
-          clientConsumer);
+    Service<rcljava.srv.AddTwoInts> service = node.<rcljava.srv.AddTwoInts>createService(
+        rcljava.srv.AddTwoInts.class, "add_two_ints", clientConsumer);
 
-    rcljava.srv.AddTwoInts_Request request =
-        new rcljava.srv.AddTwoInts_Request();
+    rcljava.srv.AddTwoInts_Request request = new rcljava.srv.AddTwoInts_Request();
     request.setA(2);
     request.setB(3);
 
-    Client<rcljava.srv.AddTwoInts> client = node.<
-        rcljava.srv.AddTwoInts>createClient(
-          rcljava.srv.AddTwoInts.class, "add_two_ints");
+    Client<rcljava.srv.AddTwoInts> client =
+        node.<rcljava.srv.AddTwoInts>createClient(rcljava.srv.AddTwoInts.class, "add_two_ints");
 
     while (RCLJava.ok() && !future.isDone()) {
       client.sendRequest(request);
