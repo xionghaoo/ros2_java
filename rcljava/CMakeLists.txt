@@ -5,11 +5,17 @@ project(rcljava)
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_export_jars REQUIRED)
 find_package(rcl REQUIRED)
+find_package(rcljava_common REQUIRED)
 find_package(rmw REQUIRED)
 find_package(rmw_implementation_cmake REQUIRED)
-find_package(rcljava_common REQUIRED)
 
 include(CrossCompilingExtra)
+
+if(WIN32)
+  ament_environment_hooks(template/environment_hook/classpath.bat.in)
+else()
+  ament_environment_hooks(template/environment_hook/classpath.sh.in)
+endif()
 
 if(ANDROID)
   find_host_package(Java COMPONENTS Development)
