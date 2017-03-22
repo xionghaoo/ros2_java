@@ -18,7 +18,8 @@
 
 #include "rcljava_common/exceptions.h"
 
-void rcljava_throw_exception(JNIEnv * env, const char * class_name, const std::string & message)
+void
+rcljava_throw_exception(JNIEnv * env, const char * class_name, const std::string & message)
 {
   jclass exception_class;
 

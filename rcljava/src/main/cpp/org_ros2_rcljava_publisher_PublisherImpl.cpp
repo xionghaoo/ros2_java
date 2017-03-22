@@ -14,23 +14,24 @@
 
 #include <jni.h>
 
-#include <string>
-#include <cstdlib>
 #include <cassert>
 #include <cstdio>
+#include <cstdlib>
+#include <string>
 
-#include "rmw/rmw.h"
 #include "rcl/error_handling.h"
-#include "rcl/rcl.h"
 #include "rcl/node.h"
+#include "rcl/rcl.h"
+#include "rmw/rmw.h"
 
 #include "rcljava_common/exceptions.h"
 #include "rcljava_common/signatures.h"
 
 #include "org_ros2_rcljava_publisher_PublisherImpl.h"
 
-JNIEXPORT void JNICALL Java_org_ros2_rcljava_publisher_PublisherImpl_nativePublish(JNIEnv * env,
-  jclass, jlong publisher_handle, jobject jmsg)
+JNIEXPORT void JNICALL
+Java_org_ros2_rcljava_publisher_PublisherImpl_nativePublish(
+  JNIEnv * env, jclass, jlong publisher_handle, jobject jmsg)
 {
   rcl_publisher_t * publisher = reinterpret_cast<rcl_publisher_t *>(publisher_handle);
 
@@ -52,8 +53,9 @@ JNIEXPORT void JNICALL Java_org_ros2_rcljava_publisher_PublisherImpl_nativePubli
   }
 }
 
-JNIEXPORT void JNICALL Java_org_ros2_rcljava_publisher_PublisherImpl_nativeDispose(JNIEnv * env,
-  jclass, jlong node_handle, jlong publisher_handle)
+JNIEXPORT void JNICALL
+Java_org_ros2_rcljava_publisher_PublisherImpl_nativeDispose(
+  JNIEnv * env, jclass, jlong node_handle, jlong publisher_handle)
 {
   if (publisher_handle == 0) {
     // everything is ok, already destroyed

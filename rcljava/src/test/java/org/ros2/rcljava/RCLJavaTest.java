@@ -16,6 +16,7 @@
 package org.ros2.rcljava;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import org.junit.Test;
 
@@ -35,5 +36,4 @@ public class RCLJavaTest {
     RCLJava.shutdown();
     assertEquals(false, RCLJava.ok());
   }
-
 }

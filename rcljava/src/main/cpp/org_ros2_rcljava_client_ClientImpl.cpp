@@ -18,10 +18,10 @@
 #include <cstdlib>
 #include <string>
 
-#include "rmw/rmw.h"
 #include "rcl/error_handling.h"
-#include "rcl/rcl.h"
 #include "rcl/node.h"
+#include "rcl/rcl.h"
+#include "rmw/rmw.h"
 #include "rosidl_generator_c/message_type_support_struct.h"
 
 #include "rcljava_common/exceptions.h"
@@ -29,9 +29,11 @@
 
 #include "org_ros2_rcljava_client_ClientImpl.h"
 
-JNIEXPORT void JNICALL Java_org_ros2_rcljava_client_ClientImpl_nativeSendClientRequest(JNIEnv * env,
-  jclass, jlong client_handle, jlong sequence_number, jlong jrequest_from_java_converter_handle,
-  jlong jrequest_to_java_converter_handle, jobject jrequest_msg)
+JNIEXPORT void JNICALL
+Java_org_ros2_rcljava_client_ClientImpl_nativeSendClientRequest(
+  JNIEnv * env, jclass, jlong client_handle, jlong sequence_number,
+  jlong jrequest_from_java_converter_handle, jlong jrequest_to_java_converter_handle,
+  jobject jrequest_msg)
 {
   assert(client_handle != 0);
   assert(jrequest_from_java_converter_handle != 0);
@@ -54,8 +56,9 @@ JNIEXPORT void JNICALL Java_org_ros2_rcljava_client_ClientImpl_nativeSendClientR
   }
 }
 
-JNIEXPORT void JNICALL Java_org_ros2_rcljava_client_ClientImpl_nativeDispose(JNIEnv * env, jclass,
-  jlong node_handle, jlong client_handle)
+JNIEXPORT void JNICALL
+Java_org_ros2_rcljava_client_ClientImpl_nativeDispose(
+  JNIEnv * env, jclass, jlong node_handle, jlong client_handle)
 {
   if (client_handle == 0) {
     // everything is ok, already destroyed

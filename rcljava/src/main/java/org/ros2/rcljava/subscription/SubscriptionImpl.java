@@ -83,10 +83,8 @@ public class SubscriptionImpl<T extends MessageDefinition> implements Subscripti
    * @param callback The callback function that will be triggered when a new
    *     message is received.
    */
-  public SubscriptionImpl(
-      final WeakReference<Node> nodeReference, final long handle,
-      final Class<T> messageType, final String topic,
-      final Consumer<T> callback) {
+  public SubscriptionImpl(final WeakReference<Node> nodeReference, final long handle, final Class<T> messageType,
+      final String topic, final Consumer<T> callback) {
     this.nodeReference = nodeReference;
     this.handle = handle;
     this.messageType = messageType;
@@ -130,15 +128,14 @@ public class SubscriptionImpl<T extends MessageDefinition> implements Subscripti
    * @param handle A pointer to the underlying ROS2 subscription
    *     structure, as an integer. Must not be zero.
    */
-  private static native void nativeDispose(
-      long nodeHandle, long handle);
+  private static native void nativeDispose(long nodeHandle, long handle);
 
   /**
    * {@inheritDoc}
    */
   public final void dispose() {
     Node node = this.nodeReference.get();
-    if(node != null) {
+    if (node != null) {
       nativeDispose(node.getHandle(), this.handle);
       this.handle = 0;
     }

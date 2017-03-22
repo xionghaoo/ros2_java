@@ -13,15 +13,15 @@
 // limitations under the License.
 
 #include <jni.h>
-#include <string>
-#include <cstdlib>
 #include <cassert>
 #include <cstdio>
+#include <cstdlib>
+#include <string>
 
-#include "rmw/rmw.h"
 #include "rcl/error_handling.h"
-#include "rcl/rcl.h"
 #include "rcl/node.h"
+#include "rcl/rcl.h"
+#include "rmw/rmw.h"
 #include "rosidl_generator_c/message_type_support_struct.h"
 
 #include "rcljava_common/exceptions.h"
@@ -29,7 +29,8 @@
 
 #include "org_ros2_rcljava_node_NodeImpl.h"
 
-JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_node_NodeImpl_nativeCreatePublisherHandle(
+JNIEXPORT jlong JNICALL
+Java_org_ros2_rcljava_node_NodeImpl_nativeCreatePublisherHandle(
   JNIEnv * env, jclass, jlong node_handle, jclass jmessage_class, jstring jtopic,
   jlong qos_profile_handle)
 {
@@ -44,8 +45,7 @@ JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_node_NodeImpl_nativeCreatePublishe
 
   rcl_node_t * node = reinterpret_cast<rcl_node_t *>(node_handle);
 
-  rosidl_message_type_support_t * ts =
-    reinterpret_cast<rosidl_message_type_support_t *>(jts);
+  rosidl_message_type_support_t * ts = reinterpret_cast<rosidl_message_type_support_t *>(jts);
 
   rcl_publisher_t * publisher = static_cast<rcl_publisher_t *>(malloc(sizeof(rcl_publisher_t)));
   publisher->impl = NULL;
@@ -67,7 +67,8 @@ JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_node_NodeImpl_nativeCreatePublishe
   return jpublisher;
 }
 
-JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_node_NodeImpl_nativeCreateSubscriptionHandle(
+JNIEXPORT jlong JNICALL
+Java_org_ros2_rcljava_node_NodeImpl_nativeCreateSubscriptionHandle(
   JNIEnv * env, jclass, jlong node_handle, jclass jmessage_class, jstring jtopic,
   jlong qos_profile_handle)
 {
@@ -82,8 +83,7 @@ JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_node_NodeImpl_nativeCreateSubscrip
 
   rcl_node_t * node = reinterpret_cast<rcl_node_t *>(node_handle);
 
-  rosidl_message_type_support_t * ts =
-    reinterpret_cast<rosidl_message_type_support_t *>(jts);
+  rosidl_message_type_support_t * ts = reinterpret_cast<rosidl_message_type_support_t *>(jts);
 
   rcl_subscription_t * subscription =
     static_cast<rcl_subscription_t *>(malloc(sizeof(rcl_subscription_t)));
@@ -106,8 +106,10 @@ JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_node_NodeImpl_nativeCreateSubscrip
   return jsubscription;
 }
 
-JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_node_NodeImpl_nativeCreateServiceHandle(JNIEnv * env,
-  jclass, jlong node_handle, jclass jservice_class, jstring jservice_name, jlong qos_profile_handle)
+JNIEXPORT jlong JNICALL
+Java_org_ros2_rcljava_node_NodeImpl_nativeCreateServiceHandle(
+  JNIEnv * env, jclass, jlong node_handle, jclass jservice_class, jstring jservice_name,
+  jlong qos_profile_handle)
 {
   jmethodID mid = env->GetStaticMethodID(jservice_class, "getServiceTypeSupport", "()J");
 
@@ -125,8 +127,7 @@ JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_node_NodeImpl_nativeCreateServiceH
 
   rcl_node_t * node = reinterpret_cast<rcl_node_t *>(node_handle);
 
-  rosidl_service_type_support_t * ts =
-    reinterpret_cast<rosidl_service_type_support_t *>(jts);
+  rosidl_service_type_support_t * ts = reinterpret_cast<rosidl_service_type_support_t *>(jts);
 
   rcl_service_t * service = static_cast<rcl_service_t *>(malloc(sizeof(rcl_service_t)));
   service->impl = NULL;
@@ -148,8 +149,9 @@ JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_node_NodeImpl_nativeCreateServiceH
   return jservice;
 }
 
-JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_node_NodeImpl_nativeCreateClientHandle(JNIEnv * env,
-  jclass, jlong node_handle, jclass jservice_class, jstring jservice_name,
+JNIEXPORT jlong JNICALL
+Java_org_ros2_rcljava_node_NodeImpl_nativeCreateClientHandle(
+  JNIEnv * env, jclass, jlong node_handle, jclass jservice_class, jstring jservice_name,
   jlong qos_profile_handle)
 {
   jmethodID mid = env->GetStaticMethodID(jservice_class, "getServiceTypeSupport", "()J");
@@ -168,8 +170,7 @@ JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_node_NodeImpl_nativeCreateClientHa
 
   rcl_node_t * node = reinterpret_cast<rcl_node_t *>(node_handle);
 
-  rosidl_service_type_support_t * ts =
-    reinterpret_cast<rosidl_service_type_support_t *>(jts);
+  rosidl_service_type_support_t * ts = reinterpret_cast<rosidl_service_type_support_t *>(jts);
 
   rcl_client_t * client = static_cast<rcl_client_t *>(malloc(sizeof(rcl_client_t)));
   client->impl = NULL;
@@ -191,8 +192,8 @@ JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_node_NodeImpl_nativeCreateClientHa
   return jclient;
 }
 
-JNIEXPORT void JNICALL Java_org_ros2_rcljava_node_NodeImpl_nativeDispose(JNIEnv * env, jclass,
-  jlong node_handle)
+JNIEXPORT void JNICALL
+Java_org_ros2_rcljava_node_NodeImpl_nativeDispose(JNIEnv * env, jclass, jlong node_handle)
 {
   if (node_handle == 0) {
     // already destroyed

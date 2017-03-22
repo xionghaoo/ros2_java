@@ -18,10 +18,10 @@
 #include <cstdlib>
 #include <string>
 
-#include "rmw/rmw.h"
 #include "rcl/error_handling.h"
-#include "rcl/rcl.h"
 #include "rcl/node.h"
+#include "rcl/rcl.h"
+#include "rmw/rmw.h"
 #include "rosidl_generator_c/message_type_support_struct.h"
 
 #include "rcljava_common/exceptions.h"
@@ -29,8 +29,9 @@
 
 #include "org_ros2_rcljava_service_ServiceImpl.h"
 
-JNIEXPORT void JNICALL Java_org_ros2_rcljava_service_ServiceImpl_nativeDispose(JNIEnv * env, jclass,
-  jlong node_handle, jlong service_handle)
+JNIEXPORT void JNICALL
+Java_org_ros2_rcljava_service_ServiceImpl_nativeDispose(
+  JNIEnv * env, jclass, jlong node_handle, jlong service_handle)
 {
   if (service_handle == 0) {
     // everything is ok, already destroyed
