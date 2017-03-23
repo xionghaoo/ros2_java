@@ -34,18 +34,17 @@ def generate_java(generator_arguments_file, typesupport_impl, typesupport_impls)
 
     template_dir = args['template_dir']
     type_support_impl_by_filename = {
-        '%s.ep.{0}.cpp'.format(impl): impl for impl in typesupport_impls
+        '%s.ep.{0}.cpp'.format(impl): impl
+        for impl in typesupport_impls
     }
     mapping_msgs = {
         os.path.join(template_dir, 'msg.java.em'): ['%s.java'],
-        os.path.join(template_dir, 'msg.cpp.em'):
-        type_support_impl_by_filename.keys(),
+        os.path.join(template_dir, 'msg.cpp.em'): type_support_impl_by_filename.keys(),
     }
 
     mapping_srvs = {
         os.path.join(template_dir, 'srv.java.em'): ['%s.java'],
-        os.path.join(template_dir, 'srv.cpp.em'):
-        type_support_impl_by_filename.keys(),
+        os.path.join(template_dir, 'srv.cpp.em'): type_support_impl_by_filename.keys(),
     }
 
     for template_file in mapping_msgs.keys():
@@ -55,9 +54,7 @@ def generate_java(generator_arguments_file, typesupport_impl, typesupport_impls)
         assert os.path.exists(template_file), \
             'Services template file %s not found' % template_file
 
-    functions = {
-        'get_java_type': get_java_type,
-    }
+    functions = {'get_java_type': get_java_type, }
     latest_target_timestamp = get_newest_modification_time(args['target_dependencies'])
 
     modules = defaultdict(list)
@@ -90,20 +87,21 @@ def generate_java(generator_arguments_file, typesupport_impl, typesupport_impls)
                     'convert_lower_case_underscore_to_camel_case':
                     convert_lower_case_underscore_to_camel_case,
                     'get_builtin_java_type': get_builtin_java_type,
-                    'module_name': module_name, 'package_name': package_name,
+                    'module_name': module_name,
+                    'package_name': package_name,
                     'jni_package_name': jni_package_name,
                     'jni_type_name': jni_type_name,
-                    'spec': spec, 'subfolder': subfolder,
+                    'spec': spec,
+                    'subfolder': subfolder,
                     'typesupport_impl': type_support_impl_by_filename.get(generated_filename, ''),
                     'typesupport_impls': typesupport_impls,
                     'type_name': type_name,
                 }
                 data.update(functions)
-                generated_file = os.path.join(
-                    args['output_dir'], subfolder, generated_filename % type_name)
+                generated_file = os.path.join(args['output_dir'], subfolder,
+                                              generated_filename % type_name)
                 expand_template(
-                    template_file, data, generated_file,
-                    minimum_timestamp=latest_target_timestamp)
+                    template_file, data, generated_file, minimum_timestamp=latest_target_timestamp)
 
     return 0
 
@@ -136,13 +134,17 @@ def primitive_value_to_java(type_, value):
         return 'true' if value else 'false'
 
     if type_.type in [
-        'byte',
-        'char',
-        'int8', 'uint8',
-        'int16', 'uint16',
-        'int32', 'uint32',
-        'int64', 'uint64',
-        'float64',
+            'byte',
+            'char',
+            'int8',
+            'uint8',
+            'int16',
+            'uint16',
+            'int32',
+            'uint32',
+            'int64',
+            'uint64',
+            'float64',
     ]:
         return str(value)
 
@@ -162,13 +164,17 @@ def constant_value_to_java(type_, value):
         return 'true' if value else 'false'
 
     if type_ in [
-        'byte',
-        'char',
-        'int8', 'uint8',
-        'int16', 'uint16',
-        'int32', 'uint32',
-        'int64', 'uint64',
-        'float64',
+            'byte',
+            'char',
+            'int8',
+            'uint8',
+            'int16',
+            'uint16',
+            'int32',
+            'uint32',
+            'int64',
+            'uint64',
+            'float64',
     ]:
         return str(value)
 
