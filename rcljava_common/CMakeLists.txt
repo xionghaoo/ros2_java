@@ -3,18 +3,13 @@ cmake_minimum_required(VERSION 3.5)
 project(rcljava_common)
 
 find_package(ament_cmake REQUIRED)
+
 find_package(ament_cmake_export_jars REQUIRED)
 find_package(ament_cmake_export_libraries REQUIRED)
 
 list(INSERT CMAKE_MODULE_PATH 0 "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 
 include(CrossCompilingExtra)
-
-if(WIN32)
-  ament_environment_hooks(template/environment_hook/classpath.bat.in)
-else()
-  ament_environment_hooks(template/environment_hook/classpath.sh.in)
-endif()
 
 if(ANDROID)
   find_host_package(Java COMPONENTS Development REQUIRED)
@@ -43,8 +38,9 @@ set(${PROJECT_NAME}_cpp_sources
 )
 
 find_jar(SFL4J_JAR NAMES slf4j-api)
+set(${PROJECT_NAME}_exported_jars "")
 if(${SFL4J_JAR})
-  ament_export_jars(${SFL4J_JAR})
+  list(APPEND ${PROJECT_NAME}_exported_jars ${SFL4J_JAR})
 else()
   set(slf4j_version "1.7.21")
   set(slf4j_api_sha256 "1d5aeb6bd98b0fdd151269eae941c05f6468a791ea0f1e68d8e7fe518af3e7df")
@@ -58,7 +54,7 @@ else()
     "share/${PROJECT_NAME}/java")
 
   set(SFL4J_JAR "${slf4j_api_jar_path}")
-  ament_export_jars("share/${PROJECT_NAME}/java/slf4j-api-${slf4j_version}.jar")
+  list(APPEND ${PROJECT_NAME}_exported_jars "share/${PROJECT_NAME}/java/slf4j-api-${slf4j_version}.jar")
 
   if(ANDROID)
     set(slf4j_android_sha256 "3874b0975f9ad283328c0371ccde2de353754da33fda36e611702623ee1e5a95")
@@ -72,7 +68,7 @@ else()
       DESTINATION
       "share/${PROJECT_NAME}/java")
 
-    ament_export_jars("share/${PROJECT_NAME}/java/slf4j-android-${slf4j_version}.jar")
+    list(APPEND ${PROJECT_NAME}_exported_jars "share/${PROJECT_NAME}/java/slf4j-android-${slf4j_version}.jar")
   else()
     set(log4j_version "1.2.17")
 
@@ -102,9 +98,9 @@ else()
       DESTINATION
       "share/${PROJECT_NAME}/java")
 
-    ament_export_jars("share/${PROJECT_NAME}/java/log4j-${log4j_version}.jar")
-    ament_export_jars("share/${PROJECT_NAME}/java/slf4j-log4j12-${slf4j_version}.jar")
-    ament_export_jars("share/${PROJECT_NAME}/java/slf4j-jdk14-${slf4j_version}.jar")
+    list(APPEND ${PROJECT_NAME}_exported_jars "share/${PROJECT_NAME}/java/log4j-${log4j_version}.jar")
+    list(APPEND ${PROJECT_NAME}_exported_jars "share/${PROJECT_NAME}/java/slf4j-log4j12-${slf4j_version}.jar")
+    list(APPEND ${PROJECT_NAME}_exported_jars "share/${PROJECT_NAME}/java/slf4j-jdk14-${slf4j_version}.jar")
   endif()
 endif()
 
@@ -117,7 +113,9 @@ add_jar("${PROJECT_NAME}_jar"
 )
 
 install_jar("${PROJECT_NAME}_jar" "share/${PROJECT_NAME}/java")
-ament_export_jars("share/${PROJECT_NAME}/java/${PROJECT_NAME}.jar")
+list(APPEND ${PROJECT_NAME}_exported_jars "share/${PROJECT_NAME}/java/${PROJECT_NAME}.jar")
+
+ament_export_jars(${${PROJECT_NAME}_exported_jars})
 
 include_directories(include)
 

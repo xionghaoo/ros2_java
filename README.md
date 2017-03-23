@@ -82,8 +82,7 @@ Talker:
 ```
 . ~/ament_ws/install_isolated/local_setup.sh
 . ~/ros2_java_ws/install_isolated/local_setup.sh
-cd ~/ros2_java_ws
-java -cp install_isolated/rcljava_common/share/rcljava_common/java/slf4j-jdk14-1.7.21.jar:install_isolated/rcljava_common/share/rcljava_common/java/slf4j-api-1.7.21.jar:install_isolated/std_msgs/share/std_msgs/java/std_msgs.jar:install_isolated/rcljava/share/rcljava/java/rcljava.jar:install_isolated/rcljava_examples/share/rcljava_examples/java/rcljava_examples.jar:install_isolated/example_interfaces/share/example_interfaces/java/example_interfaces.jar:install_isolated/rcljava_common/share/rcljava_common/java/rcljava_common.jar org.ros2.rcljava.examples.Talker
+java org.ros2.rcljava.examples.Talker
 ```
 
 Listener:
@@ -91,8 +90,7 @@ Listener:
 ```
 . ~/ament_ws/install_isolated/local_setup.sh
 . ~/ros2_java_ws/install_isolated/local_setup.sh
-cd ~/ros2_java_ws
-java -cp install_isolated/rcljava_common/share/rcljava_common/java/slf4j-jdk14-1.7.21.jar:install_isolated/rcljava_common/share/rcljava_common/java/slf4j-api-1.7.21.jar:install_isolated/std_msgs/share/std_msgs/java/std_msgs.jar:install_isolated/rcljava/share/rcljava/java/rcljava.jar:install_isolated/rcljava_examples/share/rcljava_examples/java/rcljava_examples.jar:install_isolated/example_interfaces/share/example_interfaces/java/example_interfaces.jar:install_isolated/rcljava_common/share/rcljava_common/java/rcljava_common.jar org.ros2.rcljava.examples.Listener
+java org.ros2.rcljava.examples.Listener
 ```
 
 Client and Service
@@ -103,8 +101,7 @@ Client:
 ```
 . ~/ament_ws/install_isolated/local_setup.sh
 . ~/ros2_java_ws/install_isolated/local_setup.sh
-cd ~/ros2_java_ws
-java -cp install_isolated/rcljava_common/share/rcljava_common/java/slf4j-jdk14-1.7.21.jar:install_isolated/rcljava_common/share/rcljava_common/java/slf4j-api-1.7.21.jar:install_isolated/std_msgs/share/std_msgs/java/std_msgs.jar:install_isolated/rcljava/share/rcljava/java/rcljava.jar:install_isolated/rcljava_examples/share/rcljava_examples/java/rcljava_examples.jar:install_isolated/example_interfaces/share/example_interfaces/java/example_interfaces.jar:install_isolated/rcljava_common/share/rcljava_common/java/rcljava_common.jar org.ros2.rcljava.examples.AddTwoIntsClient
+java org.ros2.rcljava.examples.AddTwoIntsClient
 ```
 
 Service:
@@ -112,8 +109,7 @@ Service:
 ```
 . ~/ament_ws/install_isolated/local_setup.sh
 . ~/ros2_java_ws/install_isolated/local_setup.sh
-cd ~/ros2_java_ws
-java -cp install_isolated/rcljava_common/share/rcljava_common/java/slf4j-jdk14-1.7.21.jar:install_isolated/rcljava_common/share/rcljava_common/java/slf4j-api-1.7.21.jar:install_isolated/std_msgs/share/std_msgs/java/std_msgs.jar:install_isolated/rcljava/share/rcljava/java/rcljava.jar:install_isolated/rcljava_examples/share/rcljava_examples/java/rcljava_examples.jar:install_isolated/example_interfaces/share/example_interfaces/java/example_interfaces.jar:install_isolated/rcljava_common/share/rcljava_common/java/rcljava_common.jar org.ros2.rcljava.examples.AddTwoIntsService
+java org.ros2.rcljava.examples.AddTwoIntsService
 ```
 
 You can also combine any scenario where the talker/listener or client/service are written in Java, Python and C++ and they should talk to each other.

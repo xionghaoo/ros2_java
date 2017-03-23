@@ -29,6 +29,7 @@ macro(ament_export_jars)
 
   if(${ARGC} GREATER 0)
     _ament_cmake_export_jars_register_package_hook()
+
     foreach(_arg ${ARGN})
       if(IS_ABSOLUTE "${_arg}")
         if(NOT EXISTS "${_arg}")
@@ -36,11 +37,22 @@ macro(ament_export_jars)
             "ament_export_jars() package '${PROJECT_NAME}' exports the "
             "jar '${_arg}' which doesn't exist")
         endif()
+        list_append_unique(_AMENT_EXPORT_ABSOLUTE_CLASSPATH "${_arg}")
         list_append_unique(_AMENT_EXPORT_ABSOLUTE_JARS "${_arg}")
       else()
+        list_append_unique(_AMENT_EXPORT_RELATIVE_CLASSPATH "\$AMENT_CURRENT_PREFIX/${_arg}")
         set(_arg "\${${PROJECT_NAME}_DIR}/../../../${_arg}")
         list_append_unique(_AMENT_EXPORT_RELATIVE_JARS "${_arg}")
       endif()
     endforeach()
+
+    set(_AMENT_EXPORT_JARS_CLASSPATH
+      ${_AMENT_EXPORT_RELATIVE_CLASSPATH}
+      ${_AMENT_EXPORT_ABSOLUTE_CLASSPATH})
+
+    ament_index_get_resource(
+      classpath_template_path "templates" "ament_build_type_gradle_classpath")
+
+    ament_environment_hooks("${classpath_template_path}")
   endif()
 endmacro()

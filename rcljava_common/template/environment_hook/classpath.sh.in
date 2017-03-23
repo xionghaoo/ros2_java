@@ -1,2 +1,0 @@
-ament_prepend_unique_value CLASSPATH "."
-ament_prepend_unique_value CLASSPATH "$AMENT_CURRENT_PREFIX/share/@PROJECT_NAME@/java/*"
