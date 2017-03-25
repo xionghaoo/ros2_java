@@ -80,7 +80,6 @@ Talker and Listener
 Talker:
 
 ```
-. ~/ament_ws/install_isolated/local_setup.sh
 . ~/ros2_java_ws/install_isolated/local_setup.sh
 java org.ros2.rcljava.examples.Talker
 ```
@@ -88,7 +87,6 @@ java org.ros2.rcljava.examples.Talker
 Listener:
 
 ```
-. ~/ament_ws/install_isolated/local_setup.sh
 . ~/ros2_java_ws/install_isolated/local_setup.sh
 java org.ros2.rcljava.examples.Listener
 ```
@@ -99,7 +97,6 @@ Client and Service
 Client:
 
 ```
-. ~/ament_ws/install_isolated/local_setup.sh
 . ~/ros2_java_ws/install_isolated/local_setup.sh
 java org.ros2.rcljava.examples.AddTwoIntsClient
 ```
@@ -107,7 +104,6 @@ java org.ros2.rcljava.examples.AddTwoIntsClient
 Service:
 
 ```
-. ~/ament_ws/install_isolated/local_setup.sh
 . ~/ros2_java_ws/install_isolated/local_setup.sh
 java org.ros2.rcljava.examples.AddTwoIntsService
 ```
