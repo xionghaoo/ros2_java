@@ -30,10 +30,10 @@ JNIEXPORT void JNICALL Java_org_ros2_rcljava_RCLJava_nativeRCLJavaInit(JNIEnv *,
 /*
  * Class:     org_ros2_rcljava_RCLJava
  * Method:    nativeCreateNodeHandle
- * Signature: (Ljava/lang/String;)J
+ * Signature: (Ljava/lang/String;Ljava/lang/String;)J
  */
 JNIEXPORT jlong JNICALL
-  Java_org_ros2_rcljava_RCLJava_nativeCreateNodeHandle(JNIEnv *, jclass, jstring);
+  Java_org_ros2_rcljava_RCLJava_nativeCreateNodeHandle(JNIEnv *, jclass, jstring, jstring);
 
 /*
  * Class:     org_ros2_rcljava_RCLJava

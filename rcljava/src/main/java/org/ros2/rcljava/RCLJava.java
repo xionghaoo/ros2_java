@@ -156,9 +156,10 @@ public final class RCLJava {
    * Create a ROS2 node (rcl_node_t) and return a pointer to it as an integer.
    *
    * @param nodeName The name that will identify this node in a ROS2 graph.
+   * @param namespace The namespace of the node.
    * @return A pointer to the underlying ROS2 node structure.
    */
-  private static native long nativeCreateNodeHandle(String nodeName);
+  private static native long nativeCreateNodeHandle(String nodeName, String namespace);
 
   public static String getTypesupportIdentifier() {
     return RMW_TO_TYPESUPPORT.get(nativeGetRMWIdentifier());
@@ -207,7 +208,19 @@ public final class RCLJava {
    *     structure.
    */
   public static Node createNode(final String nodeName) {
-    long nodeHandle = nativeCreateNodeHandle(nodeName);
+    return createNode(nodeName, "");
+  }
+
+  /**
+   * Create a @{link Node}.
+   *
+   * @param nodeName The name that will identify this node in a ROS2 graph.
+   * @param namespace The namespace of the node.
+   * @return A @{link Node} that represents the underlying ROS2 node
+   *     structure.
+   */
+  public static Node createNode(final String nodeName, final String namespace) {
+    long nodeHandle = nativeCreateNodeHandle(nodeName, namespace);
     Node node = new NodeImpl(nodeHandle);
     nodes.add(node);
     return node;

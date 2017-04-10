@@ -46,18 +46,21 @@ Java_org_ros2_rcljava_RCLJava_nativeRCLJavaInit(JNIEnv * env, jclass)
 }
 
 JNIEXPORT jlong JNICALL
-Java_org_ros2_rcljava_RCLJava_nativeCreateNodeHandle(JNIEnv * env, jclass, jstring jnode_name)
+Java_org_ros2_rcljava_RCLJava_nativeCreateNodeHandle(
+  JNIEnv * env, jclass, jstring jnode_name, jstring jnamespace)
 {
   const char * node_name_tmp = env->GetStringUTFChars(jnode_name, 0);
-
   std::string node_name(node_name_tmp);
-
   env->ReleaseStringUTFChars(jnode_name, node_name_tmp);
+
+  const char * namespace_tmp = env->GetStringUTFChars(jnamespace, 0);
+  std::string namespace_(namespace_tmp);
+  env->ReleaseStringUTFChars(jnamespace, namespace_tmp);
 
   rcl_node_t * node = static_cast<rcl_node_t *>(malloc(sizeof(rcl_node_t)));
   node->impl = nullptr;
   rcl_node_options_t default_options = rcl_node_get_default_options();
-  rcl_ret_t ret = rcl_node_init(node, node_name.c_str(), &default_options);
+  rcl_ret_t ret = rcl_node_init(node, node_name.c_str(), namespace_.c_str(), &default_options);
   if (ret != RCL_RET_OK) {
     rcljava_throw_exception(
       env, "java/lang/IllegalStateException",
