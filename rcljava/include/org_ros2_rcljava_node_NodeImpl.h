@@ -59,6 +59,14 @@ JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_node_NodeImpl_nativeCreateClientHa
  */
 JNIEXPORT void JNICALL Java_org_ros2_rcljava_node_NodeImpl_nativeDispose(JNIEnv *, jclass, jlong);
 
+/*
+ * Class:     org_ros2_rcljava_node_NodeImpl
+ * Method:    nativeCreateTimerHandle
+ * Signature: (J)J
+ */
+JNIEXPORT jlong JNICALL
+  Java_org_ros2_rcljava_node_NodeImpl_nativeCreateTimerHandle(JNIEnv *, jclass, jlong);
+
 #ifdef __cplusplus
 }
 #endif

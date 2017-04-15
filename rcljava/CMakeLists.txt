@@ -52,6 +52,7 @@ set(${PROJECT_NAME}_jni_sources
   "src/main/cpp/org_ros2_rcljava_publisher_PublisherImpl.cpp"
   "src/main/cpp/org_ros2_rcljava_service_ServiceImpl.cpp"
   "src/main/cpp/org_ros2_rcljava_subscription_SubscriptionImpl.cpp"
+  "src/main/cpp/org_ros2_rcljava_timer_WallTimerImpl.cpp"
 )
 
 foreach(_jni_source ${${PROJECT_NAME}_jni_sources})
@@ -95,6 +96,7 @@ set(${PROJECT_NAME}_sources
   "src/main/java/org/ros2/rcljava/RCLJava.java"
   "src/main/java/org/ros2/rcljava/client/ClientImpl.java"
   "src/main/java/org/ros2/rcljava/client/Client.java"
+  "src/main/java/org/ros2/rcljava/concurrent/Callback.java"
   "src/main/java/org/ros2/rcljava/concurrent/RCLFuture.java"
   "src/main/java/org/ros2/rcljava/consumers/BiConsumer.java"
   "src/main/java/org/ros2/rcljava/consumers/Consumer.java"
@@ -113,6 +115,8 @@ set(${PROJECT_NAME}_sources
   "src/main/java/org/ros2/rcljava/service/Service.java"
   "src/main/java/org/ros2/rcljava/subscription/SubscriptionImpl.java"
   "src/main/java/org/ros2/rcljava/subscription/Subscription.java"
+  "src/main/java/org/ros2/rcljava/timer/WallTimer.java"
+  "src/main/java/org/ros2/rcljava/timer/WallTimerImpl.java"
 )
 
 add_jar("${PROJECT_NAME}_jar"
@@ -171,6 +175,7 @@ if(BUILD_TESTING)
     "src/test/java/org/ros2/rcljava/node/NodeTest.java"
     "src/test/java/org/ros2/rcljava/publisher/PublisherTest.java"
     "src/test/java/org/ros2/rcljava/subscription/SubscriptionTest.java"
+    "src/test/java/org/ros2/rcljava/timer/TimerTest.java"
   )
 
   set(${PROJECT_NAME}_testsuites
@@ -179,6 +184,7 @@ if(BUILD_TESTING)
     "org.ros2.rcljava.node.NodeTest"
     "org.ros2.rcljava.publisher.PublisherTest"
     "org.ros2.rcljava.subscription.SubscriptionTest"
+    "org.ros2.rcljava.timer.TimerTest"
   )
 
   set(_deps_library_paths "")

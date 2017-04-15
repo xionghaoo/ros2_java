@@ -21,6 +21,7 @@
 #include "rcl/error_handling.h"
 #include "rcl/node.h"
 #include "rcl/rcl.h"
+#include "rcl/timer.h"
 #include "rmw/rmw.h"
 #include "rosidl_generator_c/message_type_support_struct.h"
 
@@ -63,7 +64,8 @@ Java_org_ros2_rcljava_RCLJava_nativeCreateNodeHandle(
   env->ReleaseStringUTFChars(jnamespace, namespace_tmp);
 
   rcl_node_t * node = static_cast<rcl_node_t *>(malloc(sizeof(rcl_node_t)));
-  node->impl = nullptr;
+  *node = rcl_get_zero_initialized_node();
+
   rcl_node_options_t default_options = rcl_node_get_default_options();
   rcl_ret_t ret = rcl_node_init(node, node_name.c_str(), namespace_.c_str(), &default_options);
   if (ret != RCL_RET_OK) {
@@ -489,4 +491,30 @@ Java_org_ros2_rcljava_RCLJava_nativeDisposeQoSProfile(JNIEnv *, jclass, jlong qo
 {
   rmw_qos_profile_t * qos_profile = reinterpret_cast<rmw_qos_profile_t *>(qos_profile_handle);
   free(qos_profile);
+}
+
+JNIEXPORT void JNICALL
+Java_org_ros2_rcljava_RCLJava_nativeWaitSetClearTimers(JNIEnv * env, jclass, jlong wait_set_handle)
+{
+  rcl_wait_set_t * wait_set = reinterpret_cast<rcl_wait_set_t *>(wait_set_handle);
+  rcl_ret_t ret = rcl_wait_set_clear_timers(wait_set);
+  if (ret != RCL_RET_OK) {
+    rcljava_throw_exception(
+      env, "java/lang/IllegalStateException",
+      "Failed to clear timers from wait set: " + std::string(rcl_get_error_string_safe()));
+  }
+}
+
+JNIEXPORT void JNICALL
+Java_org_ros2_rcljava_RCLJava_nativeWaitSetAddTimer(
+  JNIEnv * env, jclass, jlong wait_set_handle, jlong timer_handle)
+{
+  rcl_wait_set_t * wait_set = reinterpret_cast<rcl_wait_set_t *>(wait_set_handle);
+  rcl_timer_t * timer = reinterpret_cast<rcl_timer_t *>(timer_handle);
+  rcl_ret_t ret = rcl_wait_set_add_timer(wait_set, timer);
+  if (ret != RCL_RET_OK) {
+    rcljava_throw_exception(
+      env, "java/lang/IllegalStateException",
+      "Failed to add timer to wait set: " + std::string(rcl_get_error_string_safe()));
+  }
 }

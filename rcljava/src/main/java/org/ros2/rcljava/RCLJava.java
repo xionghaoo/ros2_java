@@ -34,6 +34,7 @@ import org.ros2.rcljava.qos.QoSProfile;
 import org.ros2.rcljava.service.RMWRequestId;
 import org.ros2.rcljava.service.Service;
 import org.ros2.rcljava.subscription.Subscription;
+import org.ros2.rcljava.timer.WallTimer;
 
 /**
  * Entry point for the ROS2 Java API, similar to the rclcpp API.
@@ -59,6 +60,10 @@ public final class RCLJava {
 
       for (Publisher publisher : node.getPublishers()) {
         publisher.dispose();
+      }
+
+      for (WallTimer timer : node.getTimers()) {
+        timer.dispose();
       }
 
       for (Service service : node.getServices()) {
@@ -230,10 +235,12 @@ public final class RCLJava {
   public static void spinOnce(final Node node) {
     long waitSetHandle = nativeGetZeroInitializedWaitSet();
 
-    nativeWaitSetInit(waitSetHandle, node.getSubscriptions().size(), 0, 0, node.getClients().size(),
-        node.getServices().size());
+    nativeWaitSetInit(waitSetHandle, node.getSubscriptions().size(), 0, node.getTimers().size(),
+        node.getClients().size(), node.getServices().size());
 
     nativeWaitSetClearSubscriptions(waitSetHandle);
+
+    nativeWaitSetClearTimers(waitSetHandle);
 
     nativeWaitSetClearServices(waitSetHandle);
 
@@ -241,6 +248,10 @@ public final class RCLJava {
 
     for (Subscription<MessageDefinition> subscription : node.getSubscriptions()) {
       nativeWaitSetAddSubscription(waitSetHandle, subscription.getHandle());
+    }
+
+    for (WallTimer timer : node.getTimers()) {
+      nativeWaitSetAddTimer(waitSetHandle, timer.getHandle());
     }
 
     for (Service<ServiceDefinition> service : node.getServices()) {
@@ -258,6 +269,13 @@ public final class RCLJava {
           nativeTake(subscription.getHandle(), subscription.getMessageType());
       if (message != null) {
         subscription.getCallback().accept(message);
+      }
+    }
+
+    for (WallTimer timer : node.getTimers()) {
+      if (timer.isReady()) {
+        timer.callTimer();
+        timer.getCallback().call();
       }
     }
 
@@ -353,6 +371,8 @@ public final class RCLJava {
   private static native MessageDefinition nativeTake(
       long subscriptionHandle, Class<MessageDefinition> messageType);
 
+  private static native void nativeWaitSetClearTimers(long waitSetHandle);
+
   private static native void nativeWaitSetClearServices(long waitSetHandle);
 
   private static native void nativeWaitSetAddService(long waitSetHandle, long serviceHandle);
@@ -360,6 +380,8 @@ public final class RCLJava {
   private static native void nativeWaitSetClearClients(long waitSetHandle);
 
   private static native void nativeWaitSetAddClient(long waitSetHandle, long clientHandle);
+
+  private static native void nativeWaitSetAddTimer(long waitSetHandle, long timerHandle);
 
   private static native RMWRequestId nativeTakeRequest(long serviceHandle,
       long requestFromJavaConverterHandle, long requestToJavaConverterHandle,

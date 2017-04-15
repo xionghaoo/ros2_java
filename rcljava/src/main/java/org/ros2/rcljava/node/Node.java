@@ -16,8 +16,10 @@
 package org.ros2.rcljava.node;
 
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
 
 import org.ros2.rcljava.client.Client;
+import org.ros2.rcljava.concurrent.Callback;
 import org.ros2.rcljava.consumers.Consumer;
 import org.ros2.rcljava.consumers.TriConsumer;
 import org.ros2.rcljava.qos.QoSProfile;
@@ -28,6 +30,7 @@ import org.ros2.rcljava.publisher.Publisher;
 import org.ros2.rcljava.service.RMWRequestId;
 import org.ros2.rcljava.service.Service;
 import org.ros2.rcljava.subscription.Subscription;
+import org.ros2.rcljava.timer.WallTimer;
 
 /**
  * This class serves as a bridge between ROS2's rcl_node_t and RCLJava.
@@ -53,6 +56,11 @@ public interface Node extends Disposable {
    * @return All the @{link Publisher}s that were created by this instance.
    */
   Collection<Publisher> getPublishers();
+
+  /**
+   * @return All the @{link WallTimer}s that were created by this instance.
+   */
+  Collection<WallTimer> getTimers();
 
   /**
    * Create a Subscription&lt;T&gt;.
@@ -109,4 +117,6 @@ public interface Node extends Disposable {
 
   <T extends ServiceDefinition> Client<T> createClient(final Class<T> serviceType,
       final String serviceName) throws NoSuchFieldException, IllegalAccessException;
+
+  WallTimer createTimer(final long period, final TimeUnit unit, final Callback callback);
 }

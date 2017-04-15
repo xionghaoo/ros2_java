@@ -174,6 +174,22 @@ JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_RCLJava_nativeConvertQoSProfileToH
 JNIEXPORT void JNICALL
   Java_org_ros2_rcljava_RCLJava_nativeDisposeQoSProfile(JNIEnv *, jclass, jlong);
 
+/*
+ * Class:     org_ros2_rcljava_RCLJava
+ * Method:    nativeWaitSetClearTimers
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL
+  Java_org_ros2_rcljava_RCLJava_nativeWaitSetClearTimers(JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     org_ros2_rcljava_RCLJava
+ * Method:    nativeWaitSetAddTimer
+ * Signature: (JJ)V
+ */
+JNIEXPORT void JNICALL
+  Java_org_ros2_rcljava_RCLJava_nativeWaitSetAddTimer(JNIEnv *, jclass, jlong, jlong);
+
 #ifdef __cplusplus
 }
 #endif

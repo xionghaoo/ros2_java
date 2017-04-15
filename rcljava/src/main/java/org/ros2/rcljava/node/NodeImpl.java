@@ -19,6 +19,7 @@ import org.ros2.rcljava.RCLJava;
 import org.ros2.rcljava.client.Client;
 import org.ros2.rcljava.client.ClientImpl;
 import org.ros2.rcljava.common.JNIUtils;
+import org.ros2.rcljava.concurrent.Callback;
 import org.ros2.rcljava.consumers.Consumer;
 import org.ros2.rcljava.consumers.TriConsumer;
 import org.ros2.rcljava.qos.QoSProfile;
@@ -31,6 +32,8 @@ import org.ros2.rcljava.service.Service;
 import org.ros2.rcljava.service.ServiceImpl;
 import org.ros2.rcljava.subscription.Subscription;
 import org.ros2.rcljava.subscription.SubscriptionImpl;
+import org.ros2.rcljava.timer.WallTimer;
+import org.ros2.rcljava.timer.WallTimerImpl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +43,7 @@ import java.lang.reflect.Method;
 
 import java.util.Collection;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * {@inheritDoc}
@@ -83,6 +87,11 @@ public class NodeImpl implements Node {
   private final Collection<Client> clients;
 
   /**
+   * All the @{link WallTimer}s that have been created through this instance.
+   */
+  private final Collection<WallTimer> timers;
+
+  /**
    * Constructor.
    *
    * @param handle A pointer to the underlying ROS2 node structure. Must not
@@ -94,6 +103,7 @@ public class NodeImpl implements Node {
     this.subscriptions = new LinkedBlockingQueue<Subscription>();
     this.services = new LinkedBlockingQueue<Service>();
     this.clients = new LinkedBlockingQueue<Client>();
+    this.timers = new LinkedBlockingQueue<WallTimer>();
   }
 
   /**
@@ -285,5 +295,23 @@ public class NodeImpl implements Node {
    */
   public final long getHandle() {
     return this.handle;
+  }
+
+  private static native long nativeCreateTimerHandle(long timerPeriod);
+
+  public WallTimer createTimer(final long period, final TimeUnit unit, final Callback callback) {
+    long timerPeriodNS = TimeUnit.NANOSECONDS.convert(period, unit);
+    long timerHandle = nativeCreateTimerHandle(timerPeriodNS);
+    WallTimer timer =
+        new WallTimerImpl(new WeakReference<Node>(this), timerHandle, callback, timerPeriodNS);
+    this.timers.add(timer);
+    return timer;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public final Collection<WallTimer> getTimers() {
+    return this.timers;
   }
 }
