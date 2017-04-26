@@ -23,10 +23,10 @@ extern "C" {
 /*
  * Class:     org_ros2_rcljava_client_ClientImpl
  * Method:    nativeSendClientRequest
- * Signature: (JJJJLorg/ros2/rcljava/interfaces/MessageDefinition;)V
+ * Signature: (JJJJJLorg/ros2/rcljava/interfaces/MessageDefinition;)V
  */
 JNIEXPORT void JNICALL Java_org_ros2_rcljava_client_ClientImpl_nativeSendClientRequest(
-  JNIEnv *, jclass, jlong, jlong, jlong, jlong, jobject);
+  JNIEnv *, jclass, jlong, jlong, jlong, jlong, jlong, jobject);
 
 /*
  * Class:     org_ros2_rcljava_client_ClientImpl

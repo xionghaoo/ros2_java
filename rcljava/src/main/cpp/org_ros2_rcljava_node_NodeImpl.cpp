@@ -29,6 +29,8 @@
 
 #include "org_ros2_rcljava_node_NodeImpl.h"
 
+using rcljava_common::exceptions::rcljava_throw_exception;
+
 JNIEXPORT jlong JNICALL
 Java_org_ros2_rcljava_node_NodeImpl_nativeCreatePublisherHandle(
   JNIEnv * env, jclass, jlong node_handle, jclass jmessage_class, jstring jtopic,

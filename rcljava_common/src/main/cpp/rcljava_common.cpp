@@ -18,6 +18,10 @@
 
 #include "rcljava_common/exceptions.h"
 
+namespace rcljava_common
+{
+namespace exceptions
+{
 void
 rcljava_throw_exception(JNIEnv * env, const char * class_name, const std::string & message)
 {
@@ -29,3 +33,5 @@ rcljava_throw_exception(JNIEnv * env, const char * class_name, const std::string
 
   env->ThrowNew(exception_class, message.c_str());
 }
+}  // namespace exceptions
+}  // namespace rcljava_common

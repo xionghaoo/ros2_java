@@ -21,4 +21,6 @@ public interface MessageDefinition {
   public long getToJavaConverterInstance();
 
   public long getTypeSupportInstance();
+
+  public long getDestructorInstance();
 }

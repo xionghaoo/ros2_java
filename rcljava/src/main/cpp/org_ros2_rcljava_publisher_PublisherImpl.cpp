@@ -29,9 +29,13 @@
 
 #include "org_ros2_rcljava_publisher_PublisherImpl.h"
 
+using rcljava_common::exceptions::rcljava_throw_exception;
+using rcljava_common::signatures::convert_from_java_signature;
+using rcljava_common::signatures::destroy_ros_message_signature;
+
 JNIEXPORT void JNICALL
 Java_org_ros2_rcljava_publisher_PublisherImpl_nativePublish(
-  JNIEnv * env, jclass, jlong publisher_handle, jobject jmsg)
+  JNIEnv * env, jclass, jlong publisher_handle, jlong jmsg_destructor_handle, jobject jmsg)
 {
   rcl_publisher_t * publisher = reinterpret_cast<rcl_publisher_t *>(publisher_handle);
 
@@ -46,6 +50,11 @@ Java_org_ros2_rcljava_publisher_PublisherImpl_nativePublish(
   void * raw_ros_message = convert_from_java(jmsg, nullptr);
 
   rcl_ret_t ret = rcl_publish(publisher, raw_ros_message);
+
+  destroy_ros_message_signature destroy_ros_message =
+    reinterpret_cast<destroy_ros_message_signature>(jmsg_destructor_handle);
+  destroy_ros_message(raw_ros_message);
+
   if (ret != RCL_RET_OK) {
     rcljava_throw_exception(
       env, "java/lang/IllegalStateException",

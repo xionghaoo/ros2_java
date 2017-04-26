@@ -137,26 +137,26 @@ JNIEXPORT void JNICALL
 /*
  * Class:     org_ros2_rcljava_RCLJava
  * Method:    nativeTakeRequest
- * Signature: (JJJLorg/ros2/rcljava/interfaces/MessageDefinition;)Lorg/ros2/rcljava/RMWRequestId;
+ * Signature: (JJJJLorg/ros2/rcljava/interfaces/MessageDefinition;)Lorg/ros2/rcljava/RMWRequestId;
  */
-JNIEXPORT jobject JNICALL
-  Java_org_ros2_rcljava_RCLJava_nativeTakeRequest(JNIEnv *, jclass, jlong, jlong, jlong, jobject);
+JNIEXPORT jobject JNICALL Java_org_ros2_rcljava_RCLJava_nativeTakeRequest(
+  JNIEnv *, jclass, jlong, jlong, jlong, jlong, jobject);
 
 /*
  * Class:     org_ros2_rcljava_RCLJava
  * Method:    nativeSendServiceResponse
- * Signature: (JLorg/ros2/rcljava/RMWRequestId;JJLorg/ros2/rcljava/interfaces/MessageDefinition;)V
+ * Signature: (JLorg/ros2/rcljava/RMWRequestId;JJJLorg/ros2/rcljava/interfaces/MessageDefinition;)V
  */
 JNIEXPORT void JNICALL Java_org_ros2_rcljava_RCLJava_nativeSendServiceResponse(
-  JNIEnv *, jclass, jlong, jobject, jlong, jlong, jobject);
+  JNIEnv *, jclass, jlong, jobject, jlong, jlong, jlong, jobject);
 
 /*
  * Class:     org_ros2_rcljava_RCLJava
  * Method:    nativeTakeResponse
- * Signature: (JJJLorg/ros2/rcljava/interfaces/MessageDefinition;)Lorg/ros2/rcljava/RMWRequestId;
+ * Signature: (JJJJLorg/ros2/rcljava/interfaces/MessageDefinition;)Lorg/ros2/rcljava/RMWRequestId;
  */
-JNIEXPORT jobject JNICALL
-  Java_org_ros2_rcljava_RCLJava_nativeTakeResponse(JNIEnv *, jclass, jlong, jlong, jlong, jobject);
+JNIEXPORT jobject JNICALL Java_org_ros2_rcljava_RCLJava_nativeTakeResponse(
+  JNIEnv *, jclass, jlong, jlong, jlong, jlong, jobject);
 
 /*
  * Class:     org_ros2_rcljava_RCLJava

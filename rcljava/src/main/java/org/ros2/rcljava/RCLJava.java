@@ -280,15 +280,19 @@ public final class RCLJava {
 
       long requestFromJavaConverterHandle = requestMessage.getFromJavaConverterInstance();
       long requestToJavaConverterHandle = requestMessage.getToJavaConverterInstance();
+      long requestDestructorHandle = requestMessage.getDestructorInstance();
       long responseFromJavaConverterHandle = responseMessage.getFromJavaConverterInstance();
       long responseToJavaConverterHandle = responseMessage.getToJavaConverterInstance();
+      long responseDestructorHandle = responseMessage.getDestructorInstance();
 
-      RMWRequestId rmwRequestId = nativeTakeRequest(service.getHandle(),
-          requestFromJavaConverterHandle, requestToJavaConverterHandle, requestMessage);
+      RMWRequestId rmwRequestId =
+          nativeTakeRequest(service.getHandle(), requestFromJavaConverterHandle,
+              requestToJavaConverterHandle, requestDestructorHandle, requestMessage);
       if (rmwRequestId != null) {
         service.getCallback().accept(rmwRequestId, requestMessage, responseMessage);
         nativeSendServiceResponse(service.getHandle(), rmwRequestId,
-            responseFromJavaConverterHandle, responseToJavaConverterHandle, responseMessage);
+            responseFromJavaConverterHandle, responseToJavaConverterHandle,
+            responseDestructorHandle, responseMessage);
       }
     }
 
@@ -314,9 +318,11 @@ public final class RCLJava {
       long requestToJavaConverterHandle = requestMessage.getToJavaConverterInstance();
       long responseFromJavaConverterHandle = responseMessage.getFromJavaConverterInstance();
       long responseToJavaConverterHandle = responseMessage.getToJavaConverterInstance();
+      long responseDestructorHandle = responseMessage.getDestructorInstance();
 
-      RMWRequestId rmwRequestId = nativeTakeResponse(client.getHandle(),
-          responseFromJavaConverterHandle, responseToJavaConverterHandle, responseMessage);
+      RMWRequestId rmwRequestId =
+          nativeTakeResponse(client.getHandle(), responseFromJavaConverterHandle,
+              responseToJavaConverterHandle, responseDestructorHandle, responseMessage);
 
       if (rmwRequestId != null) {
         client.handleResponse(rmwRequestId, responseMessage);
@@ -356,15 +362,15 @@ public final class RCLJava {
 
   private static native RMWRequestId nativeTakeRequest(long serviceHandle,
       long requestFromJavaConverterHandle, long requestToJavaConverterHandle,
-      MessageDefinition requestMessage);
+      long requestDestructorHandle, MessageDefinition requestMessage);
 
   private static native void nativeSendServiceResponse(long serviceHandle, RMWRequestId header,
       long responseFromJavaConverterHandle, long responseToJavaConverterHandle,
-      MessageDefinition responseMessage);
+      long responseDestructorHandle, MessageDefinition responseMessage);
 
   private static native RMWRequestId nativeTakeResponse(long clientHandle,
       long responseFromJavaConverterHandle, long responseToJavaConverterHandle,
-      MessageDefinition responseMessage);
+      long responseDestructorHandle, MessageDefinition responseMessage);
 
   public static long convertQoSProfileToHandle(final QoSProfile qosProfile) {
     int history = qosProfile.getHistory().getValue();

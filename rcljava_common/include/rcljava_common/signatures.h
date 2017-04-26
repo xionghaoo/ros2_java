@@ -17,10 +17,16 @@
 
 #include <string>
 
+namespace rcljava_common
+{
+namespace signatures
+{
 using convert_from_java_signature = void * (*)(jobject, void *);
 
 using convert_to_java_signature = jobject (*)(void *, jobject);
 
-void rcljava_throw_exception(JNIEnv *, const char *, const std::string &);
+using destroy_ros_message_signature = void (*)(void *);
+}  // namespace signatures
+}  // namespace rcljava_common
 
 #endif  // RCLJAVA_COMMON__SIGNATURES_H_
