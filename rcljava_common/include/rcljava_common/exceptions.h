@@ -17,6 +17,12 @@
 
 #include <string>
 
+namespace rcljava_common
+{
+namespace exceptions
+{
 void rcljava_throw_exception(JNIEnv *, const char *, const std::string &);
+}  // namespace exceptions
+}  // namespace rcljava_common
 
 #endif  // RCLJAVA_COMMON__EXCEPTIONS_H_

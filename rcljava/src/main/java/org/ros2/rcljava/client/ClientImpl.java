@@ -68,7 +68,7 @@ public class ClientImpl<T extends ServiceDefinition> implements Client<T> {
     synchronized (pendingRequests) {
       sequenceNumber++;
       nativeSendClientRequest(handle, sequenceNumber, request.getFromJavaConverterInstance(),
-          request.getToJavaConverterInstance(), request);
+          request.getToJavaConverterInstance(), request.getDestructorInstance(), request);
       RCLFuture<V> future = new RCLFuture<V>(this.nodeReference);
       pendingRequests.put(sequenceNumber, future);
       return future;
@@ -86,7 +86,7 @@ public class ClientImpl<T extends ServiceDefinition> implements Client<T> {
 
   private static native void nativeSendClientRequest(long handle, long sequenceNumber,
       long requestFromJavaConverterHandle, long requestToJavaConverterHandle,
-      MessageDefinition requestMessage);
+      long requestDestructorHandle, MessageDefinition requestMessage);
 
   public final Class<MessageDefinition> getRequestType() {
     return this.requestType;

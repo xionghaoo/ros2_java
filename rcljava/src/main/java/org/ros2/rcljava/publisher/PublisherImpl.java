@@ -77,13 +77,14 @@ public class PublisherImpl<T extends MessageDefinition> implements Publisher<T> 
    *     structure, as an integer. Must not be zero.
    * @param message An instance of the &lt;T&gt; parameter.
    */
-  private static native <T extends MessageDefinition> void nativePublish(long handle, T message);
+  private static native <T extends MessageDefinition> void nativePublish(
+      long handle, long messageDestructor, T message);
 
   /**
    * {@inheritDoc}
    */
   public final void publish(final T message) {
-    nativePublish(this.handle, message);
+    nativePublish(this.handle, message.getDestructorInstance(), message);
   }
 
   /**

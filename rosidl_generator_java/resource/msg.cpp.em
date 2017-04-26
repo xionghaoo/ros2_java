@@ -22,6 +22,8 @@ static_assert(sizeof(jlong) >= sizeof(std::intptr_t), "jlong must be able to sto
 
 @#JNI performance tips taken from http://planet.jboss.org/post/jni_performance_the_saga_continues
 
+using rcljava_common::exceptions::rcljava_throw_exception;
+
 @{
 
 from collections import defaultdict
@@ -167,6 +169,14 @@ JNIEXPORT jlong JNICALL Java_@(jni_package_name)_@(subfolder)_@(jni_type_name)_g
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_@(jni_package_name)_@(subfolder)_@(jni_type_name)_getTypeSupport
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     @(jni_package_name)_@(subfolder)_@(type_name)
+ * Method:    getDestructor
+ * Signature: ()J
+ */
+JNIEXPORT jlong JNICALL Java_@(jni_package_name)_@(subfolder)_@(jni_type_name)_getDestructor
   (JNIEnv *, jclass);
 
 #ifdef __cplusplus
@@ -515,5 +525,12 @@ JNIEXPORT jlong JNICALL Java_@(jni_package_name)_@(subfolder)_@(jni_type_name)_g
   (JNIEnv *, jclass)
 {
   jlong ptr = reinterpret_cast<jlong>(ROSIDL_GET_MSG_TYPE_SUPPORT(@(spec.base_type.pkg_name), @(subfolder), @(spec.msg_name)));
+  return ptr;
+}
+
+JNIEXPORT jlong JNICALL Java_@(jni_package_name)_@(subfolder)_@(jni_type_name)_getDestructor
+  (JNIEnv *, jclass)
+{
+  jlong ptr = reinterpret_cast<jlong>(@(msg_normalized_type)__destroy);
   return ptr;
 }

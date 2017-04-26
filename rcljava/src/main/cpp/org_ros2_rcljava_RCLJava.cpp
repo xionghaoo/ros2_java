@@ -29,6 +29,11 @@
 
 #include "org_ros2_rcljava_RCLJava.h"
 
+using rcljava_common::exceptions::rcljava_throw_exception;
+using rcljava_common::signatures::convert_from_java_signature;
+using rcljava_common::signatures::convert_to_java_signature;
+using rcljava_common::signatures::destroy_ros_message_signature;
+
 jobject convert_rmw_request_id_to_java(JNIEnv *, rmw_request_id_t *);
 
 rmw_request_id_t * convert_rmw_request_id_from_java(JNIEnv *, jobject);
@@ -160,8 +165,14 @@ Java_org_ros2_rcljava_RCLJava_nativeTake(
   jmethodID jfrom_mid = env->GetStaticMethodID(jmessage_class, "getFromJavaConverter", "()J");
   jlong jfrom_java_converter = env->CallStaticLongMethod(jmessage_class, jfrom_mid);
 
+  jmethodID jdestructor_mid = env->GetStaticMethodID(jmessage_class, "getDestructor", "()J");
+  jlong jdestructor_handle = env->CallStaticLongMethod(jmessage_class, jdestructor_mid);
+
   convert_from_java_signature convert_from_java =
     reinterpret_cast<convert_from_java_signature>(jfrom_java_converter);
+
+  destroy_ros_message_signature destroy_ros_message =
+    reinterpret_cast<destroy_ros_message_signature>(jdestructor_handle);
 
   jmethodID jconstructor = env->GetMethodID(jmessage_class, "<init>", "()V");
   jobject jmsg = env->NewObject(jmessage_class, jconstructor);
@@ -171,6 +182,8 @@ Java_org_ros2_rcljava_RCLJava_nativeTake(
   rcl_ret_t ret = rcl_take(subscription, taken_msg, nullptr);
 
   if (ret != RCL_RET_OK && ret != RCL_RET_SUBSCRIPTION_TAKE_FAILED) {
+    destroy_ros_message(taken_msg);
+
     rcljava_throw_exception(
       env, "java/lang/IllegalStateException",
       "Failed to take from a subscription: " + std::string(rcl_get_error_string_safe()));
@@ -186,8 +199,12 @@ Java_org_ros2_rcljava_RCLJava_nativeTake(
 
     jobject jtaken_msg = convert_to_java(taken_msg, nullptr);
 
+    destroy_ros_message(taken_msg);
+
     return jtaken_msg;
   }
+
+  destroy_ros_message(taken_msg);
 
   return nullptr;
 }
@@ -259,7 +276,7 @@ Java_org_ros2_rcljava_RCLJava_nativeWaitSetAddClient(
 JNIEXPORT jobject JNICALL
 Java_org_ros2_rcljava_RCLJava_nativeTakeRequest(
   JNIEnv * env, jclass, jlong service_handle, jlong jrequest_from_java_converter_handle,
-  jlong jrequest_to_java_converter_handle, jobject jrequest_msg)
+  jlong jrequest_to_java_converter_handle, jlong jrequest_destructor_handle, jobject jrequest_msg)
 {
   assert(service_handle != 0);
   assert(jrequest_from_java_converter_handle != 0);
@@ -274,6 +291,9 @@ Java_org_ros2_rcljava_RCLJava_nativeTakeRequest(
   convert_to_java_signature convert_to_java =
     reinterpret_cast<convert_to_java_signature>(jrequest_to_java_converter_handle);
 
+  destroy_ros_message_signature destroy_ros_message =
+    reinterpret_cast<destroy_ros_message_signature>(jrequest_destructor_handle);
+
   void * taken_msg = convert_from_java(jrequest_msg, nullptr);
 
   rmw_request_id_t header;
@@ -281,6 +301,8 @@ Java_org_ros2_rcljava_RCLJava_nativeTakeRequest(
   rcl_ret_t ret = rcl_take_request(service, &header, taken_msg);
 
   if (ret != RCL_RET_OK && ret != RCL_RET_SERVICE_TAKE_FAILED) {
+    destroy_ros_message(taken_msg);
+
     rcljava_throw_exception(
       env, "java/lang/IllegalStateException",
       "Failed to take request from a service: " + std::string(rcl_get_error_string_safe()));
@@ -290,11 +312,15 @@ Java_org_ros2_rcljava_RCLJava_nativeTakeRequest(
   if (ret != RCL_RET_SERVICE_TAKE_FAILED) {
     jobject jtaken_msg = convert_to_java(taken_msg, jrequest_msg);
 
+    destroy_ros_message(taken_msg);
+
     assert(jtaken_msg != nullptr);
 
     jobject jheader = convert_rmw_request_id_to_java(env, &header);
     return jheader;
   }
+
+  destroy_ros_message(taken_msg);
 
   return nullptr;
 }
@@ -303,11 +329,12 @@ JNIEXPORT void JNICALL
 Java_org_ros2_rcljava_RCLJava_nativeSendServiceResponse(
   JNIEnv * env, jclass, jlong service_handle, jobject jrequest_id,
   jlong jresponse_from_java_converter_handle, jlong jresponse_to_java_converter_handle,
-  jobject jresponse_msg)
+  jlong jresponse_destructor_handle, jobject jresponse_msg)
 {
   assert(service_handle != 0);
   assert(jresponse_from_java_converter_handle != 0);
   assert(jresponse_to_java_converter_handle != 0);
+  assert(jresponse_destructor_handle != 0);
   assert(jresponse_msg != nullptr);
 
   rcl_service_t * service = reinterpret_cast<rcl_service_t *>(service_handle);
@@ -321,6 +348,10 @@ Java_org_ros2_rcljava_RCLJava_nativeSendServiceResponse(
 
   rcl_ret_t ret = rcl_send_response(service, request_id, response_msg);
 
+  destroy_ros_message_signature destroy_ros_message =
+    reinterpret_cast<destroy_ros_message_signature>(jresponse_destructor_handle);
+  destroy_ros_message(response_msg);
+
   if (ret != RCL_RET_OK) {
     rcljava_throw_exception(
       env, "java/lang/IllegalStateException",
@@ -331,11 +362,13 @@ Java_org_ros2_rcljava_RCLJava_nativeSendServiceResponse(
 JNIEXPORT jobject JNICALL
 Java_org_ros2_rcljava_RCLJava_nativeTakeResponse(
   JNIEnv * env, jclass, jlong client_handle, jlong jresponse_from_java_converter_handle,
-  jlong jresponse_to_java_converter_handle, jobject jresponse_msg)
+  jlong jresponse_to_java_converter_handle, jlong jresponse_destructor_handle,
+  jobject jresponse_msg)
 {
   assert(client_handle != 0);
   assert(jresponse_from_java_converter_handle != 0);
   assert(jresponse_to_java_converter_handle != 0);
+  assert(jresponse_destructor_handle != 0);
   assert(jresponse_msg != nullptr);
 
   rcl_client_t * client = reinterpret_cast<rcl_client_t *>(client_handle);
@@ -346,6 +379,9 @@ Java_org_ros2_rcljava_RCLJava_nativeTakeResponse(
   convert_to_java_signature convert_to_java =
     reinterpret_cast<convert_to_java_signature>(jresponse_to_java_converter_handle);
 
+  destroy_ros_message_signature destroy_ros_message =
+    reinterpret_cast<destroy_ros_message_signature>(jresponse_destructor_handle);
+
   void * taken_msg = convert_from_java(jresponse_msg, nullptr);
 
   rmw_request_id_t header;
@@ -353,6 +389,8 @@ Java_org_ros2_rcljava_RCLJava_nativeTakeResponse(
   rcl_ret_t ret = rcl_take_response(client, &header, taken_msg);
 
   if (ret != RCL_RET_OK && ret != RCL_RET_CLIENT_TAKE_FAILED) {
+    destroy_ros_message(taken_msg);
+
     rcljava_throw_exception(
       env, "java/lang/IllegalStateException",
       "Failed to take request from a service: " + std::string(rcl_get_error_string_safe()));
@@ -362,11 +400,15 @@ Java_org_ros2_rcljava_RCLJava_nativeTakeResponse(
   if (ret != RCL_RET_CLIENT_TAKE_FAILED) {
     jobject jtaken_msg = convert_to_java(taken_msg, jresponse_msg);
 
+    destroy_ros_message(taken_msg);
+
     assert(jtaken_msg != nullptr);
 
     jobject jheader = convert_rmw_request_id_to_java(env, &header);
     return jheader;
   }
+
+  destroy_ros_message(taken_msg);
 
   return nullptr;
 }

@@ -31,20 +31,25 @@ public final class @(type_name) implements MessageDefinition {
     }
   }
 
+  public static native long getDestructor();
   public static native long getFromJavaConverter();
   public static native long getToJavaConverter();
   public static native long getTypeSupport();
 
+  public long getDestructorInstance() {
+    return @(type_name).getDestructor();
+  }
+
   public long getFromJavaConverterInstance() {
-    return getFromJavaConverter();
+    return @(type_name).getFromJavaConverter();
   }
 
   public long getToJavaConverterInstance() {
-    return getToJavaConverter();
+    return @(type_name).getToJavaConverter();
   }
 
   public long getTypeSupportInstance() {
-    return getTypeSupport();
+    return @(type_name).getTypeSupport();
   }
 
 @[for constant in spec.constants]@

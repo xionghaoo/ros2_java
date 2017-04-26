@@ -23,10 +23,10 @@ extern "C" {
 /*
  * Class:     org_ros2_rcljava_publisher_PublisherImpl
  * Method:    nativePublish
- * Signature: (JLorg/ros2/rcljava/interfaces/MessageDefinition;)V
+ * Signature: (JJLorg/ros2/rcljava/interfaces/MessageDefinition;)V
  */
-JNIEXPORT void JNICALL
-  Java_org_ros2_rcljava_publisher_PublisherImpl_nativePublish(JNIEnv *, jclass, jlong, jobject);
+JNIEXPORT void JNICALL Java_org_ros2_rcljava_publisher_PublisherImpl_nativePublish(
+  JNIEnv *, jclass, jlong, jlong, jobject);
 
 /*
  * Class:     org_ros2_rcljava_publisher_PublisherImpl

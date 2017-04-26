@@ -29,6 +29,8 @@
 
 #include "org_ros2_rcljava_service_ServiceImpl.h"
 
+using rcljava_common::exceptions::rcljava_throw_exception;
+
 JNIEXPORT void JNICALL
 Java_org_ros2_rcljava_service_ServiceImpl_nativeDispose(
   JNIEnv * env, jclass, jlong node_handle, jlong service_handle)

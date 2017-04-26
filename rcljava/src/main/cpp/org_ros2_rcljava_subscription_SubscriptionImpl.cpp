@@ -29,6 +29,8 @@
 
 #include "org_ros2_rcljava_subscription_SubscriptionImpl.h"
 
+using rcljava_common::exceptions::rcljava_throw_exception;
+
 JNIEXPORT void JNICALL
 Java_org_ros2_rcljava_subscription_SubscriptionImpl_nativeDispose(
   JNIEnv * env, jclass, jlong node_handle, jlong subscription_handle)

@@ -29,15 +29,20 @@
 
 #include "org_ros2_rcljava_client_ClientImpl.h"
 
+using rcljava_common::exceptions::rcljava_throw_exception;
+using rcljava_common::signatures::convert_from_java_signature;
+using rcljava_common::signatures::destroy_ros_message_signature;
+
 JNIEXPORT void JNICALL
 Java_org_ros2_rcljava_client_ClientImpl_nativeSendClientRequest(
   JNIEnv * env, jclass, jlong client_handle, jlong sequence_number,
   jlong jrequest_from_java_converter_handle, jlong jrequest_to_java_converter_handle,
-  jobject jrequest_msg)
+  jlong jrequest_destructor_handle, jobject jrequest_msg)
 {
   assert(client_handle != 0);
   assert(jrequest_from_java_converter_handle != 0);
   assert(jrequest_to_java_converter_handle != 0);
+  assert(jrequest_destructor_handle != 0);
   assert(jrequest_msg != nullptr);
 
   rcl_client_t * client = reinterpret_cast<rcl_client_t *>(client_handle);
@@ -48,6 +53,10 @@ Java_org_ros2_rcljava_client_ClientImpl_nativeSendClientRequest(
   void * request_msg = convert_from_java(jrequest_msg, nullptr);
 
   rcl_ret_t ret = rcl_send_request(client, request_msg, &sequence_number);
+
+  destroy_ros_message_signature destroy_ros_message =
+    reinterpret_cast<destroy_ros_message_signature>(jrequest_destructor_handle);
+  destroy_ros_message(request_msg);
 
   if (ret != RCL_RET_OK) {
     rcljava_throw_exception(
