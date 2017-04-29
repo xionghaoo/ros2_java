@@ -111,6 +111,10 @@ repositories:
     type: git
     url: https://github.com/ros2/system_tests.git
     version: master
+  ros2/tinyxml_vendor:
+    type: git
+    url: https://github.com/ros2/tinyxml_vendor.git
+    version: master
   ros2/tlsf:
     type: git
     url: https://github.com/ros2/tlsf.git
