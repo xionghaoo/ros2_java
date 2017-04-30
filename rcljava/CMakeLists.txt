@@ -127,6 +127,7 @@ ament_export_jars("share/${PROJECT_NAME}/java/${PROJECT_NAME}.jar")
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
+  find_package(std_msgs REQUIRED)
   ament_lint_auto_find_test_dependencies()
 
   set(${PROJECT_NAME}_message_files
