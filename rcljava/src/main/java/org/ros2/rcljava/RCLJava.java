@@ -85,11 +85,12 @@ public final class RCLJava {
       }
     };
 
-    Runtime.getRuntime().addShutdownHook(new Thread() {
-      public void run() {
-        cleanup();
-      }
-    });
+    // NOTE(esteve): disabling shutdown hook for now to avoid JVM crashes
+    // Runtime.getRuntime().addShutdownHook(new Thread() {
+    //   public void run() {
+    //     cleanup();
+    //   }
+    // });
   }
 
   /**
