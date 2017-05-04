@@ -50,10 +50,9 @@ endif()
 set(_output_path
   "${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_java/${PROJECT_NAME}")
 set(_generated_msg_java_files "")
-#set(_generated_msg_cpp_files "")
-#set(_generated_msg_cpp_common_files "")
 set(_generated_msg_cpp_ts_files "")
 set(_generated_srv_java_files "")
+set(_generated_srv_cpp_ts_files "")
 
 foreach(_idl_file ${rosidl_generate_interfaces_IDL_FILES})
   get_filename_component(_parent_folder "${_idl_file}" DIRECTORY)
@@ -136,7 +135,6 @@ set_property(
   PROPERTY GENERATED 1)
 
 add_custom_command(
-#  OUTPUT ${_generated_msg_cpp_common_files} ${_generated_msg_java_files} ${_generated_msg_cpp_ts_files} ${_generated_msg_cpp_files} ${_generated_srv_java_files}
   OUTPUT ${_generated_msg_java_files} ${_generated_msg_cpp_ts_files} ${_generated_srv_java_files} ${_generated_srv_cpp_ts_files}
   COMMAND ${PYTHON_EXECUTABLE} ${rosidl_generator_java_BIN}
   --generator-arguments-file "${generator_arguments_file}"
@@ -306,5 +304,35 @@ if(NOT rosidl_generate_interfaces_SKIP_INSTALL)
   if(NOT "${_generated_msg_java_files} " STREQUAL " " OR NOT "${_generated_srv_java_files} " STREQUAL " ")
     install_jar("${PROJECT_NAME}_messages_jar" "share/${PROJECT_NAME}/java")
     ament_export_jars("share/${PROJECT_NAME}/java/${PROJECT_NAME}_messages.jar")
+  endif()
+endif()
+
+if(BUILD_TESTING AND rosidl_generate_interfaces_ADD_LINTER_TESTS)
+  if(
+    NOT _generated_msg_java_files STREQUAL "" OR
+    NOT _generated_msg_cpp_ts_files STREQUAL "" OR
+    NOT _generated_srv_java_files STREQUAL "" OR
+    NOT _generated_srv_cpp_ts_files STREQUAL ""
+  )
+    find_package(ament_cmake_cppcheck REQUIRED)
+    ament_cppcheck(
+      TESTNAME "cppcheck_rosidl_generated_java"
+      "${_output_path}")
+
+    find_package(ament_cmake_cpplint REQUIRED)
+    get_filename_component(_cpplint_root "${_output_path}" DIRECTORY)
+    ament_cpplint(
+      TESTNAME "cpplint_rosidl_generated_java"
+      # the generated code might contain longer lines for templated types
+      MAX_LINE_LENGTH 999
+      ROOT "${_cpplint_root}"
+      "${_output_path}")
+
+    find_package(ament_cmake_uncrustify REQUIRED)
+    ament_uncrustify(
+      TESTNAME "uncrustify_rosidl_generated_java"
+      # the generated code might contain longer lines for templated types
+      MAX_LINE_LENGTH 999
+      "${_output_path}")
   endif()
 endif()

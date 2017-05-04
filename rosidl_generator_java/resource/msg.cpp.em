@@ -1,24 +1,26 @@
-#include <cstdint>
+// generated from rosidl_generator_java/resource/msg.cpp.em
+// generated code does not contain a copyright notice
+
 #include <jni.h>
+
+#include <cassert>
+#include <cstdint>
+#include <string>
 
 // Ensure that a jlong is big enough to store raw pointers
 static_assert(sizeof(jlong) >= sizeof(std::intptr_t), "jlong must be able to store pointers");
 
-#include <stdio.h>
-#include <cassert>
-#include <string>
+#include "@(spec.base_type.pkg_name)/@(subfolder)/@(module_name).h"
+#include "rosidl_generator_c/message_type_support_struct.h"
 
-#include <@(spec.base_type.pkg_name)/@(subfolder)/@(module_name).h>
-#include <rosidl_generator_c/message_type_support_struct.h>
+#include "rosidl_generator_c/string.h"
+#include "rosidl_generator_c/string_functions.h"
 
-#include <rosidl_generator_c/string.h>
-#include <rosidl_generator_c/string_functions.h>
+#include "rosidl_generator_c/primitives_array.h"
+#include "rosidl_generator_c/primitives_array_functions.h"
 
-#include <rosidl_generator_c/primitives_array.h>
-#include <rosidl_generator_c/primitives_array_functions.h>
-
-#include <rcljava_common/exceptions.h>
-#include <rcljava_common/signatures.h>
+#include "rcljava_common/exceptions.h"
+#include "rcljava_common/signatures.h"
 
 @#JNI performance tips taken from http://planet.jboss.org/post/jni_performance_the_saga_continues
 
@@ -94,6 +96,8 @@ cache[msg_normalized_type] = msg_jni_type
 
 # We do not cache strings because java.lang.String behaves differently
 
+unique_fields = set()
+
 for field in spec.fields:
     if field.type.is_array:
         cache[list_normalized_type] = list_jni_type
@@ -104,48 +108,45 @@ for field in spec.fields:
 
     if not field.type.is_primitive_type():
         non_primitive_types.add(get_jni_type(field.type))
+        unique_fields.add((field.type.pkg_name, field.type.type))
 }@
 
-@[for field in spec.fields]@
-@[    if not field.type.is_primitive_type()]@
-#include <@(field.type.pkg_name)/msg/@(convert_camel_case_to_lower_case_underscore(field.type.type)).h>
-#include <@(field.type.pkg_name)/msg/@(convert_camel_case_to_lower_case_underscore(field.type.type))__functions.h>
-@[    end if]@
+@[for field_pkg_name, field_type in unique_fields]@
+#include "@(field_pkg_name)/msg/@(convert_camel_case_to_lower_case_underscore(field_type)).h"
+#include "@(field_pkg_name)/msg/@(convert_camel_case_to_lower_case_underscore(field_type))__functions.h"
 @[end for]@
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 // Initialize cached types in the anonymous namespace to avoid linking conflicts
-namespace {
-  JavaVM* g_vm = nullptr;
+namespace
+{
+JavaVM * g_vm = nullptr;
 
 @[for normalized_type, jni_type in cache.items()]@
-  jclass _j@(normalized_type)_class_global = nullptr;
-
+jclass _j@(normalized_type)_class_global = nullptr;
 @[if constructor_signatures[jni_type]]@
-  jmethodID _j@(normalized_type)_constructor_global = nullptr;
+jmethodID _j@(normalized_type)_constructor_global = nullptr;
 @[end if]@
 
 @[    if value_methods.get(jni_type)]@
-  jmethodID _j@(normalized_type)_value_global = nullptr;
+jmethodID _j@(normalized_type)_value_global = nullptr;
 @[    end if]@
 
 @[    if jni_type in non_primitive_types]@
-  jmethodID _j@(normalized_type)_from_java_converter_global = nullptr;
-  using _j@(normalized_type)_from_java_signature = @(normalized_type) * (*)(jobject, @(normalized_type) *);
-  jlong _j@(normalized_type)_from_java_converter_ptr_global = 0;
-  _j@(normalized_type)_from_java_signature _j@(normalized_type)_from_java_function = nullptr;
+jmethodID _j@(normalized_type)_from_java_converter_global = nullptr;
+using _j@(normalized_type)_from_java_signature = @(normalized_type) * (*)(jobject, @(normalized_type) *);
+jlong _j@(normalized_type)_from_java_converter_ptr_global = 0;
+_j@(normalized_type)_from_java_signature _j@(normalized_type)_from_java_function = nullptr;
 
-  jmethodID _j@(normalized_type)_to_java_converter_global = nullptr;
-  using _j@(normalized_type)_to_java_signature = jobject (*)(@(normalized_type) *, jobject);
-  jlong _j@(normalized_type)_to_java_converter_ptr_global = 0;
-  _j@(normalized_type)_to_java_signature _j@(normalized_type)_to_java_function = nullptr;
+jmethodID _j@(normalized_type)_to_java_converter_global = nullptr;
+using _j@(normalized_type)_to_java_signature = jobject (*)(@(normalized_type) *, jobject);
+jlong _j@(normalized_type)_to_java_converter_ptr_global = 0;
+_j@(normalized_type)_to_java_signature _j@(normalized_type)_to_java_function = nullptr;
 @[    end if]@
-
 @[end for]@
-}
+}  // namespace
 
 /*
  * Class:     @(jni_package_name)_@(subfolder)_@(type_name)
@@ -190,14 +191,13 @@ JNIEXPORT jlong JNICALL Java_@(jni_package_name)_@(subfolder)_@(jni_type_name)_g
 @(msg_normalized_type) * @(spec.base_type.pkg_name)_@(type_name)__convert_from_java(jobject, @(msg_normalized_type) * ros_message)
 @[end if]@
 {
-  JNIEnv *env = nullptr;
+  JNIEnv * env = nullptr;
   // TODO(esteve): check return status
   assert(g_vm != nullptr);
-  g_vm->GetEnv((void**)&env, JNI_VERSION_1_6);
+  g_vm->GetEnv(reinterpret_cast<void **>(&env), JNI_VERSION_1_6);
   assert(env != nullptr);
 
-  if (ros_message == nullptr)
-  {
+  if (ros_message == nullptr) {
     ros_message = @(msg_normalized_type)__create();
   }
 @[for field in spec.fields]@
@@ -236,7 +236,7 @@ normalized_type = get_normalized_type(field.type)
     auto _dest_@(field.name) = ros_message->@(field.name);
 @[        end if]@
 
-    for(jint i=0; i < _jlist_@(field.name)_size; ++i) {
+    for (jint i = 0; i < _jlist_@(field.name)_size; ++i) {
       auto element = env->CallObjectMethod(_jlist_@(field.name)_object, _jlist_@(field.name)_get_mid, i);
 @[        if field.type.is_primitive_type()]@
 @[            if field.type.type == 'string']@
@@ -305,14 +305,13 @@ jobject @(spec.base_type.pkg_name)_@(type_name)__convert_to_java(@(msg_normalize
 jobject @(spec.base_type.pkg_name)_@(type_name)__convert_to_java(@(msg_normalized_type) *, jobject _jmessage_obj)
 @[end if]@
 {
-  JNIEnv *env = nullptr;
+  JNIEnv * env = nullptr;
   // TODO(esteve): check return status
   assert(g_vm != nullptr);
-  g_vm->GetEnv((void**)&env, JNI_VERSION_1_6);
+  g_vm->GetEnv(reinterpret_cast<void **>(&env), JNI_VERSION_1_6);
   assert(env != nullptr);
 
-  if (_jmessage_obj == nullptr)
-  {
+  if (_jmessage_obj == nullptr) {
     _jmessage_obj = env->NewObject(_j@(msg_normalized_type)_class_global, _j@(msg_normalized_type)_constructor_global);
   }
 @[for field in spec.fields]@
@@ -324,10 +323,10 @@ normalized_type = get_normalized_type(field.type)
   auto _jfield_@(field.name)_fid = env->GetFieldID(_j@(msg_normalized_type)_class_global, "@(field.name)", "L@(list_jni_type);");
   jobject _jarray_list_@(field.name)_obj = env->NewObject(_j@(array_list_normalized_type)_class_global, _j@(array_list_normalized_type)_constructor_global);
 @[            if field.type.array_size and not field.type.is_upper_bound]@
-  for(size_t i = 0; i < @(field.type.array_size); ++i) {
+  for (size_t i = 0; i < @(field.type.array_size); ++i) {
     auto _ros_@(field.name)_element = _ros_message->@(field.name)[i];
 @[            else]@
-  for(size_t i = 0; i < _ros_message->@(field.name).size; ++i) {
+  for (size_t i = 0; i < _ros_message->@(field.name).size; ++i) {
     auto _ros_@(field.name)_element = _ros_message->@(field.name).data[i];
 @[            end if]@
 @[                if field.type.type == 'string']@
@@ -353,11 +352,11 @@ normalized_type = get_normalized_type(field.type)
   jobject _jarray_list_@(field.name)_obj = env->NewObject(_j@(array_list_normalized_type)_class_global, _j@(array_list_normalized_type)_constructor_global);
 
 @[          if field.type.array_size and not field.type.is_upper_bound]@
-  for(size_t i = 0; i < @(field.type.array_size); ++i) {
-  jobject _jlist_@(field.name)_element = _j@(normalized_type)_to_java_function(&(_ros_message->@(field.name)[i]), nullptr);
+  for (size_t i = 0; i < @(field.type.array_size); ++i) {
+    jobject _jlist_@(field.name)_element = _j@(normalized_type)_to_java_function(&(_ros_message->@(field.name)[i]), nullptr);
 @[          else]@
-  for(size_t i = 0; i < _ros_message->@(field.name).size; ++i) {
-  jobject _jlist_@(field.name)_element = _j@(normalized_type)_to_java_function(&(_ros_message->@(field.name).data[i]), nullptr);
+  for (size_t i = 0; i < _ros_message->@(field.name).size; ++i) {
+    jobject _jlist_@(field.name)_element = _j@(normalized_type)_to_java_function(&(_ros_message->@(field.name).data[i]), nullptr);
 @[          end if]@
     // TODO(esteve): replace ArrayList with a jobjectArray to initialize the array beforehand
     jmethodID _jlist_@(field.name)_add_mid = env->GetMethodID(_j@(array_list_normalized_type)_class_global, "add", "(Ljava/lang/Object;)Z");
@@ -365,7 +364,6 @@ normalized_type = get_normalized_type(field.type)
       jboolean _jlist_@(field.name)_add_result = env->CallBooleanMethod(_jarray_list_@(field.name)_obj, _jlist_@(field.name)_add_mid, _jlist_@(field.name)_element);
       assert(_jlist_@(field.name)_add_result);
     }
-
   }
 @[        end if]@
   env->SetObjectField(_jmessage_obj, _jfield_@(field.name)_fid, _jarray_list_@(field.name)_obj);
@@ -375,7 +373,7 @@ normalized_type = get_normalized_type(field.type)
 @[            if field.type.type == 'string']@
   auto _jfield_@(field.name)_fid = env->GetFieldID(_j@(msg_normalized_type)_class_global, "@(field.name)", "Ljava/lang/String;");
   if (_ros_message->@(field.name).data != nullptr) {
-      env->SetObjectField(_jmessage_obj, _jfield_@(field.name)_fid, env->NewStringUTF(_ros_message->@(field.name).data));
+    env->SetObjectField(_jmessage_obj, _jfield_@(field.name)_fid, env->NewStringUTF(_ros_message->@(field.name).data));
   }
 @[            else]@
 @{
@@ -394,23 +392,21 @@ set_method_name = 'Set%sField' % get_java_type(field.type, use_primitives=True).
 
   env->SetObjectField(_jmessage_obj, _jfield_@(field.name)_fid, _jfield_@(field.name)_obj);
 @[        end if]@
-
 @[    end if]@
 @[end for]@
   assert(_jmessage_obj != nullptr);
   return _jmessage_obj;
 }
 
-JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void*)
+JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM * vm, void *)
 {
   // Can only call this once
-  if(g_vm == nullptr) {
+  if (g_vm == nullptr) {
     g_vm = vm;
   }
 
-  JNIEnv* env;
-  if(g_vm->GetEnv(reinterpret_cast<void**>(&env), JNI_VERSION_1_6) != JNI_OK)
-  {
+  JNIEnv * env;
+  if (g_vm->GetEnv(reinterpret_cast<void **>(&env), JNI_VERSION_1_6) != JNI_OK) {
     return JNI_ERR;
   } else {
 @[for normalized_type, jni_type in cache.items()]@
@@ -419,23 +415,19 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void*)
     _j@(normalized_type)_class_global = static_cast<jclass>(env->NewGlobalRef(_j@(normalized_type)_class_local));
     env->DeleteLocalRef(_j@(normalized_type)_class_local);
     assert(_j@(normalized_type)_class_global != nullptr);
-
 @[if constructor_signatures[jni_type]]@
     _j@(normalized_type)_constructor_global = env->GetMethodID(_j@(normalized_type)_class_global, "<init>", "@(constructor_signatures[jni_type])");
     assert(_j@(normalized_type)_constructor_global != nullptr);
 @[end if]@
-
 @{
 value_method = value_methods.get(jni_type)
 if value_method:
     value_method_name, value_method_signature = value_method
 }@
-
 @[    if value_method]@
     _j@(normalized_type)_value_global = env->GetMethodID(_j@(normalized_type)_class_global, "@(value_method_name)", "@(value_method_signature)");
     assert(_j@(normalized_type)_value_global != nullptr);
 @[    end if]@
-
 @[    if jni_type in non_primitive_types]@
     _j@(normalized_type)_from_java_converter_global = env->GetStaticMethodID(
       _j@(normalized_type)_class_global, "getFromJavaConverter", "()J");
@@ -460,38 +452,29 @@ if value_method:
     _j@(normalized_type)_to_java_function =
       reinterpret_cast<_j@(normalized_type)_to_java_signature>(_j@(normalized_type)_to_java_converter_ptr_global);
     assert(_j@(normalized_type)_to_java_function != nullptr);
-
-
 @[    end if]@
-
-
 @[end for]@
   }
   return JNI_VERSION_1_6;
 }
 
-JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void*)
+JNIEXPORT void JNICALL JNI_OnUnload(JavaVM * vm, void *)
 {
   assert(g_vm != nullptr);
   assert(g_vm == vm);
 
-  JNIEnv* env;
-  if(g_vm->GetEnv(reinterpret_cast<void**>(&env), JNI_VERSION_1_6) == JNI_OK)
-  {
+  JNIEnv * env;
+  if (g_vm->GetEnv(reinterpret_cast<void **>(&env), JNI_VERSION_1_6) == JNI_OK) {
 @[for normalized_type, jni_type in cache.items()]@
-    if(_j@(normalized_type)_class_global != nullptr)
-    {
+    if (_j@(normalized_type)_class_global != nullptr) {
       env->DeleteGlobalRef(_j@(normalized_type)_class_global);
       _j@(normalized_type)_class_global = nullptr;
-
 @[    if constructor_signatures[jni_type]]@
       _j@(normalized_type)_constructor_global = nullptr;
 @[    end if]@
-
 @[    if value_methods.get(jni_type)]@
       _j@(normalized_type)_value_global = nullptr;
 @[    end if]@
-
 @[    if jni_type in non_primitive_types]@
       _j@(normalized_type)_from_java_converter_global = nullptr;
       _j@(normalized_type)_from_java_converter_ptr_global = 0;
@@ -501,35 +484,30 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void*)
       _j@(normalized_type)_to_java_converter_ptr_global = 0;
       _j@(normalized_type)_to_java_function = nullptr;
 @[    end if]@
-
     }
 @[end for]@
   }
 }
 
-JNIEXPORT jlong JNICALL Java_@(jni_package_name)_@(subfolder)_@(jni_type_name)_getFromJavaConverter
-  (JNIEnv *, jclass)
+JNIEXPORT jlong JNICALL Java_@(jni_package_name)_@(subfolder)_@(jni_type_name)_getFromJavaConverter(JNIEnv *, jclass)
 {
   jlong ptr = reinterpret_cast<jlong>(&@(spec.base_type.pkg_name)_@(type_name)__convert_from_java);
   return ptr;
 }
 
-JNIEXPORT jlong JNICALL Java_@(jni_package_name)_@(subfolder)_@(jni_type_name)_getToJavaConverter
-  (JNIEnv *, jclass)
+JNIEXPORT jlong JNICALL Java_@(jni_package_name)_@(subfolder)_@(jni_type_name)_getToJavaConverter(JNIEnv *, jclass)
 {
   jlong ptr = reinterpret_cast<jlong>(@(spec.base_type.pkg_name)_@(type_name)__convert_to_java);
   return ptr;
 }
 
-JNIEXPORT jlong JNICALL Java_@(jni_package_name)_@(subfolder)_@(jni_type_name)_getTypeSupport
-  (JNIEnv *, jclass)
+JNIEXPORT jlong JNICALL Java_@(jni_package_name)_@(subfolder)_@(jni_type_name)_getTypeSupport(JNIEnv *, jclass)
 {
   jlong ptr = reinterpret_cast<jlong>(ROSIDL_GET_MSG_TYPE_SUPPORT(@(spec.base_type.pkg_name), @(subfolder), @(spec.msg_name)));
   return ptr;
 }
 
-JNIEXPORT jlong JNICALL Java_@(jni_package_name)_@(subfolder)_@(jni_type_name)_getDestructor
-  (JNIEnv *, jclass)
+JNIEXPORT jlong JNICALL Java_@(jni_package_name)_@(subfolder)_@(jni_type_name)_getDestructor(JNIEnv *, jclass)
 {
   jlong ptr = reinterpret_cast<jlong>(@(msg_normalized_type)__destroy);
   return ptr;
