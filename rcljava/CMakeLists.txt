@@ -11,13 +11,14 @@ find_package(rmw_implementation_cmake REQUIRED)
 
 include(CrossCompilingExtra)
 
-if(ANDROID)
-  find_host_package(Java COMPONENTS Development)
+if(CMAKE_CROSSCOMPILING)
+  find_host_package(Java COMPONENTS Development REQUIRED)
 else()
-  find_package(Java COMPONENTS Development)
+  find_package(Java COMPONENTS Development REQUIRED)
+endif()
+if(NOT ANDROID)
   find_package(JNI REQUIRED)
 endif()
-
 include(UseJava)
 include(JavaExtra)
 

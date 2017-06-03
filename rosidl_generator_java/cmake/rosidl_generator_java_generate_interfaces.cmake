@@ -20,10 +20,12 @@ find_package(rcljava_common REQUIRED)
 
 include(CrossCompilingExtra)
 
-if(ANDROID)
+if(CMAKE_CROSSCOMPILING)
   find_host_package(Java COMPONENTS Development REQUIRED)
 else()
   find_package(Java COMPONENTS Development REQUIRED)
+endif()
+if(NOT ANDROID)
   find_package(JNI REQUIRED)
 endif()
 include(UseJava)

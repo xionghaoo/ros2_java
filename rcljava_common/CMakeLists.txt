@@ -11,10 +11,12 @@ list(INSERT CMAKE_MODULE_PATH 0 "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 
 include(CrossCompilingExtra)
 
-if(ANDROID)
+if(CMAKE_CROSSCOMPILING)
   find_host_package(Java COMPONENTS Development REQUIRED)
 else()
   find_package(Java COMPONENTS Development REQUIRED)
+endif()
+if(NOT ANDROID)
   find_package(JNI REQUIRED)
 endif()
 include(UseJava)

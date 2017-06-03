@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # Based on https://goo.gl/UsQN1c
-# Used a URL shortener to avoid complaints from link_cmake
+# Used a URL shortener to avoid complaints from lint_cmake
 
 # macro to find packages on the host OS
 macro( find_host_package )
