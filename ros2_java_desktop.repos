@@ -11,10 +11,6 @@ repositories:
     type: git
     url: https://github.com/ros/class_loader.git
     version: ros2
-  ros/poco_vendor:
-    type: git
-    url: https://github.com/ros2/poco_vendor.git
-    version: master
   ros2/ament_cmake_ros:
     type: git
     url: https://github.com/ros2/ament_cmake_ros.git
@@ -46,6 +42,10 @@ repositories:
   ros2/launch:
     type: git
     url: https://github.com/ros2/launch.git
+    version: master
+  ros2/poco_vendor:
+    type: git
+    url: https://github.com/ros2/poco_vendor.git
     version: master
   ros2/rcl:
     type: git
