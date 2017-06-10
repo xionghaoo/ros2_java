@@ -38,6 +38,7 @@ The current set of features include:
 - Support for publishers and subscriptions
 - Tunable Quality of Service (e.g. lossy networks, reliable delivery, etc.)
 - Clients and services
+- Timers
 - Support for Android
 
 Sounds great, how can I try this out?
@@ -135,17 +136,6 @@ git submodule update
 cd ~/ros2_android_ws
 . ~/ament_ws/install_isolated/local_setup.sh
 ament build --isolated --cmake-args \
-  -DPYTHON_EXECUTABLE=/usr/bin/python3 \
-  -DEPROSIMA_BUILD=ON -DCOMPILE_EXAMPLES=OFF \
-  -DCMAKE_FIND_ROOT_PATH="$HOME/ament_ws/install_isolated;$HOME/ros2_android_ws/install_isolated" \
-  -DANDROID_FUNCTION_LEVEL_LINKING=OFF \
-  -DANDROID_TOOLCHAIN_NAME=arm-linux-androideabi-clang -DANDROID_STL=gnustl_shared \
-  -DANDROID_ABI=armeabi-v7a \
-  -DANDROID_NDK=$HOME/android_ndk/android-ndk-r14 \
-  -DANDROID_NATIVE_API_LEVEL=android-21 \
-  -DCMAKE_TOOLCHAIN_FILE=$HOME/android_ndk/android-ndk-r14/build/cmake/android.toolchain.cmake \
-  -- \
-  --ament-cmake-args \
   -DPYTHON_EXECUTABLE=/usr/bin/python3 \
   -DEPROSIMA_BUILD=ON -DCOMPILE_EXAMPLES=OFF \
   -DCMAKE_FIND_ROOT_PATH="$HOME/ament_ws/install_isolated;$HOME/ros2_android_ws/install_isolated" \
