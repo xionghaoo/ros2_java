@@ -95,18 +95,18 @@ java org.ros2.rcljava.examples.Listener
 Client and Service
 ------------------
 
-Client:
-
-```
-. ~/ros2_java_ws/install_isolated/local_setup.sh
-java org.ros2.rcljava.examples.AddTwoIntsClient
-```
-
 Service:
 
 ```
 . ~/ros2_java_ws/install_isolated/local_setup.sh
 java org.ros2.rcljava.examples.AddTwoIntsService
+```
+
+Client:
+
+```
+. ~/ros2_java_ws/install_isolated/local_setup.sh
+java org.ros2.rcljava.examples.AddTwoIntsClient
 ```
 
 You can also combine any scenario where the talker/listener or client/service are written in Java, Python and C++ and they should talk to each other.
@@ -130,14 +130,11 @@ touch python_cmake_module/AMENT_IGNORE
 touch rosidl_generator_py/AMENT_IGNORE
 cd ~/ros2_android_ws/src/ros2/rosidl_typesupport
 patch -p1 < ../../ros2_java/ros2_java/rosidl_typesupport_ros2_android.patch
-cd ~/ros2_android_ws/src/eProsima/Fast-RTPS
-git submodule init
-git submodule update
 cd ~/ros2_android_ws
 . ~/ament_ws/install_isolated/local_setup.sh
 ament build --isolated --cmake-args \
   -DPYTHON_EXECUTABLE=/usr/bin/python3 \
-  -DEPROSIMA_BUILD=ON -DCOMPILE_EXAMPLES=OFF \
+  -DEPROSIMA_BUILD=ON \
   -DCMAKE_FIND_ROOT_PATH="$HOME/ament_ws/install_isolated;$HOME/ros2_android_ws/install_isolated" \
   -DANDROID_FUNCTION_LEVEL_LINKING=OFF \
   -DANDROID_TOOLCHAIN_NAME=arm-linux-androideabi-clang -DANDROID_STL=gnustl_shared \
