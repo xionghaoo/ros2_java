@@ -58,108 +58,6 @@ JNIEXPORT void JNICALL Java_org_ros2_rcljava_RCLJava_nativeShutdown(JNIEnv *, jc
 
 /*
  * Class:     org_ros2_rcljava_RCLJava
- * Method:    nativeGetZeroInitializedWaitSet
- * Signature: ()J
- */
-JNIEXPORT jlong JNICALL
-  Java_org_ros2_rcljava_RCLJava_nativeGetZeroInitializedWaitSet(JNIEnv *, jclass);
-
-/*
- * Class:     org_ros2_rcljava_RCLJava
- * Method:    nativeWaitSetInit
- * Signature: (JIIIII)V
- */
-JNIEXPORT void JNICALL Java_org_ros2_rcljava_RCLJava_nativeWaitSetInit(
-  JNIEnv *, jclass, jlong, jint, jint, jint, jint, jint);
-
-/*
- * Class:     org_ros2_rcljava_RCLJava
- * Method:    nativeWaitSetClearSubscriptions
- * Signature: (J)V
- */
-JNIEXPORT void JNICALL
-  Java_org_ros2_rcljava_RCLJava_nativeWaitSetClearSubscriptions(JNIEnv *, jclass, jlong);
-
-/*
- * Class:     org_ros2_rcljava_RCLJava
- * Method:    nativeWaitSetAddSubscription
- * Signature: (JJ)V
- */
-JNIEXPORT void JNICALL
-  Java_org_ros2_rcljava_RCLJava_nativeWaitSetAddSubscription(JNIEnv *, jclass, jlong, jlong);
-
-/*
- * Class:     org_ros2_rcljava_RCLJava
- * Method:    nativeWait
- * Signature: (J)V
- */
-JNIEXPORT void JNICALL Java_org_ros2_rcljava_RCLJava_nativeWait(JNIEnv *, jclass, jlong);
-
-/*
- * Class:     org_ros2_rcljava_RCLJava
- * Method:    nativeTake
- * Signature: (JLjava/lang/Class;)Lorg/ros2/rcljava/interfaces/MessageDefinition;
- */
-JNIEXPORT jobject JNICALL Java_org_ros2_rcljava_RCLJava_nativeTake(JNIEnv *, jclass, jlong, jclass);
-
-/*
- * Class:     org_ros2_rcljava_RCLJava
- * Method:    nativeWaitSetClearServices
- * Signature: (J)V
- */
-JNIEXPORT void JNICALL
-  Java_org_ros2_rcljava_RCLJava_nativeWaitSetClearServices(JNIEnv *, jclass, jlong);
-
-/*
- * Class:     org_ros2_rcljava_RCLJava
- * Method:    nativeWaitSetAddService
- * Signature: (JJ)V
- */
-JNIEXPORT void JNICALL
-  Java_org_ros2_rcljava_RCLJava_nativeWaitSetAddService(JNIEnv *, jclass, jlong, jlong);
-
-/*
- * Class:     org_ros2_rcljava_RCLJava
- * Method:    nativeWaitSetClearClients
- * Signature: (J)V
- */
-JNIEXPORT void JNICALL
-  Java_org_ros2_rcljava_RCLJava_nativeWaitSetClearClients(JNIEnv *, jclass, jlong);
-
-/*
- * Class:     org_ros2_rcljava_RCLJava
- * Method:    nativeWaitSetAddClient
- * Signature: (JJ)V
- */
-JNIEXPORT void JNICALL
-  Java_org_ros2_rcljava_RCLJava_nativeWaitSetAddClient(JNIEnv *, jclass, jlong, jlong);
-
-/*
- * Class:     org_ros2_rcljava_RCLJava
- * Method:    nativeTakeRequest
- * Signature: (JJJJLorg/ros2/rcljava/interfaces/MessageDefinition;)Lorg/ros2/rcljava/RMWRequestId;
- */
-JNIEXPORT jobject JNICALL Java_org_ros2_rcljava_RCLJava_nativeTakeRequest(
-  JNIEnv *, jclass, jlong, jlong, jlong, jlong, jobject);
-
-/*
- * Class:     org_ros2_rcljava_RCLJava
- * Method:    nativeSendServiceResponse
- * Signature: (JLorg/ros2/rcljava/RMWRequestId;JJJLorg/ros2/rcljava/interfaces/MessageDefinition;)V
- */
-JNIEXPORT void JNICALL Java_org_ros2_rcljava_RCLJava_nativeSendServiceResponse(
-  JNIEnv *, jclass, jlong, jobject, jlong, jlong, jlong, jobject);
-
-/*
- * Class:     org_ros2_rcljava_RCLJava
- * Method:    nativeTakeResponse
- * Signature: (JJJJLorg/ros2/rcljava/interfaces/MessageDefinition;)Lorg/ros2/rcljava/RMWRequestId;
- */
-JNIEXPORT jobject JNICALL Java_org_ros2_rcljava_RCLJava_nativeTakeResponse(
-  JNIEnv *, jclass, jlong, jlong, jlong, jlong, jobject);
-
-/*
- * Class:     org_ros2_rcljava_RCLJava
  * Method:    nativeConvertQoSProfileToHandle
  * Signature: (IIII)J
  */
@@ -173,22 +71,6 @@ JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_RCLJava_nativeConvertQoSProfileToH
  */
 JNIEXPORT void JNICALL
   Java_org_ros2_rcljava_RCLJava_nativeDisposeQoSProfile(JNIEnv *, jclass, jlong);
-
-/*
- * Class:     org_ros2_rcljava_RCLJava
- * Method:    nativeWaitSetClearTimers
- * Signature: (J)V
- */
-JNIEXPORT void JNICALL
-  Java_org_ros2_rcljava_RCLJava_nativeWaitSetClearTimers(JNIEnv *, jclass, jlong);
-
-/*
- * Class:     org_ros2_rcljava_RCLJava
- * Method:    nativeWaitSetAddTimer
- * Signature: (JJ)V
- */
-JNIEXPORT void JNICALL
-  Java_org_ros2_rcljava_RCLJava_nativeWaitSetAddTimer(JNIEnv *, jclass, jlong, jlong);
 
 #ifdef __cplusplus
 }

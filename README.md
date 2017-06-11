@@ -39,6 +39,7 @@ The current set of features include:
 - Tunable Quality of Service (e.g. lossy networks, reliable delivery, etc.)
 - Clients and services
 - Timers
+- Composition (i.e. more than one node per process)
 - Support for Android
 
 Sounds great, how can I try this out?

@@ -25,8 +25,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.ros2.rcljava.client.Client;
 import org.ros2.rcljava.common.JNIUtils;
+import org.ros2.rcljava.executors.SingleThreadedExecutor;
 import org.ros2.rcljava.interfaces.MessageDefinition;
 import org.ros2.rcljava.interfaces.ServiceDefinition;
+import org.ros2.rcljava.node.ExecutableNode;
 import org.ros2.rcljava.node.Node;
 import org.ros2.rcljava.node.NodeImpl;
 import org.ros2.rcljava.publisher.Publisher;
@@ -232,121 +234,28 @@ public final class RCLJava {
     return node;
   }
 
+  public static void spin(final Node node) {
+    SingleThreadedExecutor executor = new SingleThreadedExecutor();
+    ExecutableNode executableNode = new ExecutableNode() {
+      public Node getNode() {
+        return node;
+      }
+    };
+    executor.addNode(executableNode);
+    executor.spin();
+    executor.removeNode(executableNode);
+  }
+
   public static void spinOnce(final Node node) {
-    long waitSetHandle = nativeGetZeroInitializedWaitSet();
-
-    nativeWaitSetInit(waitSetHandle, node.getSubscriptions().size(), 0, node.getTimers().size(),
-        node.getClients().size(), node.getServices().size());
-
-    nativeWaitSetClearSubscriptions(waitSetHandle);
-
-    nativeWaitSetClearTimers(waitSetHandle);
-
-    nativeWaitSetClearServices(waitSetHandle);
-
-    nativeWaitSetClearClients(waitSetHandle);
-
-    for (Subscription<MessageDefinition> subscription : node.getSubscriptions()) {
-      nativeWaitSetAddSubscription(waitSetHandle, subscription.getHandle());
-    }
-
-    for (WallTimer timer : node.getTimers()) {
-      nativeWaitSetAddTimer(waitSetHandle, timer.getHandle());
-    }
-
-    for (Service<ServiceDefinition> service : node.getServices()) {
-      nativeWaitSetAddService(waitSetHandle, service.getHandle());
-    }
-
-    for (Client<ServiceDefinition> client : node.getClients()) {
-      nativeWaitSetAddClient(waitSetHandle, client.getHandle());
-    }
-
-    nativeWait(waitSetHandle);
-
-    for (Subscription<MessageDefinition> subscription : node.getSubscriptions()) {
-      MessageDefinition message =
-          nativeTake(subscription.getHandle(), subscription.getMessageType());
-      if (message != null) {
-        subscription.getCallback().accept(message);
+    SingleThreadedExecutor executor = new SingleThreadedExecutor();
+    ExecutableNode executableNode = new ExecutableNode() {
+      public Node getNode() {
+        return node;
       }
-    }
-
-    for (WallTimer timer : node.getTimers()) {
-      if (timer.isReady()) {
-        timer.callTimer();
-        timer.getCallback().call();
-      }
-    }
-
-    for (Service service : node.getServices()) {
-      Class<MessageDefinition> requestType = service.getRequestType();
-      Class<MessageDefinition> responseType = service.getResponseType();
-
-      MessageDefinition requestMessage = null;
-      MessageDefinition responseMessage = null;
-
-      try {
-        requestMessage = requestType.newInstance();
-        responseMessage = responseType.newInstance();
-      } catch (InstantiationException ie) {
-        ie.printStackTrace();
-        continue;
-      } catch (IllegalAccessException iae) {
-        iae.printStackTrace();
-        continue;
-      }
-
-      long requestFromJavaConverterHandle = requestMessage.getFromJavaConverterInstance();
-      long requestToJavaConverterHandle = requestMessage.getToJavaConverterInstance();
-      long requestDestructorHandle = requestMessage.getDestructorInstance();
-      long responseFromJavaConverterHandle = responseMessage.getFromJavaConverterInstance();
-      long responseToJavaConverterHandle = responseMessage.getToJavaConverterInstance();
-      long responseDestructorHandle = responseMessage.getDestructorInstance();
-
-      RMWRequestId rmwRequestId =
-          nativeTakeRequest(service.getHandle(), requestFromJavaConverterHandle,
-              requestToJavaConverterHandle, requestDestructorHandle, requestMessage);
-      if (rmwRequestId != null) {
-        service.getCallback().accept(rmwRequestId, requestMessage, responseMessage);
-        nativeSendServiceResponse(service.getHandle(), rmwRequestId,
-            responseFromJavaConverterHandle, responseToJavaConverterHandle,
-            responseDestructorHandle, responseMessage);
-      }
-    }
-
-    for (Client<ServiceDefinition> client : node.getClients()) {
-      Class<MessageDefinition> requestType = client.getRequestType();
-      Class<MessageDefinition> responseType = client.getResponseType();
-
-      MessageDefinition requestMessage = null;
-      MessageDefinition responseMessage = null;
-
-      try {
-        requestMessage = requestType.newInstance();
-        responseMessage = responseType.newInstance();
-      } catch (InstantiationException ie) {
-        ie.printStackTrace();
-        continue;
-      } catch (IllegalAccessException iae) {
-        iae.printStackTrace();
-        continue;
-      }
-
-      long requestFromJavaConverterHandle = requestMessage.getFromJavaConverterInstance();
-      long requestToJavaConverterHandle = requestMessage.getToJavaConverterInstance();
-      long responseFromJavaConverterHandle = responseMessage.getFromJavaConverterInstance();
-      long responseToJavaConverterHandle = responseMessage.getToJavaConverterInstance();
-      long responseDestructorHandle = responseMessage.getDestructorInstance();
-
-      RMWRequestId rmwRequestId =
-          nativeTakeResponse(client.getHandle(), responseFromJavaConverterHandle,
-              responseToJavaConverterHandle, responseDestructorHandle, responseMessage);
-
-      if (rmwRequestId != null) {
-        client.handleResponse(rmwRequestId, responseMessage);
-      }
-    }
+    };
+    executor.addNode(executableNode);
+    executor.spinOnce();
+    executor.removeNode(executableNode);
   }
 
   private static native void nativeShutdown();
@@ -355,45 +264,6 @@ public final class RCLJava {
     cleanup();
     nativeShutdown();
   }
-
-  private static native long nativeGetZeroInitializedWaitSet();
-
-  private static native void nativeWaitSetInit(long waitSetHandle, int numberOfSubscriptions,
-      int numberOfGuardConditions, int numberOfTimers, int numberOfClients, int numberOfServices);
-
-  private static native void nativeWaitSetClearSubscriptions(long waitSetHandle);
-
-  private static native void nativeWaitSetAddSubscription(
-      long waitSetHandle, long subscriptionHandle);
-
-  private static native void nativeWait(long waitSetHandle);
-
-  private static native MessageDefinition nativeTake(
-      long subscriptionHandle, Class<MessageDefinition> messageType);
-
-  private static native void nativeWaitSetClearTimers(long waitSetHandle);
-
-  private static native void nativeWaitSetClearServices(long waitSetHandle);
-
-  private static native void nativeWaitSetAddService(long waitSetHandle, long serviceHandle);
-
-  private static native void nativeWaitSetClearClients(long waitSetHandle);
-
-  private static native void nativeWaitSetAddClient(long waitSetHandle, long clientHandle);
-
-  private static native void nativeWaitSetAddTimer(long waitSetHandle, long timerHandle);
-
-  private static native RMWRequestId nativeTakeRequest(long serviceHandle,
-      long requestFromJavaConverterHandle, long requestToJavaConverterHandle,
-      long requestDestructorHandle, MessageDefinition requestMessage);
-
-  private static native void nativeSendServiceResponse(long serviceHandle, RMWRequestId header,
-      long responseFromJavaConverterHandle, long responseToJavaConverterHandle,
-      long responseDestructorHandle, MessageDefinition responseMessage);
-
-  private static native RMWRequestId nativeTakeResponse(long clientHandle,
-      long responseFromJavaConverterHandle, long responseToJavaConverterHandle,
-      long responseDestructorHandle, MessageDefinition responseMessage);
 
   public static long convertQoSProfileToHandle(final QoSProfile qosProfile) {
     int history = qosProfile.getHistory().getValue();

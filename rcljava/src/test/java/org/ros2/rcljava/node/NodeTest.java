@@ -33,6 +33,9 @@ import java.util.List;
 import org.ros2.rcljava.RCLJava;
 import org.ros2.rcljava.concurrent.RCLFuture;
 import org.ros2.rcljava.consumers.Consumer;
+import org.ros2.rcljava.executors.Executor;
+import org.ros2.rcljava.executors.MultiThreadedExecutor;
+import org.ros2.rcljava.executors.SingleThreadedExecutor;
 import org.ros2.rcljava.node.Node;
 import org.ros2.rcljava.publisher.Publisher;
 import org.ros2.rcljava.subscription.Subscription;
@@ -779,5 +782,72 @@ public class NodeTest {
     assertEquals(0, publisher.getHandle());
     subscription.dispose();
     assertEquals(0, subscription.getHandle());
+  }
+
+  @Test
+  public final void testPubUInt32MultipleNodes() throws Exception {
+    Executor executor = new MultiThreadedExecutor();
+
+    final Node publisherNode = RCLJava.createNode("publisher_node");
+    final Node subscriptionNodeOne = RCLJava.createNode("subscription_node_one");
+    final Node subscriptionNodeTwo = RCLJava.createNode("subscription_node_two");
+
+    Publisher<rcljava.msg.UInt32> publisher = publisherNode.<rcljava.msg.UInt32>createPublisher(
+        rcljava.msg.UInt32.class, "test_topic_multiple");
+
+    RCLFuture<rcljava.msg.UInt32> futureOne = new RCLFuture<rcljava.msg.UInt32>(executor);
+
+    Subscription<rcljava.msg.UInt32> subscriptionOne =
+        subscriptionNodeOne.<rcljava.msg.UInt32>createSubscription(rcljava.msg.UInt32.class,
+            "test_topic_multiple", new TestConsumer<rcljava.msg.UInt32>(futureOne));
+
+    RCLFuture<rcljava.msg.UInt32> futureTwo = new RCLFuture<rcljava.msg.UInt32>(executor);
+
+    Subscription<rcljava.msg.UInt32> subscriptionTwo =
+        subscriptionNodeTwo.<rcljava.msg.UInt32>createSubscription(rcljava.msg.UInt32.class,
+            "test_topic_multiple", new TestConsumer<rcljava.msg.UInt32>(futureTwo));
+
+    rcljava.msg.UInt32 msg = new rcljava.msg.UInt32();
+    msg.setData(54321);
+
+    ExecutableNode executablePublisherNode = new ExecutableNode() {
+      public Node getNode() {
+        return publisherNode;
+      }
+    };
+
+    ExecutableNode executableSubscriptionNodeOne = new ExecutableNode() {
+      public Node getNode() {
+        return subscriptionNodeOne;
+      }
+    };
+
+    ExecutableNode executableSubscriptionNodeTwo = new ExecutableNode() {
+      public Node getNode() {
+        return subscriptionNodeTwo;
+      }
+    };
+
+    executor.addNode(executablePublisherNode);
+    executor.addNode(executableSubscriptionNodeOne);
+    executor.addNode(executableSubscriptionNodeTwo);
+
+    while (RCLJava.ok() && !futureOne.isDone() && !futureTwo.isDone()) {
+      publisher.publish(msg);
+      executor.spinOnce();
+    }
+
+    rcljava.msg.UInt32 valueOne = futureOne.get();
+    assertEquals(54321, valueOne.getData());
+
+    rcljava.msg.UInt32 valueTwo = futureTwo.get();
+    assertEquals(54321, valueTwo.getData());
+
+    publisher.dispose();
+    assertEquals(0, publisher.getHandle());
+    subscriptionOne.dispose();
+    assertEquals(0, subscriptionOne.getHandle());
+    subscriptionTwo.dispose();
+    assertEquals(0, subscriptionTwo.getHandle());
   }
 }

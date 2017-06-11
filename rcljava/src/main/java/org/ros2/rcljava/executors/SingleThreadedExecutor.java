@@ -1,0 +1,45 @@
+/* Copyright 2017 Esteve Fernandez <esteve@apache.org>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.ros2.rcljava.executors;
+
+import org.ros2.rcljava.RCLJava;
+import org.ros2.rcljava.node.ExecutableNode;
+import org.ros2.rcljava.executors.BaseExecutor;
+
+public class SingleThreadedExecutor implements Executor {
+  private BaseExecutor baseExecutor = new BaseExecutor();
+
+  public void addNode(ExecutableNode node) {
+    this.baseExecutor.addNode(node);
+  }
+
+  public void removeNode(ExecutableNode node) {
+    this.baseExecutor.removeNode(node);
+  }
+
+  public void spinOnce() {
+    this.baseExecutor.spinOnce();
+  }
+
+  public void spin() {
+    while (RCLJava.ok()) {
+      AnyExecutable anyExecutable = this.baseExecutor.getNextExecutable();
+      if (anyExecutable != null) {
+        this.baseExecutor.executeAnyExecutable(anyExecutable);
+      }
+    }
+  }
+}

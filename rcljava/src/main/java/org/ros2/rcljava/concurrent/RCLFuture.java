@@ -22,27 +22,39 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.ros2.rcljava.RCLJava;
+import org.ros2.rcljava.executors.Executor;
 import org.ros2.rcljava.node.Node;
 
 public class RCLFuture<V> implements Future<V> {
   private WeakReference<Node> nodeReference;
   private boolean done = false;
   private V value = null;
+  private Executor executor = null;
 
   public RCLFuture(final WeakReference<Node> nodeReference) {
     this.nodeReference = nodeReference;
   }
 
-  public final V get() throws InterruptedException, ExecutionException {
-    while (RCLJava.ok() && !isDone()) {
-      Node node = nodeReference.get();
-      if (node == null) {
-        return null; // TODO(esteve) do something
-      }
+  public RCLFuture(final Executor executor) {
+    this.executor = executor;
+  }
 
-      RCLJava.spinOnce(node);
+  public final V get() throws InterruptedException, ExecutionException {
+    if(this.value != null) {
+      return this.value;
     }
-    return value;
+    while (RCLJava.ok() && !isDone()) {
+      if (executor != null) {
+        executor.spinOnce();
+      } else {
+        Node node = nodeReference.get();
+        if (node == null) {
+          return null; // TODO(esteve) do something
+        }
+        RCLJava.spinOnce(node);
+      }
+    }
+    return this.value;
   }
 
   public final V get(final long timeout, final TimeUnit unit)
@@ -60,12 +72,15 @@ public class RCLFuture<V> implements Future<V> {
     }
 
     while (RCLJava.ok()) {
-      Node node = nodeReference.get();
-      if (node == null) {
-        return null; // TODO(esteve) do something
+      if (executor != null) {
+        executor.spinOnce();
+      } else {
+        Node node = nodeReference.get();
+        if (node == null) {
+          return null; // TODO(esteve) do something
+        }
+        RCLJava.spinOnce(node);
       }
-
-      RCLJava.spinOnce(node);
 
       if (isDone()) {
         return value;
