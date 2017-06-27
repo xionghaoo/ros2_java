@@ -29,7 +29,7 @@
 
 #include "org_ros2_rcljava_client_ClientImpl.h"
 
-using rcljava_common::exceptions::rcljava_throw_exception;
+using rcljava_common::exceptions::rcljava_throw_rclexception;
 using rcljava_common::signatures::convert_from_java_signature;
 using rcljava_common::signatures::destroy_ros_message_signature;
 
@@ -59,8 +59,8 @@ Java_org_ros2_rcljava_client_ClientImpl_nativeSendClientRequest(
   destroy_ros_message(request_msg);
 
   if (ret != RCL_RET_OK) {
-    rcljava_throw_exception(
-      env, "java/lang/IllegalStateException",
+    rcljava_throw_rclexception(
+      env, ret,
       "Failed to send request from a client: " + std::string(rcl_get_error_string_safe()));
   }
 }
@@ -90,8 +90,7 @@ Java_org_ros2_rcljava_client_ClientImpl_nativeDispose(
   rcl_ret_t ret = rcl_client_fini(client, node);
 
   if (ret != RCL_RET_OK) {
-    rcljava_throw_exception(
-      env, "java/lang/IllegalStateException",
-      "Failed to destroy client: " + std::string(rcl_get_error_string_safe()));
+    rcljava_throw_rclexception(
+      env, ret, "Failed to destroy client: " + std::string(rcl_get_error_string_safe()));
   }
 }

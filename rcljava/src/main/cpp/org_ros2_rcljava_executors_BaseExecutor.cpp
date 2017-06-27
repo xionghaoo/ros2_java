@@ -30,7 +30,7 @@
 
 #include "org_ros2_rcljava_executors_BaseExecutor.h"
 
-using rcljava_common::exceptions::rcljava_throw_exception;
+using rcljava_common::exceptions::rcljava_throw_rclexception;
 using rcljava_common::signatures::convert_from_java_signature;
 using rcljava_common::signatures::convert_to_java_signature;
 using rcljava_common::signatures::destroy_ros_message_signature;
@@ -60,9 +60,8 @@ Java_org_ros2_rcljava_executors_BaseExecutor_nativeWaitSetInit(
     wait_set, number_of_subscriptions, number_of_guard_conditions, number_of_timers,
     number_of_clients, number_of_services, rcl_get_default_allocator());
   if (ret != RCL_RET_OK) {
-    rcljava_throw_exception(
-      env, "java/lang/IllegalStateException",
-      "Failed to initialize wait set: " + std::string(rcl_get_error_string_safe()));
+    rcljava_throw_rclexception(
+      env, ret, "Failed to initialize wait set: " + std::string(rcl_get_error_string_safe()));
   }
 }
 
@@ -73,8 +72,8 @@ Java_org_ros2_rcljava_executors_BaseExecutor_nativeWaitSetClearSubscriptions(
   rcl_wait_set_t * wait_set = reinterpret_cast<rcl_wait_set_t *>(wait_set_handle);
   rcl_ret_t ret = rcl_wait_set_clear_subscriptions(wait_set);
   if (ret != RCL_RET_OK) {
-    rcljava_throw_exception(
-      env, "java/lang/IllegalStateException",
+    rcljava_throw_rclexception(
+      env, ret,
       "Failed to clear subscriptions from wait set: " + std::string(rcl_get_error_string_safe()));
   }
 }
@@ -87,8 +86,8 @@ Java_org_ros2_rcljava_executors_BaseExecutor_nativeWaitSetAddSubscription(
   rcl_subscription_t * subscription = reinterpret_cast<rcl_subscription_t *>(subscription_handle);
   rcl_ret_t ret = rcl_wait_set_add_subscription(wait_set, subscription);
   if (ret != RCL_RET_OK) {
-    rcljava_throw_exception(
-      env, "java/lang/IllegalStateException",
+    rcljava_throw_rclexception(
+      env, ret,
       "Failed to add subscription to wait set: " + std::string(rcl_get_error_string_safe()));
   }
 }
@@ -100,9 +99,8 @@ Java_org_ros2_rcljava_executors_BaseExecutor_nativeWait(
   rcl_wait_set_t * wait_set = reinterpret_cast<rcl_wait_set_t *>(wait_set_handle);
   rcl_ret_t ret = rcl_wait(wait_set, timeout);
   if (ret != RCL_RET_OK && ret != RCL_RET_TIMEOUT) {
-    rcljava_throw_exception(
-      env, "java/lang/IllegalStateException",
-      "Failed to wait on wait set: " + std::string(rcl_get_error_string_safe()));
+    rcljava_throw_rclexception(
+      env, ret, "Failed to wait on wait set: " + std::string(rcl_get_error_string_safe()));
   }
 }
 
@@ -134,9 +132,8 @@ Java_org_ros2_rcljava_executors_BaseExecutor_nativeTake(
   if (ret != RCL_RET_OK && ret != RCL_RET_SUBSCRIPTION_TAKE_FAILED) {
     destroy_ros_message(taken_msg);
 
-    rcljava_throw_exception(
-      env, "java/lang/IllegalStateException",
-      "Failed to take from a subscription: " + std::string(rcl_get_error_string_safe()));
+    rcljava_throw_rclexception(
+      env, ret, "Failed to take from a subscription: " + std::string(rcl_get_error_string_safe()));
     return nullptr;
   }
 
@@ -166,8 +163,8 @@ Java_org_ros2_rcljava_executors_BaseExecutor_nativeWaitSetClearTimers(
   rcl_wait_set_t * wait_set = reinterpret_cast<rcl_wait_set_t *>(wait_set_handle);
   rcl_ret_t ret = rcl_wait_set_clear_timers(wait_set);
   if (ret != RCL_RET_OK) {
-    rcljava_throw_exception(
-      env, "java/lang/IllegalStateException",
+    rcljava_throw_rclexception(
+      env, ret,
       "Failed to clear timers from wait set: " + std::string(rcl_get_error_string_safe()));
   }
 }
@@ -179,8 +176,8 @@ Java_org_ros2_rcljava_executors_BaseExecutor_nativeWaitSetClearServices(
   rcl_wait_set_t * wait_set = reinterpret_cast<rcl_wait_set_t *>(wait_set_handle);
   rcl_ret_t ret = rcl_wait_set_clear_services(wait_set);
   if (ret != RCL_RET_OK) {
-    rcljava_throw_exception(
-      env, "java/lang/IllegalStateException",
+    rcljava_throw_rclexception(
+      env, ret,
       "Failed to clear services from wait set: " + std::string(rcl_get_error_string_safe()));
   }
 }
@@ -193,9 +190,8 @@ Java_org_ros2_rcljava_executors_BaseExecutor_nativeWaitSetAddService(
   rcl_service_t * service = reinterpret_cast<rcl_service_t *>(service_handle);
   rcl_ret_t ret = rcl_wait_set_add_service(wait_set, service);
   if (ret != RCL_RET_OK) {
-    rcljava_throw_exception(
-      env, "java/lang/IllegalStateException",
-      "Failed to add service to wait set: " + std::string(rcl_get_error_string_safe()));
+    rcljava_throw_rclexception(
+      env, ret, "Failed to add service to wait set: " + std::string(rcl_get_error_string_safe()));
   }
 }
 
@@ -206,8 +202,8 @@ Java_org_ros2_rcljava_executors_BaseExecutor_nativeWaitSetClearClients(
   rcl_wait_set_t * wait_set = reinterpret_cast<rcl_wait_set_t *>(wait_set_handle);
   rcl_ret_t ret = rcl_wait_set_clear_clients(wait_set);
   if (ret != RCL_RET_OK) {
-    rcljava_throw_exception(
-      env, "java/lang/IllegalStateException",
+    rcljava_throw_rclexception(
+      env, ret,
       "Failed to clear clients from wait set: " + std::string(rcl_get_error_string_safe()));
   }
 }
@@ -220,9 +216,8 @@ Java_org_ros2_rcljava_executors_BaseExecutor_nativeWaitSetAddClient(
   rcl_client_t * client = reinterpret_cast<rcl_client_t *>(client_handle);
   rcl_ret_t ret = rcl_wait_set_add_client(wait_set, client);
   if (ret != RCL_RET_OK) {
-    rcljava_throw_exception(
-      env, "java/lang/IllegalStateException",
-      "Failed to add client to wait set: " + std::string(rcl_get_error_string_safe()));
+    rcljava_throw_rclexception(
+      env, ret, "Failed to add client to wait set: " + std::string(rcl_get_error_string_safe()));
   }
 }
 
@@ -234,9 +229,8 @@ Java_org_ros2_rcljava_executors_BaseExecutor_nativeWaitSetAddTimer(
   rcl_timer_t * timer = reinterpret_cast<rcl_timer_t *>(timer_handle);
   rcl_ret_t ret = rcl_wait_set_add_timer(wait_set, timer);
   if (ret != RCL_RET_OK) {
-    rcljava_throw_exception(
-      env, "java/lang/IllegalStateException",
-      "Failed to add timer to wait set: " + std::string(rcl_get_error_string_safe()));
+    rcljava_throw_rclexception(
+      env, ret, "Failed to add timer to wait set: " + std::string(rcl_get_error_string_safe()));
   }
 }
 
@@ -270,8 +264,8 @@ Java_org_ros2_rcljava_executors_BaseExecutor_nativeTakeRequest(
   if (ret != RCL_RET_OK && ret != RCL_RET_SERVICE_TAKE_FAILED) {
     destroy_ros_message(taken_msg);
 
-    rcljava_throw_exception(
-      env, "java/lang/IllegalStateException",
+    rcljava_throw_rclexception(
+      env, ret,
       "Failed to take request from a service: " + std::string(rcl_get_error_string_safe()));
     return nullptr;
   }
@@ -320,8 +314,8 @@ Java_org_ros2_rcljava_executors_BaseExecutor_nativeSendServiceResponse(
   destroy_ros_message(response_msg);
 
   if (ret != RCL_RET_OK) {
-    rcljava_throw_exception(
-      env, "java/lang/IllegalStateException",
+    rcljava_throw_rclexception(
+      env, ret,
       "Failed to send response from a service: " + std::string(rcl_get_error_string_safe()));
   }
 }
@@ -358,8 +352,8 @@ Java_org_ros2_rcljava_executors_BaseExecutor_nativeTakeResponse(
   if (ret != RCL_RET_OK && ret != RCL_RET_CLIENT_TAKE_FAILED) {
     destroy_ros_message(taken_msg);
 
-    rcljava_throw_exception(
-      env, "java/lang/IllegalStateException",
+    rcljava_throw_rclexception(
+      env, ret,
       "Failed to take request from a service: " + std::string(rcl_get_error_string_safe()));
     return nullptr;
   }

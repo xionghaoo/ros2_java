@@ -29,7 +29,7 @@
 
 #include "org_ros2_rcljava_subscription_SubscriptionImpl.h"
 
-using rcljava_common::exceptions::rcljava_throw_exception;
+using rcljava_common::exceptions::rcljava_throw_rclexception;
 
 JNIEXPORT void JNICALL
 Java_org_ros2_rcljava_subscription_SubscriptionImpl_nativeDispose(
@@ -56,8 +56,7 @@ Java_org_ros2_rcljava_subscription_SubscriptionImpl_nativeDispose(
   rcl_ret_t ret = rcl_subscription_fini(subscription, node);
 
   if (ret != RCL_RET_OK) {
-    rcljava_throw_exception(
-      env, "java/lang/IllegalStateException",
-      "Failed to destroy subscription: " + std::string(rcl_get_error_string_safe()));
+    rcljava_throw_rclexception(
+      env, ret, "Failed to destroy subscription: " + std::string(rcl_get_error_string_safe()));
   }
 }

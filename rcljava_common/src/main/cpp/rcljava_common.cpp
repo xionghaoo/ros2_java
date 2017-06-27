@@ -23,6 +23,18 @@ namespace rcljava_common
 namespace exceptions
 {
 void
+rcljava_throw_rclexception(JNIEnv * env, int rcl_ret_code, const std::string & message)
+{
+  jclass rclexception_class = env->FindClass("org/ros2/rcljava/exceptions/RCLException");
+  jmethodID rclexception_init =
+    env->GetMethodID(rclexception_class, "<init>", "(ILjava/lang/String;)V");
+  jstring jmessage = env->NewStringUTF(message.c_str());
+  jthrowable rclexception = static_cast<jthrowable>(
+    env->NewObject(rclexception_class, rclexception_init, rcl_ret_code, jmessage));
+  env->Throw(rclexception);
+}
+
+void
 rcljava_throw_exception(JNIEnv * env, const char * class_name, const std::string & message)
 {
   jclass exception_class;

@@ -29,7 +29,7 @@
 
 #include "org_ros2_rcljava_publisher_PublisherImpl.h"
 
-using rcljava_common::exceptions::rcljava_throw_exception;
+using rcljava_common::exceptions::rcljava_throw_rclexception;
 using rcljava_common::signatures::convert_from_java_signature;
 using rcljava_common::signatures::destroy_ros_message_signature;
 
@@ -56,9 +56,8 @@ Java_org_ros2_rcljava_publisher_PublisherImpl_nativePublish(
   destroy_ros_message(raw_ros_message);
 
   if (ret != RCL_RET_OK) {
-    rcljava_throw_exception(
-      env, "java/lang/IllegalStateException",
-      "Failed to publish: " + std::string(rcl_get_error_string_safe()));
+    rcljava_throw_rclexception(
+      env, ret, "Failed to publish: " + std::string(rcl_get_error_string_safe()));
   }
 }
 
@@ -85,8 +84,7 @@ Java_org_ros2_rcljava_publisher_PublisherImpl_nativeDispose(
   rcl_ret_t ret = rcl_publisher_fini(publisher, node);
 
   if (ret != RCL_RET_OK) {
-    rcljava_throw_exception(
-      env, "java/lang/IllegalStateException",
-      "Failed to destroy publisher: " + std::string(rcl_get_error_string_safe()));
+    rcljava_throw_rclexception(
+      env, ret, "Failed to destroy publisher: " + std::string(rcl_get_error_string_safe()));
   }
 }

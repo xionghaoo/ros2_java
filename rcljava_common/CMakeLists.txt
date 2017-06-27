@@ -30,6 +30,8 @@ set(CMAKE_JAVA_COMPILE_FLAGS "-source" "1.6" "-target" "1.6")
 set(${PROJECT_NAME}_java_sources
   "src/main/java/org/ros2/rcljava/common/JNIUtils.java"
   "src/main/java/org/ros2/rcljava/common/RCLJavaProxy.java"
+  "src/main/java/org/ros2/rcljava/exceptions/RCLException.java"
+  "src/main/java/org/ros2/rcljava/exceptions/RCLReturn.java"
   "src/main/java/org/ros2/rcljava/interfaces/Disposable.java"
   "src/main/java/org/ros2/rcljava/interfaces/MessageDefinition.java"
   "src/main/java/org/ros2/rcljava/interfaces/ServiceDefinition.java"

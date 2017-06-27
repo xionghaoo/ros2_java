@@ -29,7 +29,7 @@
 
 #include "org_ros2_rcljava_node_NodeImpl.h"
 
-using rcljava_common::exceptions::rcljava_throw_exception;
+using rcljava_common::exceptions::rcljava_throw_rclexception;
 
 JNIEXPORT jlong JNICALL
 Java_org_ros2_rcljava_node_NodeImpl_nativeCreatePublisherHandle(
@@ -59,9 +59,8 @@ Java_org_ros2_rcljava_node_NodeImpl_nativeCreatePublisherHandle(
   rcl_ret_t ret = rcl_publisher_init(publisher, node, ts, topic.c_str(), &publisher_ops);
 
   if (ret != RCL_RET_OK) {
-    rcljava_throw_exception(
-      env, "java/lang/IllegalStateException",
-      "Failed to create publisher: " + std::string(rcl_get_error_string_safe()));
+    rcljava_throw_rclexception(
+      env, ret, "Failed to create publisher: " + std::string(rcl_get_error_string_safe()));
     return 0;
   }
 
@@ -98,9 +97,8 @@ Java_org_ros2_rcljava_node_NodeImpl_nativeCreateSubscriptionHandle(
   rcl_ret_t ret = rcl_subscription_init(subscription, node, ts, topic.c_str(), &subscription_ops);
 
   if (ret != RCL_RET_OK) {
-    rcljava_throw_exception(
-      env, "java/lang/IllegalStateException",
-      "Failed to create subscription: " + std::string(rcl_get_error_string_safe()));
+    rcljava_throw_rclexception(
+      env, ret, "Failed to create subscription: " + std::string(rcl_get_error_string_safe()));
     return 0;
   }
 
@@ -141,9 +139,8 @@ Java_org_ros2_rcljava_node_NodeImpl_nativeCreateServiceHandle(
   rcl_ret_t ret = rcl_service_init(service, node, ts, service_name.c_str(), &service_ops);
 
   if (ret != RCL_RET_OK) {
-    rcljava_throw_exception(
-      env, "java/lang/IllegalStateException",
-      "Failed to create service: " + std::string(rcl_get_error_string_safe()));
+    rcljava_throw_rclexception(
+      env, ret, "Failed to create service: " + std::string(rcl_get_error_string_safe()));
     return 0;
   }
 
@@ -184,9 +181,8 @@ Java_org_ros2_rcljava_node_NodeImpl_nativeCreateClientHandle(
   rcl_ret_t ret = rcl_client_init(client, node, ts, service_name.c_str(), &client_ops);
 
   if (ret != RCL_RET_OK) {
-    rcljava_throw_exception(
-      env, "java/lang/IllegalStateException",
-      "Failed to create client: " + std::string(rcl_get_error_string_safe()));
+    rcljava_throw_rclexception(
+      env, ret, "Failed to create client: " + std::string(rcl_get_error_string_safe()));
     return 0;
   }
 
@@ -207,9 +203,8 @@ Java_org_ros2_rcljava_node_NodeImpl_nativeDispose(JNIEnv * env, jclass, jlong no
   rcl_ret_t ret = rcl_node_fini(node);
 
   if (ret != RCL_RET_OK) {
-    rcljava_throw_exception(
-      env, "java/lang/IllegalStateException",
-      "Failed to destroy node: " + std::string(rcl_get_error_string_safe()));
+    rcljava_throw_rclexception(
+      env, ret, "Failed to destroy node: " + std::string(rcl_get_error_string_safe()));
   }
 }
 
@@ -223,9 +218,8 @@ Java_org_ros2_rcljava_node_NodeImpl_nativeCreateTimerHandle(
   rcl_ret_t ret = rcl_timer_init(timer, timer_period, NULL, rcl_get_default_allocator());
 
   if (ret != RCL_RET_OK) {
-    rcljava_throw_exception(
-      env, "java/lang/IllegalStateException",
-      "Failed to create timer: " + std::string(rcl_get_error_string_safe()));
+    rcljava_throw_rclexception(
+      env, ret, "Failed to create timer: " + std::string(rcl_get_error_string_safe()));
     return 0;
   }
 

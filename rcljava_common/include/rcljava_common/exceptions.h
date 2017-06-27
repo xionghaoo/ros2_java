@@ -21,6 +21,8 @@ namespace rcljava_common
 {
 namespace exceptions
 {
+void rcljava_throw_rclexception(JNIEnv * env, int rcl_ret_code, const std::string & message);
+
 void rcljava_throw_exception(JNIEnv *, const char *, const std::string &);
 }  // namespace exceptions
 }  // namespace rcljava_common
