@@ -270,12 +270,14 @@ public final class RCLJava {
     int depth = qosProfile.getDepth();
     int reliability = qosProfile.getReliability().getValue();
     int durability = qosProfile.getDurability().getValue();
+    boolean avoidROSNamespaceConventions = qosProfile.getAvoidROSNamespaceConventions();
 
-    return nativeConvertQoSProfileToHandle(history, depth, reliability, durability);
+    return nativeConvertQoSProfileToHandle(
+        history, depth, reliability, durability, avoidROSNamespaceConventions);
   }
 
-  private static native long nativeConvertQoSProfileToHandle(
-      int history, int depth, int reliability, int durability);
+  private static native long nativeConvertQoSProfileToHandle(int history, int depth,
+      int reliability, int durability, boolean avoidROSNamespaceConventions);
 
   public static void disposeQoSProfile(final long qosProfileHandle) {
     nativeDisposeQoSProfile(qosProfileHandle);

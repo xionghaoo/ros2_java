@@ -101,7 +101,8 @@ Java_org_ros2_rcljava_RCLJava_nativeShutdown(JNIEnv * env, jclass)
 
 JNIEXPORT jlong JNICALL
 Java_org_ros2_rcljava_RCLJava_nativeConvertQoSProfileToHandle(
-  JNIEnv *, jclass, jint history, jint depth, jint reliability, jint durability)
+  JNIEnv *, jclass, jint history, jint depth, jint reliability, jint durability,
+  jboolean avoidROSNamespaceConventions)
 {
   rmw_qos_profile_t * qos_profile =
     static_cast<rmw_qos_profile_t *>(malloc(sizeof(rmw_qos_profile_t)));
@@ -109,6 +110,7 @@ Java_org_ros2_rcljava_RCLJava_nativeConvertQoSProfileToHandle(
   qos_profile->depth = depth;
   qos_profile->reliability = static_cast<rmw_qos_reliability_policy_t>(reliability);
   qos_profile->durability = static_cast<rmw_qos_durability_policy_t>(durability);
+  qos_profile->avoid_ros_namespace_conventions = avoidROSNamespaceConventions;
   return reinterpret_cast<jlong>(qos_profile);
 }
 

@@ -59,10 +59,10 @@ JNIEXPORT void JNICALL Java_org_ros2_rcljava_RCLJava_nativeShutdown(JNIEnv *, jc
 /*
  * Class:     org_ros2_rcljava_RCLJava
  * Method:    nativeConvertQoSProfileToHandle
- * Signature: (IIII)J
+ * Signature: (IIIIZ)J
  */
 JNIEXPORT jlong JNICALL Java_org_ros2_rcljava_RCLJava_nativeConvertQoSProfileToHandle(
-  JNIEnv *, jclass, jint, jint, jint, jint);
+  JNIEnv *, jclass, jint, jint, jint, jint, jboolean);
 
 /*
  * Class:     org_ros2_rcljava_RCLJava

@@ -42,9 +42,8 @@ JNIEXPORT void JNICALL Java_org_ros2_rcljava_executors_BaseExecutor_nativeWaitSe
  * Method:    nativeWaitSetClearSubscriptions
  * Signature: (J)V
  */
-JNIEXPORT void JNICALL
-  Java_org_ros2_rcljava_executors_BaseExecutor_nativeWaitSetClearSubscriptions(JNIEnv *, jclass,
-  jlong);
+JNIEXPORT void JNICALL Java_org_ros2_rcljava_executors_BaseExecutor_nativeWaitSetClearSubscriptions(
+  JNIEnv *, jclass, jlong);
 
 /*
  * Class:     org_ros2_rcljava_executors_BaseExecutor
@@ -67,34 +66,32 @@ JNIEXPORT void JNICALL
  * Method:    nativeWaitSetAddSubscription
  * Signature: (JJ)V
  */
-JNIEXPORT void JNICALL
-  Java_org_ros2_rcljava_executors_BaseExecutor_nativeWaitSetAddSubscription(JNIEnv *, jclass, jlong,
-  jlong);
+JNIEXPORT void JNICALL Java_org_ros2_rcljava_executors_BaseExecutor_nativeWaitSetAddSubscription(
+  JNIEnv *, jclass, jlong, jlong);
 
 /*
  * Class:     org_ros2_rcljava_executors_BaseExecutor
  * Method:    nativeWait
- * Signature: (J)V
+ * Signature: (JJ)V
  */
-JNIEXPORT void JNICALL Java_org_ros2_rcljava_executors_BaseExecutor_nativeWait(JNIEnv *, jclass,
-  jlong);
+JNIEXPORT void JNICALL
+  Java_org_ros2_rcljava_executors_BaseExecutor_nativeWait(JNIEnv *, jclass, jlong, jlong);
 
 /*
  * Class:     org_ros2_rcljava_executors_BaseExecutor
  * Method:    nativeTake
  * Signature: (JLjava/lang/Class;)Lorg/ros2/rcljava/interfaces/MessageDefinition;
  */
-JNIEXPORT jobject JNICALL Java_org_ros2_rcljava_executors_BaseExecutor_nativeTake(JNIEnv *, jclass,
-  jlong, jclass);
+JNIEXPORT jobject JNICALL
+  Java_org_ros2_rcljava_executors_BaseExecutor_nativeTake(JNIEnv *, jclass, jlong, jclass);
 
 /*
  * Class:     org_ros2_rcljava_executors_BaseExecutor
  * Method:    nativeWaitSetAddService
  * Signature: (JJ)V
  */
-JNIEXPORT void JNICALL
-  Java_org_ros2_rcljava_executors_BaseExecutor_nativeWaitSetAddService(JNIEnv *, jclass, jlong,
-  jlong);
+JNIEXPORT void JNICALL Java_org_ros2_rcljava_executors_BaseExecutor_nativeWaitSetAddService(
+  JNIEnv *, jclass, jlong, jlong);
 
 /*
  * Class:     org_ros2_rcljava_executors_BaseExecutor
@@ -109,9 +106,8 @@ JNIEXPORT void JNICALL
  * Method:    nativeWaitSetAddClient
  * Signature: (JJ)V
  */
-JNIEXPORT void JNICALL
-  Java_org_ros2_rcljava_executors_BaseExecutor_nativeWaitSetAddClient(JNIEnv *, jclass, jlong,
-  jlong);
+JNIEXPORT void JNICALL Java_org_ros2_rcljava_executors_BaseExecutor_nativeWaitSetAddClient(
+  JNIEnv *, jclass, jlong, jlong);
 
 /*
  * Class:     org_ros2_rcljava_executors_BaseExecutor
@@ -142,9 +138,8 @@ JNIEXPORT jobject JNICALL Java_org_ros2_rcljava_executors_BaseExecutor_nativeTak
  * Method:    nativeWaitSetAddTimer
  * Signature: (JJ)V
  */
-JNIEXPORT void JNICALL
-  Java_org_ros2_rcljava_executors_BaseExecutor_nativeWaitSetAddTimer(JNIEnv *, jclass, jlong,
-  jlong);
+JNIEXPORT void JNICALL Java_org_ros2_rcljava_executors_BaseExecutor_nativeWaitSetAddTimer(
+  JNIEnv *, jclass, jlong, jlong);
 
 #ifdef __cplusplus
 }
