@@ -189,13 +189,14 @@ public class NodeTest {
   @Test
   public final void testPubSubStdString() throws Exception {
     Publisher<std_msgs.msg.String> publisher =
-        node.<std_msgs.msg.String>createPublisher(std_msgs.msg.String.class, "test_topic");
+        node.<std_msgs.msg.String>createPublisher(std_msgs.msg.String.class, "test_topic_string");
 
     RCLFuture<std_msgs.msg.String> future =
         new RCLFuture<std_msgs.msg.String>(new WeakReference<Node>(node));
 
-    Subscription<std_msgs.msg.String> subscription = node.<std_msgs.msg.String>createSubscription(
-        std_msgs.msg.String.class, "test_topic", new TestConsumer<std_msgs.msg.String>(future));
+    Subscription<std_msgs.msg.String> subscription =
+        node.<std_msgs.msg.String>createSubscription(std_msgs.msg.String.class, "test_topic_string",
+            new TestConsumer<std_msgs.msg.String>(future));
 
     std_msgs.msg.String msg = new std_msgs.msg.String();
     msg.setData("Hello");
@@ -218,14 +219,14 @@ public class NodeTest {
   public final void testPubSubBoundedArrayNested() throws Exception {
     Publisher<rcljava.msg.BoundedArrayNested> publisher =
         node.<rcljava.msg.BoundedArrayNested>createPublisher(
-            rcljava.msg.BoundedArrayNested.class, "test_topic");
+            rcljava.msg.BoundedArrayNested.class, "test_topic_bounded_array_nested");
 
     RCLFuture<rcljava.msg.BoundedArrayNested> future =
         new RCLFuture<rcljava.msg.BoundedArrayNested>(new WeakReference<Node>(node));
 
     Subscription<rcljava.msg.BoundedArrayNested> subscription =
         node.<rcljava.msg.BoundedArrayNested>createSubscription(
-            rcljava.msg.BoundedArrayNested.class, "test_topic",
+            rcljava.msg.BoundedArrayNested.class, "test_topic_bounded_array_nested",
             new TestConsumer<rcljava.msg.BoundedArrayNested>(future));
 
     rcljava.msg.BoundedArrayNested msg = new rcljava.msg.BoundedArrayNested();
@@ -260,14 +261,14 @@ public class NodeTest {
   public final void testPubSubBoundedArrayPrimitives() throws Exception {
     Publisher<rcljava.msg.BoundedArrayPrimitives> publisher =
         node.<rcljava.msg.BoundedArrayPrimitives>createPublisher(
-            rcljava.msg.BoundedArrayPrimitives.class, "test_topic");
+            rcljava.msg.BoundedArrayPrimitives.class, "test_topic_bounded_array_primitives");
 
     RCLFuture<rcljava.msg.BoundedArrayPrimitives> future =
         new RCLFuture<rcljava.msg.BoundedArrayPrimitives>(new WeakReference<Node>(node));
 
     Subscription<rcljava.msg.BoundedArrayPrimitives> subscription =
         node.<rcljava.msg.BoundedArrayPrimitives>createSubscription(
-            rcljava.msg.BoundedArrayPrimitives.class, "test_topic",
+            rcljava.msg.BoundedArrayPrimitives.class, "test_topic_bounded_array_primitives",
             new TestConsumer<rcljava.msg.BoundedArrayPrimitives>(future));
 
     rcljava.msg.BoundedArrayPrimitives msg = new rcljava.msg.BoundedArrayPrimitives();
@@ -332,14 +333,15 @@ public class NodeTest {
 
   @Test
   public final void testPubSubBuiltins() throws Exception {
-    Publisher<rcljava.msg.Builtins> publisher =
-        node.<rcljava.msg.Builtins>createPublisher(rcljava.msg.Builtins.class, "test_topic");
+    Publisher<rcljava.msg.Builtins> publisher = node.<rcljava.msg.Builtins>createPublisher(
+        rcljava.msg.Builtins.class, "test_topic_builtins");
 
     RCLFuture<rcljava.msg.Builtins> future =
         new RCLFuture<rcljava.msg.Builtins>(new WeakReference<Node>(node));
 
-    Subscription<rcljava.msg.Builtins> subscription = node.<rcljava.msg.Builtins>createSubscription(
-        rcljava.msg.Builtins.class, "test_topic", new TestConsumer<rcljava.msg.Builtins>(future));
+    Subscription<rcljava.msg.Builtins> subscription =
+        node.<rcljava.msg.Builtins>createSubscription(rcljava.msg.Builtins.class,
+            "test_topic_builtins", new TestConsumer<rcljava.msg.Builtins>(future));
 
     rcljava.msg.Builtins msg = new rcljava.msg.Builtins();
 
@@ -379,14 +381,14 @@ public class NodeTest {
   public final void testPubSubDynamicArrayNested() throws Exception {
     Publisher<rcljava.msg.DynamicArrayNested> publisher =
         node.<rcljava.msg.DynamicArrayNested>createPublisher(
-            rcljava.msg.DynamicArrayNested.class, "test_topic");
+            rcljava.msg.DynamicArrayNested.class, "test_topic_dynamic_array_nested");
 
     RCLFuture<rcljava.msg.DynamicArrayNested> future =
         new RCLFuture<rcljava.msg.DynamicArrayNested>(new WeakReference<Node>(node));
 
     Subscription<rcljava.msg.DynamicArrayNested> subscription =
         node.<rcljava.msg.DynamicArrayNested>createSubscription(
-            rcljava.msg.DynamicArrayNested.class, "test_topic",
+            rcljava.msg.DynamicArrayNested.class, "test_topic_dynamic_array_nested",
             new TestConsumer<rcljava.msg.DynamicArrayNested>(future));
 
     rcljava.msg.DynamicArrayNested msg = new rcljava.msg.DynamicArrayNested();
@@ -421,14 +423,14 @@ public class NodeTest {
   public final void testPubSubDynamicArrayPrimitives() throws Exception {
     Publisher<rcljava.msg.DynamicArrayPrimitives> publisher =
         node.<rcljava.msg.DynamicArrayPrimitives>createPublisher(
-            rcljava.msg.DynamicArrayPrimitives.class, "test_topic");
+            rcljava.msg.DynamicArrayPrimitives.class, "test_topic_dynamic_array_primitives");
 
     RCLFuture<rcljava.msg.DynamicArrayPrimitives> future =
         new RCLFuture<rcljava.msg.DynamicArrayPrimitives>(new WeakReference<Node>(node));
 
     Subscription<rcljava.msg.DynamicArrayPrimitives> subscription =
         node.<rcljava.msg.DynamicArrayPrimitives>createSubscription(
-            rcljava.msg.DynamicArrayPrimitives.class, "test_topic",
+            rcljava.msg.DynamicArrayPrimitives.class, "test_topic_dynamic_array_primitives",
             new TestConsumer<rcljava.msg.DynamicArrayPrimitives>(future));
 
     rcljava.msg.DynamicArrayPrimitives msg = new rcljava.msg.DynamicArrayPrimitives();
@@ -494,13 +496,13 @@ public class NodeTest {
   @Test
   public final void testPubSubEmpty() throws Exception {
     Publisher<rcljava.msg.Empty> publisher =
-        node.<rcljava.msg.Empty>createPublisher(rcljava.msg.Empty.class, "test_topic");
+        node.<rcljava.msg.Empty>createPublisher(rcljava.msg.Empty.class, "test_topic_empty");
 
     RCLFuture<rcljava.msg.Empty> future =
         new RCLFuture<rcljava.msg.Empty>(new WeakReference<Node>(node));
 
     Subscription<rcljava.msg.Empty> subscription = node.<rcljava.msg.Empty>createSubscription(
-        rcljava.msg.Empty.class, "test_topic", new TestConsumer<rcljava.msg.Empty>(future));
+        rcljava.msg.Empty.class, "test_topic_empty", new TestConsumer<rcljava.msg.Empty>(future));
 
     rcljava.msg.Empty msg = new rcljava.msg.Empty();
 
@@ -522,14 +524,14 @@ public class NodeTest {
   public final void testPubSubFieldsWithSameType() throws Exception {
     Publisher<rcljava.msg.FieldsWithSameType> publisher =
         node.<rcljava.msg.FieldsWithSameType>createPublisher(
-            rcljava.msg.FieldsWithSameType.class, "test_topic");
+            rcljava.msg.FieldsWithSameType.class, "test_topic_fields_with_same_type");
 
     RCLFuture<rcljava.msg.FieldsWithSameType> future =
         new RCLFuture<rcljava.msg.FieldsWithSameType>(new WeakReference<Node>(node));
 
     Subscription<rcljava.msg.FieldsWithSameType> subscription =
         node.<rcljava.msg.FieldsWithSameType>createSubscription(
-            rcljava.msg.FieldsWithSameType.class, "test_topic",
+            rcljava.msg.FieldsWithSameType.class, "test_topic_fields_with_same_type",
             new TestConsumer<rcljava.msg.FieldsWithSameType>(future));
 
     rcljava.msg.FieldsWithSameType msg = new rcljava.msg.FieldsWithSameType();
@@ -566,13 +568,14 @@ public class NodeTest {
   @Test
   public final void testPubSubNested() throws Exception {
     Publisher<rcljava.msg.Nested> publisher =
-        node.<rcljava.msg.Nested>createPublisher(rcljava.msg.Nested.class, "test_topic");
+        node.<rcljava.msg.Nested>createPublisher(rcljava.msg.Nested.class, "test_topic_nested");
 
     RCLFuture<rcljava.msg.Nested> future =
         new RCLFuture<rcljava.msg.Nested>(new WeakReference<Node>(node));
 
-    Subscription<rcljava.msg.Nested> subscription = node.<rcljava.msg.Nested>createSubscription(
-        rcljava.msg.Nested.class, "test_topic", new TestConsumer<rcljava.msg.Nested>(future));
+    Subscription<rcljava.msg.Nested> subscription =
+        node.<rcljava.msg.Nested>createSubscription(rcljava.msg.Nested.class, "test_topic_nested",
+            new TestConsumer<rcljava.msg.Nested>(future));
 
     rcljava.msg.Nested msg = new rcljava.msg.Nested();
     msg.setPrimitiveValues(primitives1);
@@ -599,15 +602,15 @@ public class NodeTest {
 
   @Test
   public final void testPubSubPrimitives() throws Exception {
-    Publisher<rcljava.msg.Primitives> publisher =
-        node.<rcljava.msg.Primitives>createPublisher(rcljava.msg.Primitives.class, "test_topic");
+    Publisher<rcljava.msg.Primitives> publisher = node.<rcljava.msg.Primitives>createPublisher(
+        rcljava.msg.Primitives.class, "test_topic_primitives");
 
     RCLFuture<rcljava.msg.Primitives> future =
         new RCLFuture<rcljava.msg.Primitives>(new WeakReference<Node>(node));
 
     Subscription<rcljava.msg.Primitives> subscription =
-        node.<rcljava.msg.Primitives>createSubscription(rcljava.msg.Primitives.class, "test_topic",
-            new TestConsumer<rcljava.msg.Primitives>(future));
+        node.<rcljava.msg.Primitives>createSubscription(rcljava.msg.Primitives.class,
+            "test_topic_primitives", new TestConsumer<rcljava.msg.Primitives>(future));
 
     while (RCLJava.ok() && !future.isDone()) {
       publisher.publish(primitives1);
@@ -631,14 +634,15 @@ public class NodeTest {
   public final void testPubSubStaticArrayNested() throws Exception {
     Publisher<rcljava.msg.StaticArrayNested> publisher =
         node.<rcljava.msg.StaticArrayNested>createPublisher(
-            rcljava.msg.StaticArrayNested.class, "test_topic");
+            rcljava.msg.StaticArrayNested.class, "test_topic_static_array_nested");
 
     RCLFuture<rcljava.msg.StaticArrayNested> future =
         new RCLFuture<rcljava.msg.StaticArrayNested>(new WeakReference<Node>(node));
 
     Subscription<rcljava.msg.StaticArrayNested> subscription =
         node.<rcljava.msg.StaticArrayNested>createSubscription(rcljava.msg.StaticArrayNested.class,
-            "test_topic", new TestConsumer<rcljava.msg.StaticArrayNested>(future));
+            "test_topic_static_array_nested",
+            new TestConsumer<rcljava.msg.StaticArrayNested>(future));
 
     rcljava.msg.StaticArrayNested msg = new rcljava.msg.StaticArrayNested();
     msg.setPrimitiveValues(Arrays.asList(
@@ -685,14 +689,14 @@ public class NodeTest {
   public final void testPubSubStaticArrayPrimitives() throws Exception {
     Publisher<rcljava.msg.StaticArrayPrimitives> publisher =
         node.<rcljava.msg.StaticArrayPrimitives>createPublisher(
-            rcljava.msg.StaticArrayPrimitives.class, "test_topic");
+            rcljava.msg.StaticArrayPrimitives.class, "test_topic_static_array_primitives");
 
     RCLFuture<rcljava.msg.StaticArrayPrimitives> future =
         new RCLFuture<rcljava.msg.StaticArrayPrimitives>(new WeakReference<Node>(node));
 
     Subscription<rcljava.msg.StaticArrayPrimitives> subscription =
         node.<rcljava.msg.StaticArrayPrimitives>createSubscription(
-            rcljava.msg.StaticArrayPrimitives.class, "test_topic",
+            rcljava.msg.StaticArrayPrimitives.class, "test_topic_static_array_primitives",
             new TestConsumer<rcljava.msg.StaticArrayPrimitives>(future));
 
     rcljava.msg.StaticArrayPrimitives msg = new rcljava.msg.StaticArrayPrimitives();
@@ -759,13 +763,14 @@ public class NodeTest {
   @Test
   public final void testPubUInt32() throws Exception {
     Publisher<rcljava.msg.UInt32> publisher =
-        node.<rcljava.msg.UInt32>createPublisher(rcljava.msg.UInt32.class, "test_topic");
+        node.<rcljava.msg.UInt32>createPublisher(rcljava.msg.UInt32.class, "test_topic_uint32");
 
     RCLFuture<rcljava.msg.UInt32> future =
         new RCLFuture<rcljava.msg.UInt32>(new WeakReference<Node>(node));
 
-    Subscription<rcljava.msg.UInt32> subscription = node.<rcljava.msg.UInt32>createSubscription(
-        rcljava.msg.UInt32.class, "test_topic", new TestConsumer<rcljava.msg.UInt32>(future));
+    Subscription<rcljava.msg.UInt32> subscription =
+        node.<rcljava.msg.UInt32>createSubscription(rcljava.msg.UInt32.class, "test_topic_uint32",
+            new TestConsumer<rcljava.msg.UInt32>(future));
 
     rcljava.msg.UInt32 msg = new rcljava.msg.UInt32();
     msg.setData(12345);
