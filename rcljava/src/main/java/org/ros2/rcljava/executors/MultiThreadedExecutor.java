@@ -48,7 +48,15 @@ public class MultiThreadedExecutor implements Executor {
   }
 
   public void spinOnce() {
-    this.baseExecutor.spinOnce();
+    spinOnce(-1);
+  }
+
+  public void spinOnce(long timeout) {
+    this.baseExecutor.spinOnce(timeout);
+  }
+
+  public void spinSome() {
+    this.baseExecutor.spinSome();
   }
 
   public void spin() {

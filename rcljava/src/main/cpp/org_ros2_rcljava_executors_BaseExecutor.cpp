@@ -94,10 +94,11 @@ Java_org_ros2_rcljava_executors_BaseExecutor_nativeWaitSetAddSubscription(
 }
 
 JNIEXPORT void JNICALL
-Java_org_ros2_rcljava_executors_BaseExecutor_nativeWait(JNIEnv * env, jclass, jlong wait_set_handle)
+Java_org_ros2_rcljava_executors_BaseExecutor_nativeWait(
+  JNIEnv * env, jclass, jlong wait_set_handle, jlong timeout)
 {
   rcl_wait_set_t * wait_set = reinterpret_cast<rcl_wait_set_t *>(wait_set_handle);
-  rcl_ret_t ret = rcl_wait(wait_set, RCL_S_TO_NS(1));
+  rcl_ret_t ret = rcl_wait(wait_set, timeout);
   if (ret != RCL_RET_OK && ret != RCL_RET_TIMEOUT) {
     rcljava_throw_exception(
       env, "java/lang/IllegalStateException",
@@ -159,8 +160,8 @@ Java_org_ros2_rcljava_executors_BaseExecutor_nativeTake(
 }
 
 JNIEXPORT void JNICALL
-Java_org_ros2_rcljava_executors_BaseExecutor_nativeWaitSetClearTimers(JNIEnv * env, jclass,
-  jlong wait_set_handle)
+Java_org_ros2_rcljava_executors_BaseExecutor_nativeWaitSetClearTimers(
+  JNIEnv * env, jclass, jlong wait_set_handle)
 {
   rcl_wait_set_t * wait_set = reinterpret_cast<rcl_wait_set_t *>(wait_set_handle);
   rcl_ret_t ret = rcl_wait_set_clear_timers(wait_set);
@@ -199,8 +200,8 @@ Java_org_ros2_rcljava_executors_BaseExecutor_nativeWaitSetAddService(
 }
 
 JNIEXPORT void JNICALL
-Java_org_ros2_rcljava_executors_BaseExecutor_nativeWaitSetClearClients(JNIEnv * env, jclass,
-  jlong wait_set_handle)
+Java_org_ros2_rcljava_executors_BaseExecutor_nativeWaitSetClearClients(
+  JNIEnv * env, jclass, jlong wait_set_handle)
 {
   rcl_wait_set_t * wait_set = reinterpret_cast<rcl_wait_set_t *>(wait_set_handle);
   rcl_ret_t ret = rcl_wait_set_clear_clients(wait_set);

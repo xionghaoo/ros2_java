@@ -22,6 +22,10 @@ public interface Executor {
 
   public void spinOnce();
 
+  public void spinOnce(long timeout);
+
+  public void spinSome();
+
   public void addNode(ExecutableNode node);
 
   public void removeNode(ExecutableNode node);

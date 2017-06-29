@@ -157,7 +157,7 @@ public class BaseExecutor {
     }
   }
 
-  protected void waitForWork() {
+  protected void waitForWork(long timeout) {
     this.subscriptionHandles.clear();
 
     for (ExecutableNode node : this.nodes) {
@@ -224,7 +224,7 @@ public class BaseExecutor {
       }
     }
 
-    nativeWait(waitSetHandle);
+    nativeWait(waitSetHandle, timeout);
   }
   protected AnyExecutable getNextExecutable() {
     AnyExecutable anyExecutable = new AnyExecutable();
@@ -255,10 +255,22 @@ public class BaseExecutor {
     return null;
   }
 
-  protected void spinOnce() {
+  protected void spinSome() {
     AnyExecutable anyExecutable = getNextExecutable();
     if (anyExecutable == null) {
-      waitForWork();
+      waitForWork(0);
+      anyExecutable = getNextExecutable();
+    }
+
+    if (anyExecutable != null) {
+      executeAnyExecutable(anyExecutable);
+    }
+  }
+
+  protected void spinOnce(long timeout) {
+    AnyExecutable anyExecutable = getNextExecutable();
+    if (anyExecutable == null) {
+      waitForWork(timeout);
       anyExecutable = getNextExecutable();
     }
 
@@ -277,7 +289,7 @@ public class BaseExecutor {
   private static native void nativeWaitSetAddSubscription(
       long waitSetHandle, long subscriptionHandle);
 
-  private static native void nativeWait(long waitSetHandle);
+  private static native void nativeWait(long waitSetHandle, long timeout);
 
   private static native MessageDefinition nativeTake(
       long subscriptionHandle, Class<MessageDefinition> messageType);

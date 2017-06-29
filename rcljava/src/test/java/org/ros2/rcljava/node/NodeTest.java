@@ -834,7 +834,7 @@ public class NodeTest {
 
     while (RCLJava.ok() && !futureOne.isDone() && !futureTwo.isDone()) {
       publisher.publish(msg);
-      executor.spinOnce();
+      executor.spinSome();
     }
 
     rcljava.msg.UInt32 valueOne = futureOne.get();
