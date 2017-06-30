@@ -75,43 +75,7 @@ cd ~/ros2_java_ws
 ament build --symlink-install --isolated
 ```
 
-Now you can just run a couple of examples.
-
-Talker and Listener
--------------------
-
-Talker:
-
-```
-. ~/ros2_java_ws/install_isolated/local_setup.sh
-java org.ros2.rcljava.examples.Talker
-```
-
-Listener:
-
-```
-. ~/ros2_java_ws/install_isolated/local_setup.sh
-java org.ros2.rcljava.examples.Listener
-```
-
-Client and Service
-------------------
-
-Service:
-
-```
-. ~/ros2_java_ws/install_isolated/local_setup.sh
-java org.ros2.rcljava.examples.AddTwoIntsService
-```
-
-Client:
-
-```
-. ~/ros2_java_ws/install_isolated/local_setup.sh
-java org.ros2.rcljava.examples.AddTwoIntsClient
-```
-
-You can also combine any scenario where the talker/listener or client/service are written in Java, Python and C++ and they should talk to each other.
+Now you can just run a bunch of examples, head over to https://github.com/esteve/ros2_java_examples for more information.
 
 Android
 -------
@@ -149,29 +113,4 @@ ament build --isolated --cmake-args \
   -Pament.android_stl=gnustl_shared -Pament.android_abi=armeabi-v7a -Pament.android_ndk=$HOME/android_ndk/android-ndk-r14 --
 ```
 
-The talker and listener example Android apps can be installed via adb, plug your Android device to your computer with a USB cable and type the following:
-
-Talker:
-
-```
-adb install ~/ros2_android_ws/install_isolated/ros2_talker_android/ros2_talker_android-debug.apk
-```
-
-Listener:
-
-```
-adb install ~/ros2_android_ws/install_isolated/ros2_listener_android/ros2_listener_android-debug.apk
-```
-
-You can try out running the talker on the desktop and the listener on your Android device or viceversa.
-
-Enjoy!
-
-TODO
-----
-
-There's a bunch of features missing, including efficient intraprocess communication and DDS domain separation.
-
-Large messages would benefit from Java's NIO.
-
-And of course, this wouldn't be a proper opensource project if it didn't lack tests and documentation, so there's that too.
+You can find more information about the Android examples at https://github.com/esteve/ros2_android_examples
