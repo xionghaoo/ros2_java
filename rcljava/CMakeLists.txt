@@ -8,6 +8,7 @@ find_package(rcl REQUIRED)
 find_package(rcljava_common REQUIRED)
 find_package(rmw REQUIRED)
 find_package(rmw_implementation_cmake REQUIRED)
+find_package(builtin_interfaces REQUIRED)
 
 include(CrossCompilingExtra)
 
@@ -47,6 +48,7 @@ endif()
 
 set(${PROJECT_NAME}_jni_sources
   "src/main/cpp/org_ros2_rcljava_RCLJava.cpp"
+  "src/main/cpp/org_ros2_rcljava_Time.cpp"
   "src/main/cpp/org_ros2_rcljava_client_ClientImpl.cpp"
   "src/main/cpp/org_ros2_rcljava_executors_BaseExecutor.cpp"
   "src/main/cpp/org_ros2_rcljava_node_NodeImpl.cpp"
@@ -77,6 +79,7 @@ foreach(_jni_source ${${PROJECT_NAME}_jni_sources})
   ament_target_dependencies(${_target_name}
     "rcl"
     "rcljava_common"
+    "builtin_interfaces"
   )
 
   target_include_directories(${_target_name}
@@ -95,6 +98,7 @@ endforeach()
 
 set(${PROJECT_NAME}_sources
   "src/main/java/org/ros2/rcljava/RCLJava.java"
+  "src/main/java/org/ros2/rcljava/Time.java"
   "src/main/java/org/ros2/rcljava/client/ClientImpl.java"
   "src/main/java/org/ros2/rcljava/client/Client.java"
   "src/main/java/org/ros2/rcljava/concurrent/Callback.java"
@@ -123,16 +127,18 @@ set(${PROJECT_NAME}_sources
   "src/main/java/org/ros2/rcljava/service/Service.java"
   "src/main/java/org/ros2/rcljava/subscription/SubscriptionImpl.java"
   "src/main/java/org/ros2/rcljava/subscription/Subscription.java"
+  "src/main/java/org/ros2/rcljava/time/ClockType.java"
   "src/main/java/org/ros2/rcljava/timer/WallTimer.java"
   "src/main/java/org/ros2/rcljava/timer/WallTimerImpl.java"
 )
 
 add_jar("${PROJECT_NAME}_jar"
-  "${${PROJECT_NAME}_sources}"
+  ${${PROJECT_NAME}_sources}
   OUTPUT_NAME
-  "${PROJECT_NAME}"
+  ${PROJECT_NAME}
   INCLUDE_JARS
-  "${rcljava_common_JARS}"
+  ${rcljava_common_JARS}
+  ${builtin_interfaces_JARS}
 )
 
 install_jar("${PROJECT_NAME}_jar" "share/${PROJECT_NAME}/java")
@@ -179,6 +185,7 @@ if(BUILD_TESTING)
 
   set(${PROJECT_NAME}_test_sources
     "src/test/java/org/ros2/rcljava/RCLJavaTest.java"
+    "src/test/java/org/ros2/rcljava/TimeTest.java"
     "src/test/java/org/ros2/rcljava/client/ClientTest.java"
     "src/test/java/org/ros2/rcljava/node/NodeTest.java"
     "src/test/java/org/ros2/rcljava/publisher/PublisherTest.java"
@@ -188,6 +195,7 @@ if(BUILD_TESTING)
 
   set(${PROJECT_NAME}_testsuites
     "org.ros2.rcljava.RCLJavaTest"
+    "org.ros2.rcljava.TimeTest"
     "org.ros2.rcljava.client.ClientTest"
     "org.ros2.rcljava.node.NodeTest"
     "org.ros2.rcljava.publisher.PublisherTest"

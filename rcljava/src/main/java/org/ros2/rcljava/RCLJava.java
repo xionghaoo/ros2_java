@@ -272,7 +272,7 @@ public final class RCLJava {
     executor.removeNode(composableNode);
   }
 
-public static void spinSome(final Node node) {
+  public static void spinSome(final Node node) {
     SingleThreadedExecutor executor = new SingleThreadedExecutor();
     ComposableNode composableNode = new ComposableNode() {
       public Node getNode() {
