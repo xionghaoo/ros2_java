@@ -75,10 +75,7 @@ public class MultiThreadedExecutor implements Executor {
   private void run() {
     while (RCLJava.ok()) {
       synchronized (mutex) {
-        AnyExecutable anyExecutable = this.baseExecutor.getNextExecutable();
-        if (anyExecutable != null) {
-          this.baseExecutor.executeAnyExecutable(anyExecutable);
-        }
+        this.spinOnce();
       }
     }
   }

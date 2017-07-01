@@ -44,10 +44,7 @@ public class SingleThreadedExecutor implements Executor {
 
   public void spin() {
     while (RCLJava.ok()) {
-      AnyExecutable anyExecutable = this.baseExecutor.getNextExecutable();
-      if (anyExecutable != null) {
-        this.baseExecutor.executeAnyExecutable(anyExecutable);
-      }
+      this.spinOnce();
     }
   }
 }
