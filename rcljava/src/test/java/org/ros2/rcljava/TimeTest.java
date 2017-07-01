@@ -41,7 +41,7 @@ public class TimeTest {
   public final void testSteadyTime() {
     int millisecondsToSleep = 100;
     builtin_interfaces.msg.Time now = Time.now(ClockType.STEADY_TIME);
-    long javaNowMillis = System.currentTimeMillis();
+    long javaNowNanos = System.nanoTime();
 
     try {
       Thread.sleep(millisecondsToSleep);
@@ -51,10 +51,7 @@ public class TimeTest {
 
     builtin_interfaces.msg.Time later = Time.now(ClockType.STEADY_TIME);
 
-    long javaLaterMillis = System.currentTimeMillis();
-
-    long javaNowNanos = TimeUnit.NANOSECONDS.convert(javaNowMillis, TimeUnit.MILLISECONDS);
-    long javaLaterNanos = TimeUnit.NANOSECONDS.convert(javaLaterMillis, TimeUnit.MILLISECONDS);
+    long javaLaterNanos = System.nanoTime();
 
     long tolerance = TimeUnit.NANOSECONDS.convert(1, TimeUnit.MILLISECONDS);
 
