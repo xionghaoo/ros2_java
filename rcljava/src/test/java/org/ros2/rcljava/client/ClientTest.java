@@ -97,7 +97,7 @@ public class ClientTest {
         node.<rcljava.srv.AddTwoInts>createClient(rcljava.srv.AddTwoInts.class, "add_two_ints");
 
     while (RCLJava.ok() && !future.isDone()) {
-      client.sendRequest(request);
+      client.asyncSendRequest(request);
       RCLJava.spinOnce(node);
     }
 

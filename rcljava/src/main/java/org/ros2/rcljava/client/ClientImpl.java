@@ -16,6 +16,7 @@
 package org.ros2.rcljava.client;
 
 import java.lang.ref.WeakReference;
+import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Future;
@@ -23,6 +24,7 @@ import java.util.concurrent.Future;
 import org.ros2.rcljava.RCLJava;
 import org.ros2.rcljava.common.JNIUtils;
 import org.ros2.rcljava.concurrent.RCLFuture;
+import org.ros2.rcljava.consumers.Consumer;
 import org.ros2.rcljava.interfaces.MessageDefinition;
 import org.ros2.rcljava.interfaces.ServiceDefinition;
 import org.ros2.rcljava.node.Node;
@@ -47,7 +49,7 @@ public class ClientImpl<T extends ServiceDefinition> implements Client<T> {
   private long handle;
   private final String serviceName;
   private long sequenceNumber = 0;
-  private Map<Long, RCLFuture> pendingRequests;
+  private Map<Long, Map.Entry<Consumer, RCLFuture>> pendingRequests;
 
   private final Class<MessageDefinition> requestType;
   private final Class<MessageDefinition> responseType;
@@ -60,17 +62,27 @@ public class ClientImpl<T extends ServiceDefinition> implements Client<T> {
     this.serviceName = serviceName;
     this.requestType = requestType;
     this.responseType = responseType;
-    this.pendingRequests = new HashMap<Long, RCLFuture>();
+    this.pendingRequests = new HashMap<Long, Map.Entry<Consumer, RCLFuture>>();
   }
 
-  public final <U extends MessageDefinition, V extends MessageDefinition> Future<V> sendRequest(
-      final U request) {
+  public final <U extends MessageDefinition, V extends MessageDefinition> Future<V>
+  asyncSendRequest(final U request) {
+    return asyncSendRequest(request, new Consumer<Future<V>>() {
+      public void accept(Future<V> input) {}
+    });
+  }
+
+  public final <U extends MessageDefinition, V extends MessageDefinition> Future<V>
+  asyncSendRequest(final U request, final Consumer<Future<V>> callback) {
     synchronized (pendingRequests) {
       sequenceNumber++;
       nativeSendClientRequest(handle, sequenceNumber, request.getFromJavaConverterInstance(),
           request.getToJavaConverterInstance(), request.getDestructorInstance(), request);
       RCLFuture<V> future = new RCLFuture<V>(this.nodeReference);
-      pendingRequests.put(sequenceNumber, future);
+
+      Map.Entry<Consumer, RCLFuture> entry =
+          new AbstractMap.SimpleEntry<Consumer, RCLFuture>(callback, future);
+      pendingRequests.put(sequenceNumber, entry);
       return future;
     }
   }
@@ -79,8 +91,11 @@ public class ClientImpl<T extends ServiceDefinition> implements Client<T> {
       final RMWRequestId header, final U response) {
     synchronized (pendingRequests) {
       long sequenceNumber = header.sequenceNumber;
-      RCLFuture<U> future = pendingRequests.remove(sequenceNumber);
+      Map.Entry<Consumer, RCLFuture> entry = pendingRequests.remove(sequenceNumber);
+      Consumer<Future> callback = entry.getKey();
+      RCLFuture<U> future = entry.getValue();
       future.set(response);
+      callback.accept(future);
     }
   }
 

@@ -17,6 +17,8 @@ package org.ros2.rcljava.client;
 
 import java.util.concurrent.Future;
 
+import org.ros2.rcljava.concurrent.RCLFuture;
+import org.ros2.rcljava.consumers.Consumer;
 import org.ros2.rcljava.interfaces.Disposable;
 import org.ros2.rcljava.interfaces.MessageDefinition;
 import org.ros2.rcljava.interfaces.ServiceDefinition;
@@ -29,5 +31,9 @@ public interface Client<T extends ServiceDefinition> extends Disposable {
 
   <U extends MessageDefinition> void handleResponse(RMWRequestId header, U response);
 
-  <U extends MessageDefinition, V extends MessageDefinition> Future<V> sendRequest(final U request);
+  <U extends MessageDefinition, V extends MessageDefinition> Future<V> asyncSendRequest(
+      final U request);
+
+  <U extends MessageDefinition, V extends MessageDefinition> Future<V> asyncSendRequest(
+      final U request, final Consumer<Future<V>> callback);
 }
