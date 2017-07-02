@@ -19,7 +19,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 
 import org.ros2.rcljava.RCLJava;
-import org.ros2.rcljava.node.ExecutableNode;
+import org.ros2.rcljava.node.ComposableNode;
 import org.ros2.rcljava.executors.BaseExecutor;
 
 public class MultiThreadedExecutor implements Executor {
@@ -39,11 +39,11 @@ public class MultiThreadedExecutor implements Executor {
     this(Runtime.getRuntime().availableProcessors());
   }
 
-  public void addNode(ExecutableNode node) {
+  public void addNode(ComposableNode node) {
     this.baseExecutor.addNode(node);
   }
 
-  public void removeNode(ExecutableNode node) {
+  public void removeNode(ComposableNode node) {
     this.baseExecutor.removeNode(node);
   }
 

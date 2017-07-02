@@ -107,7 +107,7 @@ set(${PROJECT_NAME}_sources
   "src/main/java/org/ros2/rcljava/executors/Executor.java"
   "src/main/java/org/ros2/rcljava/executors/MultiThreadedExecutor.java"
   "src/main/java/org/ros2/rcljava/executors/SingleThreadedExecutor.java"
-  "src/main/java/org/ros2/rcljava/node/ExecutableNode.java"
+  "src/main/java/org/ros2/rcljava/node/ComposableNode.java"
   "src/main/java/org/ros2/rcljava/node/NodeImpl.java"
   "src/main/java/org/ros2/rcljava/node/Node.java"
   "src/main/java/org/ros2/rcljava/publisher/PublisherImpl.java"

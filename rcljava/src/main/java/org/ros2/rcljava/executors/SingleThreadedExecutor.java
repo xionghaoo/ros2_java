@@ -16,17 +16,17 @@
 package org.ros2.rcljava.executors;
 
 import org.ros2.rcljava.RCLJava;
-import org.ros2.rcljava.node.ExecutableNode;
+import org.ros2.rcljava.node.ComposableNode;
 import org.ros2.rcljava.executors.BaseExecutor;
 
 public class SingleThreadedExecutor implements Executor {
   private BaseExecutor baseExecutor = new BaseExecutor();
 
-  public void addNode(ExecutableNode node) {
+  public void addNode(ComposableNode node) {
     this.baseExecutor.addNode(node);
   }
 
-  public void removeNode(ExecutableNode node) {
+  public void removeNode(ComposableNode node) {
     this.baseExecutor.removeNode(node);
   }
 

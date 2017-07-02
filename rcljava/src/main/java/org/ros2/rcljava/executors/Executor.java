@@ -15,7 +15,7 @@
 
 package org.ros2.rcljava.executors;
 
-import org.ros2.rcljava.node.ExecutableNode;
+import org.ros2.rcljava.node.ComposableNode;
 
 public interface Executor {
   public void spin();
@@ -26,7 +26,7 @@ public interface Executor {
 
   public void spinSome();
 
-  public void addNode(ExecutableNode node);
+  public void addNode(ComposableNode node);
 
-  public void removeNode(ExecutableNode node);
+  public void removeNode(ComposableNode node);
 }

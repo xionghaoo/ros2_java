@@ -36,6 +36,6 @@ import org.ros2.rcljava.timer.WallTimer;
  * This class serves as a bridge between ROS2's rcl_node_t and RCLJava.
  * A Node must be created via @{link RCLJava#createNode(String)}
  */
-public interface ExecutableNode {
+public interface ComposableNode {
   Node getNode();
 }

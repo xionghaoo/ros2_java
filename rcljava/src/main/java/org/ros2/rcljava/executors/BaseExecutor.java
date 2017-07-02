@@ -28,7 +28,7 @@ import org.ros2.rcljava.RCLJava;
 import org.ros2.rcljava.common.JNIUtils;
 import org.ros2.rcljava.executors.AnyExecutable;
 import org.ros2.rcljava.executors.Executor;
-import org.ros2.rcljava.node.ExecutableNode;
+import org.ros2.rcljava.node.ComposableNode;
 import org.ros2.rcljava.timer.WallTimer;
 import org.ros2.rcljava.subscription.Subscription;
 import org.ros2.rcljava.service.Service;
@@ -49,7 +49,7 @@ public class BaseExecutor {
     }
   }
 
-  private BlockingQueue<ExecutableNode> nodes = new LinkedBlockingQueue<ExecutableNode>();
+  private BlockingQueue<ComposableNode> nodes = new LinkedBlockingQueue<ComposableNode>();
 
   private ConcurrentHashMap<Long, Subscription> subscriptionHandles =
       new ConcurrentHashMap<Long, Subscription>();
@@ -61,11 +61,11 @@ public class BaseExecutor {
 
   private ConcurrentHashMap<Long, Client> clientHandles = new ConcurrentHashMap<Long, Client>();
 
-  protected void addNode(ExecutableNode node) {
+  protected void addNode(ComposableNode node) {
     this.nodes.add(node);
   }
 
-  protected void removeNode(ExecutableNode node) {
+  protected void removeNode(ComposableNode node) {
     this.nodes.remove(node);
   }
 
@@ -160,7 +160,7 @@ public class BaseExecutor {
   protected void waitForWork(long timeout) {
     this.subscriptionHandles.clear();
 
-    for (ExecutableNode node : this.nodes) {
+    for (ComposableNode node : this.nodes) {
       for (Subscription<MessageDefinition> subscription : node.getNode().getSubscriptions()) {
         this.subscriptionHandles.put(subscription.getHandle(), subscription);
       }
@@ -183,7 +183,7 @@ public class BaseExecutor {
     int clientsSize = 0;
     int servicesSize = 0;
 
-    for (ExecutableNode node : this.nodes) {
+    for (ComposableNode node : this.nodes) {
       subscriptionsSize += node.getNode().getSubscriptions().size();
       timersSize += node.getNode().getTimers().size();
       clientsSize += node.getNode().getClients().size();
@@ -206,7 +206,7 @@ public class BaseExecutor {
 
     nativeWaitSetClearClients(waitSetHandle);
 
-    for (ExecutableNode node : this.nodes) {
+    for (ComposableNode node : this.nodes) {
       for (Subscription<MessageDefinition> subscription : node.getNode().getSubscriptions()) {
         nativeWaitSetAddSubscription(waitSetHandle, subscription.getHandle());
       }
@@ -229,7 +229,7 @@ public class BaseExecutor {
   protected AnyExecutable getNextExecutable() {
     AnyExecutable anyExecutable = new AnyExecutable();
 
-    for (ExecutableNode node : this.nodes) {
+    for (ComposableNode node : this.nodes) {
       for (WallTimer timer : node.getNode().getTimers()) {
         if (timer.isReady()) {
           anyExecutable.timer = timer;

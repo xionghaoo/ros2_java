@@ -815,27 +815,27 @@ public class NodeTest {
     rcljava.msg.UInt32 msg = new rcljava.msg.UInt32();
     msg.setData(54321);
 
-    ExecutableNode executablePublisherNode = new ExecutableNode() {
+    ComposableNode composablePublisherNode = new ComposableNode() {
       public Node getNode() {
         return publisherNode;
       }
     };
 
-    ExecutableNode executableSubscriptionNodeOne = new ExecutableNode() {
+    ComposableNode composableSubscriptionNodeOne = new ComposableNode() {
       public Node getNode() {
         return subscriptionNodeOne;
       }
     };
 
-    ExecutableNode executableSubscriptionNodeTwo = new ExecutableNode() {
+    ComposableNode composableSubscriptionNodeTwo = new ComposableNode() {
       public Node getNode() {
         return subscriptionNodeTwo;
       }
     };
 
-    executor.addNode(executablePublisherNode);
-    executor.addNode(executableSubscriptionNodeOne);
-    executor.addNode(executableSubscriptionNodeTwo);
+    executor.addNode(composablePublisherNode);
+    executor.addNode(composableSubscriptionNodeOne);
+    executor.addNode(composableSubscriptionNodeTwo);
 
     while (RCLJava.ok() && !futureOne.isDone() && !futureTwo.isDone()) {
       publisher.publish(msg);

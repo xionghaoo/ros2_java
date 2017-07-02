@@ -28,7 +28,7 @@ import org.ros2.rcljava.common.JNIUtils;
 import org.ros2.rcljava.executors.SingleThreadedExecutor;
 import org.ros2.rcljava.interfaces.MessageDefinition;
 import org.ros2.rcljava.interfaces.ServiceDefinition;
-import org.ros2.rcljava.node.ExecutableNode;
+import org.ros2.rcljava.node.ComposableNode;
 import org.ros2.rcljava.node.Node;
 import org.ros2.rcljava.node.NodeImpl;
 import org.ros2.rcljava.publisher.Publisher;
@@ -236,26 +236,26 @@ public final class RCLJava {
 
   public static void spin(final Node node) {
     SingleThreadedExecutor executor = new SingleThreadedExecutor();
-    ExecutableNode executableNode = new ExecutableNode() {
+    ComposableNode composableNode = new ComposableNode() {
       public Node getNode() {
         return node;
       }
     };
-    executor.addNode(executableNode);
+    executor.addNode(composableNode);
     executor.spin();
-    executor.removeNode(executableNode);
+    executor.removeNode(composableNode);
   }
 
   public static void spinOnce(final Node node) {
     SingleThreadedExecutor executor = new SingleThreadedExecutor();
-    ExecutableNode executableNode = new ExecutableNode() {
+    ComposableNode composableNode = new ComposableNode() {
       public Node getNode() {
         return node;
       }
     };
-    executor.addNode(executableNode);
+    executor.addNode(composableNode);
     executor.spinOnce();
-    executor.removeNode(executableNode);
+    executor.removeNode(composableNode);
   }
 
   private static native void nativeShutdown();
