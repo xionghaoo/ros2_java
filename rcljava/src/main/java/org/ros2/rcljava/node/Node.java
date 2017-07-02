@@ -119,4 +119,6 @@ public interface Node extends Disposable {
       final String serviceName) throws NoSuchFieldException, IllegalAccessException;
 
   WallTimer createTimer(final long period, final TimeUnit unit, final Callback callback);
+
+  String getName();
 }

@@ -91,14 +91,17 @@ public class NodeImpl implements Node {
    */
   private final Collection<WallTimer> timers;
 
+  private final String name;
+
   /**
    * Constructor.
    *
    * @param handle A pointer to the underlying ROS2 node structure. Must not
    *     be zero.
    */
-  public NodeImpl(final long handle) {
+  public NodeImpl(final long handle, final String name) {
     this.handle = handle;
+    this.name = name;
     this.publishers = new LinkedBlockingQueue<Publisher>();
     this.subscriptions = new LinkedBlockingQueue<Subscription>();
     this.services = new LinkedBlockingQueue<Service>();
@@ -313,5 +316,12 @@ public class NodeImpl implements Node {
    */
   public final Collection<WallTimer> getTimers() {
     return this.timers;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public final String getName() {
+    return this.name;
   }
 }

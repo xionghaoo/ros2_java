@@ -229,7 +229,7 @@ public final class RCLJava {
    */
   public static Node createNode(final String nodeName, final String namespace) {
     long nodeHandle = nativeCreateNodeHandle(nodeName, namespace);
-    Node node = new NodeImpl(nodeHandle);
+    Node node = new NodeImpl(nodeHandle, nodeName);
     nodes.add(node);
     return node;
   }
