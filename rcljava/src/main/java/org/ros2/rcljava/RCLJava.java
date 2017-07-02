@@ -246,6 +246,13 @@ public final class RCLJava {
     executor.removeNode(composableNode);
   }
 
+  public static void spin(final ComposableNode composableNode) {
+    SingleThreadedExecutor executor = new SingleThreadedExecutor();
+    executor.addNode(composableNode);
+    executor.spin();
+    executor.removeNode(composableNode);
+  }
+
   public static void spinOnce(final Node node) {
     SingleThreadedExecutor executor = new SingleThreadedExecutor();
     ComposableNode composableNode = new ComposableNode() {
@@ -255,6 +262,32 @@ public final class RCLJava {
     };
     executor.addNode(composableNode);
     executor.spinOnce();
+    executor.removeNode(composableNode);
+  }
+
+  public static void spinOnce(final ComposableNode composableNode) {
+    SingleThreadedExecutor executor = new SingleThreadedExecutor();
+    executor.addNode(composableNode);
+    executor.spinOnce();
+    executor.removeNode(composableNode);
+  }
+
+public static void spinSome(final Node node) {
+    SingleThreadedExecutor executor = new SingleThreadedExecutor();
+    ComposableNode composableNode = new ComposableNode() {
+      public Node getNode() {
+        return node;
+      }
+    };
+    executor.addNode(composableNode);
+    executor.spinSome();
+    executor.removeNode(composableNode);
+  }
+
+  public static void spinSome(final ComposableNode composableNode) {
+    SingleThreadedExecutor executor = new SingleThreadedExecutor();
+    executor.addNode(composableNode);
+    executor.spinSome();
     executor.removeNode(composableNode);
   }
 
