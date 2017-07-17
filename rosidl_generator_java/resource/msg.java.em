@@ -81,6 +81,16 @@ public final class @(type_name) implements MessageDefinition {
     }
   }
 
+@[        if field.type.is_primitive_type()]@
+  public final void set@(convert_lower_case_underscore_to_camel_case(field.name))(final @(get_java_type(field.type, use_primitives=True))[] @(field.name)) {
+    java.util.List<@(get_java_type(field.type, use_primitives=False))> @(field.name)_tmp = new java.util.ArrayList<@(get_java_type(field.type, use_primitives=False))>();
+    for(@(get_java_type(field.type, use_primitives=True)) @(field.name)_value : @(field.name)) {
+      @(field.name)_tmp.add(@(field.name)_value);
+    }
+    set@(convert_lower_case_underscore_to_camel_case(field.name))(@(field.name)_tmp);
+  }
+@[        end if]@
+
   public final java.util.List<@(get_java_type(field.type, use_primitives=False))> get@(convert_lower_case_underscore_to_camel_case(field.name))() {
     if (this.@(field.name) == null) {
       return null;
@@ -93,8 +103,10 @@ public final class @(type_name) implements MessageDefinition {
 @[        else]@
 @[            if field.type.type == 'string']@
   private @(get_java_type(field.type)) @(field.name) = "";
-@[            else]@
+@[            elif field.type.is_primitive_type()]@
   private @(get_java_type(field.type)) @(field.name);
+@[            else]@
+  private @(get_java_type(field.type)) @(field.name) = new @(get_java_type(field.type))();
 @[            end if]@
 @[        end if]@
 
