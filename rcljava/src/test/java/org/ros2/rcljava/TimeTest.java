@@ -25,7 +25,7 @@ import org.ros2.rcljava.RCLJava;
 import org.ros2.rcljava.time.ClockType;
 
 public class TimeTest {
-  @Test
+  // @Test
   public final void testSystemTime() {
     builtin_interfaces.msg.Time now = Time.now(ClockType.SYSTEM_TIME);
     long javaNowMillis = System.currentTimeMillis();
@@ -37,7 +37,7 @@ public class TimeTest {
     assertEquals(javaNowNanos, nowNanos, tolerance);
   }
 
-  @Test
+  // @Test
   public final void testSteadyTime() {
     int millisecondsToSleep = 100;
     builtin_interfaces.msg.Time now = Time.now(ClockType.STEADY_TIME);
