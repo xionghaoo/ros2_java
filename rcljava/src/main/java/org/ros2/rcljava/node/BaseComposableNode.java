@@ -17,17 +17,15 @@ package org.ros2.rcljava.node;
 
 import org.ros2.rcljava.RCLJava;
 
-public abstract class AbstractComposableNode implements ComposableNode {
+public class BaseComposableNode implements ComposableNode {
   private final String name;
 
   protected final Node node;
 
-  public AbstractComposableNode(String name) {
+  public BaseComposableNode(String name) {
     this.name = name;
     node = RCLJava.createNode(this.name);
-    this.setUp();
   }
-  protected abstract void setUp();
 
   public Node getNode() {
     return node;
