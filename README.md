@@ -6,7 +6,7 @@ Build status
 
 **JRE** [![Build Status](https://travis-ci.org/esteve/ros2_java.svg?branch=master)](https://travis-ci.org/esteve/ros2_java)
 
-**Android** [![Build Status](https://travis-ci.org/esteve/ros2_android.svg?branch=master)](https://travis-ci.org/esteve/ros2_android)
+**Android** [![Build Status](https://travis-ci.org/esteve/ros2_android_travis.svg?branch=master)](https://travis-ci.org/esteve/ros2_android_travis)
 
 Introduction
 ------------
