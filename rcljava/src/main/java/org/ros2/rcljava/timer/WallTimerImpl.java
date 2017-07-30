@@ -126,4 +126,8 @@ public class WallTimerImpl implements WallTimer {
   public void callTimer() {
     nativeCallTimer(this.handle);
   }
+
+  public void executeCallback() {
+    this.getCallback().call();
+  }
 }

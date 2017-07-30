@@ -46,4 +46,6 @@ public interface Subscription<T extends MessageDefinition> extends Disposable {
    * @{link org.ros2.rcljava.Node}that created this subscription.
    */
   WeakReference<Node> getNodeReference();
+
+  void executeCallback(T message);
 }

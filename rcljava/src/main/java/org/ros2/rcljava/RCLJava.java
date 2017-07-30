@@ -36,7 +36,7 @@ import org.ros2.rcljava.qos.QoSProfile;
 import org.ros2.rcljava.service.RMWRequestId;
 import org.ros2.rcljava.service.Service;
 import org.ros2.rcljava.subscription.Subscription;
-import org.ros2.rcljava.timer.WallTimer;
+import org.ros2.rcljava.timer.Timer;
 
 /**
  * Entry point for the ROS2 Java API, similar to the rclcpp API.
@@ -64,7 +64,7 @@ public final class RCLJava {
         publisher.dispose();
       }
 
-      for (WallTimer timer : node.getTimers()) {
+      for (Timer timer : node.getTimers()) {
         timer.dispose();
       }
 

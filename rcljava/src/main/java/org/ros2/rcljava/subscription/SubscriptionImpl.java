@@ -140,4 +140,8 @@ public class SubscriptionImpl<T extends MessageDefinition> implements Subscripti
       this.handle = 0;
     }
   }
+
+  public void executeCallback(T message) {
+    this.getCallback().accept(message);
+  }
 }

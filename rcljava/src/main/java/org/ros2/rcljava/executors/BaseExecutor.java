@@ -25,17 +25,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.ros2.rcljava.RCLJava;
+import org.ros2.rcljava.client.Client;
 import org.ros2.rcljava.common.JNIUtils;
 import org.ros2.rcljava.executors.AnyExecutable;
 import org.ros2.rcljava.executors.Executor;
-import org.ros2.rcljava.node.ComposableNode;
-import org.ros2.rcljava.timer.WallTimer;
-import org.ros2.rcljava.subscription.Subscription;
-import org.ros2.rcljava.service.Service;
-import org.ros2.rcljava.client.Client;
 import org.ros2.rcljava.interfaces.MessageDefinition;
 import org.ros2.rcljava.interfaces.ServiceDefinition;
+import org.ros2.rcljava.node.ComposableNode;
 import org.ros2.rcljava.service.RMWRequestId;
+import org.ros2.rcljava.service.Service;
+import org.ros2.rcljava.subscription.Subscription;
+import org.ros2.rcljava.timer.Timer;
 
 public class BaseExecutor {
   private static final Logger logger = LoggerFactory.getLogger(BaseExecutor.class);
@@ -54,8 +54,7 @@ public class BaseExecutor {
   private ConcurrentHashMap<Long, Subscription> subscriptionHandles =
       new ConcurrentHashMap<Long, Subscription>();
 
-  private ConcurrentHashMap<Long, WallTimer> timerHandles =
-      new ConcurrentHashMap<Long, WallTimer>();
+  private ConcurrentHashMap<Long, Timer> timerHandles = new ConcurrentHashMap<Long, Timer>();
 
   private ConcurrentHashMap<Long, Service> serviceHandles = new ConcurrentHashMap<Long, Service>();
 
@@ -72,7 +71,7 @@ public class BaseExecutor {
   protected void executeAnyExecutable(AnyExecutable anyExecutable) {
     if (anyExecutable.timer != null) {
       anyExecutable.timer.callTimer();
-      anyExecutable.timer.getCallback().call();
+      anyExecutable.timer.executeCallback();
       timerHandles.remove(anyExecutable.timer.getHandle());
     }
 
@@ -80,7 +79,7 @@ public class BaseExecutor {
       MessageDefinition message = nativeTake(
           anyExecutable.subscription.getHandle(), anyExecutable.subscription.getMessageType());
       if (message != null) {
-        anyExecutable.subscription.getCallback().accept(message);
+        anyExecutable.subscription.executeCallback(message);
       }
       subscriptionHandles.remove(anyExecutable.subscription.getHandle());
     }
@@ -165,7 +164,7 @@ public class BaseExecutor {
         this.subscriptionHandles.put(subscription.getHandle(), subscription);
       }
 
-      for (WallTimer timer : node.getNode().getTimers()) {
+      for (Timer timer : node.getNode().getTimers()) {
         this.timerHandles.put(timer.getHandle(), timer);
       }
 
@@ -211,7 +210,7 @@ public class BaseExecutor {
         nativeWaitSetAddSubscription(waitSetHandle, subscription.getHandle());
       }
 
-      for (WallTimer timer : node.getNode().getTimers()) {
+      for (Timer timer : node.getNode().getTimers()) {
         nativeWaitSetAddTimer(waitSetHandle, timer.getHandle());
       }
 
@@ -230,7 +229,7 @@ public class BaseExecutor {
     AnyExecutable anyExecutable = new AnyExecutable();
 
     for (ComposableNode node : this.nodes) {
-      for (WallTimer timer : node.getNode().getTimers()) {
+      for (Timer timer : node.getNode().getTimers()) {
         if (timer.isReady()) {
           anyExecutable.timer = timer;
           return anyExecutable;

@@ -16,14 +16,12 @@
 package org.ros2.rcljava.timer;
 
 import org.ros2.rcljava.concurrent.Callback;
-import org.ros2.rcljava.interfaces.Disposable;
 
-public interface WallTimer extends Disposable {
+public interface WallTimer extends Timer {
   long getTimerPeriodNS();
 
   void setTimerPeriodNS(long period);
 
-  boolean isReady();
   boolean isCanceled();
 
   void cancel();
@@ -35,6 +33,4 @@ public interface WallTimer extends Disposable {
   long timeUntilNextCall();
 
   Callback getCallback();
-
-  void callTimer();
 }

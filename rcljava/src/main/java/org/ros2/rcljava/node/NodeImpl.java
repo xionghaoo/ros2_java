@@ -32,6 +32,7 @@ import org.ros2.rcljava.service.Service;
 import org.ros2.rcljava.service.ServiceImpl;
 import org.ros2.rcljava.subscription.Subscription;
 import org.ros2.rcljava.subscription.SubscriptionImpl;
+import org.ros2.rcljava.timer.Timer;
 import org.ros2.rcljava.timer.WallTimer;
 import org.ros2.rcljava.timer.WallTimerImpl;
 
@@ -87,9 +88,9 @@ public class NodeImpl implements Node {
   private final Collection<Client> clients;
 
   /**
-   * All the @{link WallTimer}s that have been created through this instance.
+   * All the @{link Timer}s that have been created through this instance.
    */
-  private final Collection<WallTimer> timers;
+  private final Collection<Timer> timers;
 
   private final String name;
 
@@ -106,7 +107,7 @@ public class NodeImpl implements Node {
     this.subscriptions = new LinkedBlockingQueue<Subscription>();
     this.services = new LinkedBlockingQueue<Service>();
     this.clients = new LinkedBlockingQueue<Client>();
-    this.timers = new LinkedBlockingQueue<WallTimer>();
+    this.timers = new LinkedBlockingQueue<Timer>();
   }
 
   /**
@@ -302,7 +303,8 @@ public class NodeImpl implements Node {
 
   private static native long nativeCreateTimerHandle(long timerPeriod);
 
-  public WallTimer createTimer(final long period, final TimeUnit unit, final Callback callback) {
+  public WallTimer createWallTimer(
+      final long period, final TimeUnit unit, final Callback callback) {
     long timerPeriodNS = TimeUnit.NANOSECONDS.convert(period, unit);
     long timerHandle = nativeCreateTimerHandle(timerPeriodNS);
     WallTimer timer =
@@ -314,7 +316,7 @@ public class NodeImpl implements Node {
   /**
    * {@inheritDoc}
    */
-  public final Collection<WallTimer> getTimers() {
+  public final Collection<Timer> getTimers() {
     return this.timers;
   }
 

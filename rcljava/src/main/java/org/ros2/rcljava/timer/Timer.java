@@ -13,16 +13,14 @@
  * limitations under the License.
  */
 
-package org.ros2.rcljava.executors;
+package org.ros2.rcljava.timer;
 
-import org.ros2.rcljava.client.Client;
-import org.ros2.rcljava.subscription.Subscription;
-import org.ros2.rcljava.service.Service;
-import org.ros2.rcljava.timer.Timer;
+import org.ros2.rcljava.interfaces.Disposable;
 
-public class AnyExecutable {
-  public Timer timer;
-  public Subscription subscription;
-  public Service service;
-  public Client client;
+public interface Timer extends Disposable {
+  void callTimer();
+
+  void executeCallback();
+
+  boolean isReady();
 }

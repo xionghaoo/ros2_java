@@ -30,6 +30,7 @@ import org.ros2.rcljava.publisher.Publisher;
 import org.ros2.rcljava.service.RMWRequestId;
 import org.ros2.rcljava.service.Service;
 import org.ros2.rcljava.subscription.Subscription;
+import org.ros2.rcljava.timer.Timer;
 import org.ros2.rcljava.timer.WallTimer;
 
 /**
@@ -58,9 +59,9 @@ public interface Node extends Disposable {
   Collection<Publisher> getPublishers();
 
   /**
-   * @return All the @{link WallTimer}s that were created by this instance.
+   * @return All the @{link Timer}s that were created by this instance.
    */
-  Collection<WallTimer> getTimers();
+  Collection<Timer> getTimers();
 
   /**
    * Create a Subscription&lt;T&gt;.
@@ -118,7 +119,7 @@ public interface Node extends Disposable {
   <T extends ServiceDefinition> Client<T> createClient(final Class<T> serviceType,
       final String serviceName) throws NoSuchFieldException, IllegalAccessException;
 
-  WallTimer createTimer(final long period, final TimeUnit unit, final Callback callback);
+  WallTimer createWallTimer(final long period, final TimeUnit unit, final Callback callback);
 
   String getName();
 }

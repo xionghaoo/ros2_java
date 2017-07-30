@@ -128,6 +128,7 @@ set(${PROJECT_NAME}_sources
   "src/main/java/org/ros2/rcljava/subscription/SubscriptionImpl.java"
   "src/main/java/org/ros2/rcljava/subscription/Subscription.java"
   "src/main/java/org/ros2/rcljava/time/ClockType.java"
+  "src/main/java/org/ros2/rcljava/timer/Timer.java"
   "src/main/java/org/ros2/rcljava/timer/WallTimer.java"
   "src/main/java/org/ros2/rcljava/timer/WallTimerImpl.java"
 )
