@@ -95,13 +95,6 @@ public class SubscriptionImpl<T extends MessageDefinition> implements Subscripti
   /**
    * {@inheritDoc}
    */
-  public final Consumer<T> getCallback() {
-    return callback;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
   public final Class<T> getMessageType() {
     return messageType;
   }
@@ -142,6 +135,6 @@ public class SubscriptionImpl<T extends MessageDefinition> implements Subscripti
   }
 
   public void executeCallback(T message) {
-    this.getCallback().accept(message);
+    this.callback.accept(message);
   }
 }

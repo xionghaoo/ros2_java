@@ -70,10 +70,6 @@ public class WallTimerImpl implements WallTimer {
     this.timerPeriodNS = timerPeriodNS;
   }
 
-  public final Callback getCallback() {
-    return callback;
-  }
-
   public long timeSinceLastCall() {
     return nativeTimeSinceLastCall(this.handle);
   }
@@ -128,6 +124,6 @@ public class WallTimerImpl implements WallTimer {
   }
 
   public void executeCallback() {
-    this.getCallback().call();
+    this.callback.call();
   }
 }

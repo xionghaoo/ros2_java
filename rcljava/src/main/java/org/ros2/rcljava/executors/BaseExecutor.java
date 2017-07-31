@@ -112,7 +112,7 @@ public class BaseExecutor {
             nativeTakeRequest(anyExecutable.service.getHandle(), requestFromJavaConverterHandle,
                 requestToJavaConverterHandle, requestDestructorHandle, requestMessage);
         if (rmwRequestId != null) {
-          anyExecutable.service.getCallback().accept(rmwRequestId, requestMessage, responseMessage);
+          anyExecutable.service.executeCallback(rmwRequestId, requestMessage, responseMessage);
           nativeSendServiceResponse(anyExecutable.service.getHandle(), rmwRequestId,
               responseFromJavaConverterHandle, responseToJavaConverterHandle,
               responseDestructorHandle, responseMessage);

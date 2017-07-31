@@ -42,13 +42,16 @@ public class ServiceImpl<T extends ServiceDefinition> implements Service<T> {
   private final WeakReference<Node> nodeReference;
   private long handle;
   private final String serviceName;
-  private final TriConsumer<RMWRequestId, ?, ?> callback;
+  private final TriConsumer<RMWRequestId, ? extends MessageDefinition, ? extends MessageDefinition>
+      callback;
 
   private final Class<MessageDefinition> requestType;
   private final Class<MessageDefinition> responseType;
 
   public ServiceImpl(final WeakReference<Node> nodeReference, final long handle,
-      final String serviceName, final TriConsumer<RMWRequestId, ?, ?> callback,
+      final String serviceName,
+      final TriConsumer<RMWRequestId, ? extends MessageDefinition, ? extends MessageDefinition>
+          callback,
       final Class<MessageDefinition> requestType, final Class<MessageDefinition> responseType) {
     this.nodeReference = nodeReference;
     this.handle = handle;
@@ -56,10 +59,6 @@ public class ServiceImpl<T extends ServiceDefinition> implements Service<T> {
     this.callback = callback;
     this.requestType = requestType;
     this.responseType = responseType;
-  }
-
-  public final TriConsumer<RMWRequestId, ?, ?> getCallback() {
-    return callback;
   }
 
   public final Class<MessageDefinition> getRequestType() {
@@ -96,5 +95,13 @@ public class ServiceImpl<T extends ServiceDefinition> implements Service<T> {
    */
   public final long getHandle() {
     return handle;
+  }
+
+  public void executeCallback(
+      RMWRequestId rmwRequestId, MessageDefinition request, MessageDefinition response) {
+    TriConsumer<RMWRequestId, MessageDefinition, MessageDefinition> callback =
+        ((ServiceImpl) this).callback;
+
+    callback.accept(rmwRequestId, request, response);
   }
 }

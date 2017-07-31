@@ -36,12 +36,6 @@ public interface Subscription<T extends MessageDefinition> extends Disposable {
   Class<T> getMessageType();
 
   /**
-   * @return The callback function that this subscription will trigger when
-   *     a message is received.
-   */
-  Consumer<T> getCallback();
-
-  /**
    * @return A @{link java.lang.ref.WeakReference} to the
    * @{link org.ros2.rcljava.Node}that created this subscription.
    */

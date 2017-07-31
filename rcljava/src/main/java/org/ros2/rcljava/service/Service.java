@@ -25,5 +25,5 @@ public interface Service<T extends ServiceDefinition> extends Disposable {
 
   <U extends MessageDefinition> Class<U> getResponseType();
 
-  TriConsumer<RMWRequestId, ?, ?> getCallback();
+  void executeCallback(RMWRequestId rmwRequestId, MessageDefinition request, MessageDefinition response);
 }

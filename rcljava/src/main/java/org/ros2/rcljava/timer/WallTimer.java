@@ -31,6 +31,4 @@ public interface WallTimer extends Timer {
   long timeSinceLastCall();
 
   long timeUntilNextCall();
-
-  Callback getCallback();
 }
