@@ -297,6 +297,16 @@ public class InterfacesTest {
     c.setUpToThreeInt32Values(Arrays.asList(new Integer[] {12345, -12345, 6789}));
     assertEquals(Arrays.asList(new Integer[] {12345, -12345, 6789}), c.getUpToThreeInt32Values());
 
+    // Test that arrays of primitives are also accepted
+    c.setUpToThreeInt32Values(new int[] {});
+    assertEquals(Arrays.asList(new Integer[] {}), c.getUpToThreeInt32Values());
+    c.setUpToThreeInt32Values(new int[] {12345});
+    assertEquals(Arrays.asList(new Integer[] {12345}), c.getUpToThreeInt32Values());
+    c.setUpToThreeInt32Values(new int[] {12345, -12345});
+    assertEquals(Arrays.asList(new Integer[] {12345, -12345}), c.getUpToThreeInt32Values());
+    c.setUpToThreeInt32Values(new int[] {12345, -12345, 6789});
+    assertEquals(Arrays.asList(new Integer[] {12345, -12345, 6788}), c.getUpToThreeInt32Values());
+
     thrown.expect(IllegalArgumentException.class);
     c.setUpToThreeInt32Values(Arrays.asList(new Integer[] {12345, -12345, 6789, -6789}));
   }
