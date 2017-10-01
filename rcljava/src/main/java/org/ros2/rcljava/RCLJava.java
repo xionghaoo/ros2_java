@@ -83,15 +83,6 @@ public final class RCLJava {
   static {
     nodes = new LinkedBlockingQueue<Node>();
 
-    RMW_TO_TYPESUPPORT = new ConcurrentSkipListMap<String, String>() {
-      {
-        put("rmw_fastrtps_cpp", "rosidl_typesupport_introspection_c");
-        put("rmw_opensplice_cpp", "rosidl_typesupport_opensplice_c");
-        put("rmw_connext_cpp", "rosidl_typesupport_connext_c");
-        put("rmw_connext_dynamic_cpp", "rosidl_typesupport_introspection_c");
-      }
-    };
-
     // NOTE(esteve): disabling shutdown hook for now to avoid JVM crashes
     // Runtime.getRuntime().addShutdownHook(new Thread() {
     //   public void run() {
@@ -101,20 +92,10 @@ public final class RCLJava {
   }
 
   /**
-   * The identifier of the currently active RMW implementation.
-   */
-  private static String rmwImplementation = null;
-
-  /**
    * Flag to indicate if RCLJava has been fully initialized, with a valid RMW
    *   implementation.
    */
   private static boolean initialized = false;
-
-  /**
-   * A mapping between RMW implementations and their typesupports.
-   */
-  private static final Map<String, String> RMW_TO_TYPESUPPORT;
 
   /**
    * @return true if RCLJava has been fully initialized, false otherwise.
@@ -130,27 +111,16 @@ public final class RCLJava {
    */
   public static void rclJavaInit() {
     synchronized (RCLJava.class) {
-      if (!initialized) {
-        if (RCLJava.rmwImplementation == null) {
-          for (Map.Entry<String, String> entry : RMW_TO_TYPESUPPORT.entrySet()) {
-            try {
-              setRMWImplementation(entry.getKey());
-              break;
-            } catch (UnsatisfiedLinkError ule) {
-              logger.info("UnsatisfiedLinkError", ule);
-            } catch (Exception exc) {
-              logger.info("Exception", exc);
-            }
-          }
-        }
-        if (RCLJava.rmwImplementation == null) {
-          logger.error("No RMW implementation found");
+      if (!RCLJava.initialized) {
+        try {
+          JNIUtils.loadImplementation(RCLJava.class);
+        } catch (UnsatisfiedLinkError ule) {
+          logger.error("Native code library failed to load.\n" + ule);
           System.exit(1);
-        } else {
-          nativeRCLJavaInit();
-          logger.info("Using RMW implementation: {}", getRMWIdentifier());
-          initialized = true;
         }
+        RCLJava.nativeRCLJavaInit();
+        logger.info("Using RMW implementation: {}", RCLJava.getRMWIdentifier());
+        initialized = true;
       }
     }
   }
@@ -168,17 +138,6 @@ public final class RCLJava {
    * @return A pointer to the underlying ROS2 node structure.
    */
   private static native long nativeCreateNodeHandle(String nodeName, String namespace);
-
-  public static String getTypesupportIdentifier() {
-    return RMW_TO_TYPESUPPORT.get(nativeGetRMWIdentifier());
-  }
-
-  public static void setRMWImplementation(final String rmwImplementation) throws Exception {
-    synchronized (RCLJava.class) {
-      JNIUtils.loadLibrary(RCLJava.class);
-      RCLJava.rmwImplementation = RCLJava.getRMWIdentifier();
-    }
-  }
 
   /**
    * @return The identifier of the currently active RMW implementation via the

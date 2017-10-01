@@ -41,8 +41,9 @@ Java_org_ros2_rcljava_RCLJava_nativeRCLJavaInit(JNIEnv * env, jclass)
   // TODO(esteve): parse args
   rcl_ret_t ret = rcl_init(0, nullptr, rcl_get_default_allocator());
   if (ret != RCL_RET_OK) {
-    rcljava_throw_rclexception(
-      env, ret, "Failed to init: " + std::string(rcl_get_error_string_safe()));
+    std::string msg = "Failed to init: " + std::string(rcl_get_error_string_safe());
+    rcl_reset_error();
+    rcljava_throw_rclexception(env, ret, msg);
   }
 }
 
@@ -64,8 +65,9 @@ Java_org_ros2_rcljava_RCLJava_nativeCreateNodeHandle(
   rcl_node_options_t default_options = rcl_node_get_default_options();
   rcl_ret_t ret = rcl_node_init(node, node_name.c_str(), namespace_.c_str(), &default_options);
   if (ret != RCL_RET_OK) {
-    rcljava_throw_rclexception(
-      env, ret, "Failed to create node: " + std::string(rcl_get_error_string_safe()));
+    std::string msg = "Failed to create node: " + std::string(rcl_get_error_string_safe());
+    rcl_reset_error();
+    rcljava_throw_rclexception(env, ret, msg);
     return 0;
   }
   jlong node_handle = reinterpret_cast<jlong>(node);
@@ -91,8 +93,9 @@ Java_org_ros2_rcljava_RCLJava_nativeShutdown(JNIEnv * env, jclass)
 {
   rcl_ret_t ret = rcl_shutdown();
   if (ret != RCL_RET_OK) {
-    rcljava_throw_rclexception(
-      env, ret, "Failed to shutdown: " + std::string(rcl_get_error_string_safe()));
+    std::string msg = "Failed to shutdown: " + std::string(rcl_get_error_string_safe());
+    rcl_reset_error();
+    rcljava_throw_rclexception(env, ret, msg);
   }
 }
 

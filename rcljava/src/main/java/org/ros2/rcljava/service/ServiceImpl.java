@@ -32,7 +32,7 @@ public class ServiceImpl<T extends ServiceDefinition> implements Service<T> {
 
   static {
     try {
-      JNIUtils.loadLibrary(ServiceImpl.class);
+      JNIUtils.loadImplementation(ServiceImpl.class);
     } catch (UnsatisfiedLinkError ule) {
       logger.error("Native code library failed to load.\n" + ule);
       System.exit(1);

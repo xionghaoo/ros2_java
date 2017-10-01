@@ -56,8 +56,9 @@ Java_org_ros2_rcljava_publisher_PublisherImpl_nativePublish(
   destroy_ros_message(raw_ros_message);
 
   if (ret != RCL_RET_OK) {
-    rcljava_throw_rclexception(
-      env, ret, "Failed to publish: " + std::string(rcl_get_error_string_safe()));
+    std::string msg = "Failed to publish: " + std::string(rcl_get_error_string_safe());
+    rcl_reset_error();
+    rcljava_throw_rclexception(env, ret, msg);
   }
 }
 
@@ -84,7 +85,8 @@ Java_org_ros2_rcljava_publisher_PublisherImpl_nativeDispose(
   rcl_ret_t ret = rcl_publisher_fini(publisher, node);
 
   if (ret != RCL_RET_OK) {
-    rcljava_throw_rclexception(
-      env, ret, "Failed to destroy publisher: " + std::string(rcl_get_error_string_safe()));
+    std::string msg = "Failed to destroy publisher: " + std::string(rcl_get_error_string_safe());
+    rcl_reset_error();
+    rcljava_throw_rclexception(env, ret, msg);
   }
 }

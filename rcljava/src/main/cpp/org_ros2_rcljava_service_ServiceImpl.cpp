@@ -56,7 +56,8 @@ Java_org_ros2_rcljava_service_ServiceImpl_nativeDispose(
   rcl_ret_t ret = rcl_service_fini(service, node);
 
   if (ret != RCL_RET_OK) {
-    rcljava_throw_rclexception(
-      env, ret, "Failed to destroy service: " + std::string(rcl_get_error_string_safe()));
+    std::string msg = "Failed to destroy service: " + std::string(rcl_get_error_string_safe());
+    rcl_reset_error();
+    rcljava_throw_rclexception(env, ret, msg);
   }
 }

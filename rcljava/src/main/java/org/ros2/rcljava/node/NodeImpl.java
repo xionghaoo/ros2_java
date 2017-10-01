@@ -54,7 +54,7 @@ public class NodeImpl implements Node {
 
   static {
     try {
-      JNIUtils.loadLibrary(NodeImpl.class);
+      JNIUtils.loadImplementation(NodeImpl.class);
     } catch (UnsatisfiedLinkError ule) {
       logger.error("Native code library failed to load.\n" + ule);
       System.exit(1);

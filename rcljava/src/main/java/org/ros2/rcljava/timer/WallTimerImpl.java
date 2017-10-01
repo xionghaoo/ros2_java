@@ -29,7 +29,7 @@ public class WallTimerImpl implements WallTimer {
 
   static {
     try {
-      JNIUtils.loadLibrary(WallTimerImpl.class);
+      JNIUtils.loadImplementation(WallTimerImpl.class);
     } catch (UnsatisfiedLinkError ule) {
       logger.error("Native code library failed to load.\n" + ule);
       System.exit(1);

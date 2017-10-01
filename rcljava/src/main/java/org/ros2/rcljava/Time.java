@@ -28,7 +28,7 @@ public final class Time {
 
   static {
     try {
-      JNIUtils.loadLibrary(Time.class);
+      JNIUtils.loadImplementation(Time.class);
     } catch (UnsatisfiedLinkError ule) {
       logger.error("Native code library failed to load.\n" + ule);
       System.exit(1);

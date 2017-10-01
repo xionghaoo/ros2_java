@@ -21,31 +21,36 @@ import org.slf4j.LoggerFactory;
 public final class JNIUtils {
   private static final Logger logger = LoggerFactory.getLogger(JNIUtils.class);
 
+  private static final String TYPESUPPORT = "rosidl_typesupport_c";
+
   /**
    * Private constructor so this cannot be instantiated.
    */
   private JNIUtils() {}
 
-  public static void loadLibrary(Class cls) {
-    JNIUtils.loadLibrary(cls, null);
-  }
-
-  public static void loadLibrary(Class cls, String typesupportIdentifier) {
+  private static String normalizeClassName(Class cls) {
     String className = cls.getCanonicalName();
 
     // Convert from camel case to underscores using the same regex as:
     // https://raw.githubusercontent.com/ros2/rosidl/master/rosidl_cmake/cmake/string_camel_case_to_lower_case_underscore.cmake
     String libraryName = className.replaceAll("\\.", "_")
-                             .replaceAll("(.)([A-Z][a-z]+)", "$1_$2")
-                             .replaceAll("([a-z0-9])([A-Z])", "$1_$2")
-                             .toLowerCase();
+                              .replaceAll("(.)([A-Z][a-z]+)", "$1_$2")
+                              .replaceAll("([a-z0-9])([A-Z])", "$1_$2")
+                              .toLowerCase();
+    return libraryName;
+  }
 
-    if (typesupportIdentifier != null) {
-      libraryName = libraryName + "__" + typesupportIdentifier;
-    }
+  public static void loadImplementation(Class cls) {
+    String libraryName = normalizeClassName(cls);
+    libraryName = libraryName + "__jni";
+    logger.info("Loading implementation: " + libraryName);
+    System.loadLibrary(libraryName);
+  }
 
-    logger.info("Loading library: " + libraryName);
-
+  public static void loadTypesupport(Class cls) {
+    String libraryName = normalizeClassName(cls);
+    libraryName = libraryName + "__jni__" + JNIUtils.TYPESUPPORT;
+    logger.info("Loading typesupport: " + libraryName);
     System.loadLibrary(libraryName);
   }
 }

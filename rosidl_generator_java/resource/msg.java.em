@@ -1,7 +1,6 @@
 package @(package_name).@(subfolder);
 
 import org.ros2.rcljava.common.JNIUtils;
-import org.ros2.rcljava.common.RCLJavaProxy;
 import org.ros2.rcljava.interfaces.MessageDefinition;
 
 import org.slf4j.Logger;
@@ -18,16 +17,11 @@ public final class @(type_name) implements MessageDefinition {
   private static final Logger logger = LoggerFactory.getLogger(@(type_name).class);
 
   static {
-    java.lang.String typesupportIdentifier = RCLJavaProxy.getTypesupportIdentifier();
-    if (typesupportIdentifier == null) {
-      logger.debug("Typesupport identifier can't be found");
-    } else {
-      try {
-        JNIUtils.loadLibrary(@(type_name).class, typesupportIdentifier);
-      } catch (UnsatisfiedLinkError ule) {
-        logger.error("Native code library failed to load.\n" + ule);
-        System.exit(1);
-      }
+    try {
+      JNIUtils.loadTypesupport(@(type_name).class);
+    } catch (UnsatisfiedLinkError ule) {
+      logger.error("Native code library failed to load.\n" + ule);
+      System.exit(1);
     }
   }
 

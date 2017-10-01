@@ -21,15 +21,19 @@ if(NOT ANDROID)
 endif()
 include(UseJava)
 
+# Default to C++14
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+endif()
+
 if(NOT WIN32)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -Wextra")
+  add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
 set(CMAKE_JAVA_COMPILE_FLAGS "-source" "1.6" "-target" "1.6")
 
 set(${PROJECT_NAME}_java_sources
   "src/main/java/org/ros2/rcljava/common/JNIUtils.java"
-  "src/main/java/org/ros2/rcljava/common/RCLJavaProxy.java"
   "src/main/java/org/ros2/rcljava/exceptions/RCLException.java"
   "src/main/java/org/ros2/rcljava/exceptions/RCLReturn.java"
   "src/main/java/org/ros2/rcljava/interfaces/Disposable.java"

@@ -5,13 +5,14 @@ set(_exported_jars "@_AMENT_CMAKE_EXPORT_JARS@")
 
 # append absolute jars to @PROJECT_NAME@_JARS
 # warn about not existing paths
-if(NOT "${_exported_jars} " STREQUAL " ")
+if(NOT _exported_jars STREQUAL "")
   find_package(ament_cmake_core QUIET REQUIRED)
   foreach(_exported_jar ${_exported_jars})
     if(NOT EXISTS "${_exported_jar}")
       message(WARNING "Package '@PROJECT_NAME@' exports the jar '${_exported_jar}' which doesn't exist")
+    else()
+      normalize_path(_exported_jar "${_exported_jar}")
+      list(APPEND @PROJECT_NAME@_JARS "${_exported_jar}")
     endif()
-    normalize_path(_exported_jar "${_exported_jar}")
-    list(APPEND @PROJECT_NAME@_JARS "${_exported_jar}")
   endforeach()
 endif()

@@ -38,7 +38,7 @@ public class ClientImpl<T extends ServiceDefinition> implements Client<T> {
 
   static {
     try {
-      JNIUtils.loadLibrary(ClientImpl.class);
+      JNIUtils.loadImplementation(ClientImpl.class);
     } catch (UnsatisfiedLinkError ule) {
       logger.error("Native code library failed to load.\n" + ule);
       System.exit(1);

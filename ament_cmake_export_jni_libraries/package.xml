@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>ament_cmake_export_jars</name>
+  <name>ament_cmake_export_jni_libraries</name>
   <version>0.0.3</version>
   <description>The ability to export Java archives to downstream packages in the ament buildsystem in CMake.</description>
   <author email="esteve@apache.org">Esteve Fernandez</author>

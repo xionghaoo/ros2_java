@@ -59,9 +59,10 @@ Java_org_ros2_rcljava_client_ClientImpl_nativeSendClientRequest(
   destroy_ros_message(request_msg);
 
   if (ret != RCL_RET_OK) {
-    rcljava_throw_rclexception(
-      env, ret,
-      "Failed to send request from a client: " + std::string(rcl_get_error_string_safe()));
+    std::string msg =
+      "Failed to send request from a client: " + std::string(rcl_get_error_string_safe());
+    rcl_reset_error();
+    rcljava_throw_rclexception(env, ret, msg);
   }
 }
 
@@ -90,7 +91,8 @@ Java_org_ros2_rcljava_client_ClientImpl_nativeDispose(
   rcl_ret_t ret = rcl_client_fini(client, node);
 
   if (ret != RCL_RET_OK) {
-    rcljava_throw_rclexception(
-      env, ret, "Failed to destroy client: " + std::string(rcl_get_error_string_safe()));
+    std::string msg = "Failed to destroy client: " + std::string(rcl_get_error_string_safe());
+    rcl_reset_error();
+    rcljava_throw_rclexception(env, ret, msg);
   }
 }

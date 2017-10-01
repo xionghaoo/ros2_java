@@ -45,9 +45,9 @@ Java_org_ros2_rcljava_timer_WallTimerImpl_nativeIsReady(
   rcl_ret_t ret = rcl_timer_is_ready(timer, &is_ready);
 
   if (ret != RCL_RET_OK) {
-    rcljava_throw_exception(
-      env, "java/lang/IllegalStateException",
-      "Failed to check timer ready: " + std::string(rcl_get_error_string_safe()));
+    std::string msg = "Failed to check timer ready: " + std::string(rcl_get_error_string_safe());
+    rcl_reset_error();
+    rcljava_throw_exception(env, "java/lang/IllegalStateException", msg);
   }
 
   return is_ready;
@@ -65,9 +65,9 @@ Java_org_ros2_rcljava_timer_WallTimerImpl_nativeIsCanceled(
   rcl_ret_t ret = rcl_timer_is_canceled(timer, &is_canceled);
 
   if (ret != RCL_RET_OK) {
-    rcljava_throw_exception(
-      env, "java/lang/IllegalStateException",
-      "Failed to check timer canceled: " + std::string(rcl_get_error_string_safe()));
+    std::string msg = "Failed to check timer canceled: " + std::string(rcl_get_error_string_safe());
+    rcl_reset_error();
+    rcljava_throw_exception(env, "java/lang/IllegalStateException", msg);
   }
 
   return is_canceled;
@@ -89,15 +89,14 @@ Java_org_ros2_rcljava_timer_WallTimerImpl_nativeDispose(
   rcl_ret_t ret = rcl_timer_fini(timer);
 
   if (ret != RCL_RET_OK) {
-    rcljava_throw_exception(
-      env, "java/lang/IllegalStateException",
-      "Failed to destroy timer: " + std::string(rcl_get_error_string_safe()));
+    std::string msg = "Failed to destroy timer: " + std::string(rcl_get_error_string_safe());
+    rcl_reset_error();
+    rcljava_throw_exception(env, "java/lang/IllegalStateException", msg);
   }
 }
 
 JNIEXPORT void JNICALL
-Java_org_ros2_rcljava_timer_WallTimerImpl_nativeReset(
-  JNIEnv * env, jclass, jlong wall_timer_handle)
+Java_org_ros2_rcljava_timer_WallTimerImpl_nativeReset(JNIEnv * env, jclass, jlong wall_timer_handle)
 {
   assert(wall_timer_handle != 0);
 
@@ -108,9 +107,9 @@ Java_org_ros2_rcljava_timer_WallTimerImpl_nativeReset(
   rcl_ret_t ret = rcl_timer_reset(timer);
 
   if (ret != RCL_RET_OK) {
-    rcljava_throw_exception(
-      env, "java/lang/IllegalStateException",
-      "Failed to reset timer: " + std::string(rcl_get_error_string_safe()));
+    std::string msg = "Failed to reset timer: " + std::string(rcl_get_error_string_safe());
+    rcl_reset_error();
+    rcljava_throw_exception(env, "java/lang/IllegalStateException", msg);
   }
 }
 
@@ -127,9 +126,9 @@ Java_org_ros2_rcljava_timer_WallTimerImpl_nativeCancel(
   rcl_ret_t ret = rcl_timer_cancel(timer);
 
   if (ret != RCL_RET_OK) {
-    rcljava_throw_exception(
-      env, "java/lang/IllegalStateException",
-      "Failed to cancel timer: " + std::string(rcl_get_error_string_safe()));
+    std::string msg = "Failed to cancel timer: " + std::string(rcl_get_error_string_safe());
+    rcl_reset_error();
+    rcljava_throw_exception(env, "java/lang/IllegalStateException", msg);
   }
 }
 
@@ -147,9 +146,10 @@ Java_org_ros2_rcljava_timer_WallTimerImpl_nativeTimeUntilNextCall(
   rcl_ret_t ret = rcl_timer_get_time_until_next_call(timer, &remaining_time);
 
   if (ret != RCL_RET_OK) {
-    rcljava_throw_exception(
-      env, "java/lang/IllegalStateException",
-      "Failed to get time until next timer call: " + std::string(rcl_get_error_string_safe()));
+    std::string msg =
+      "Failed to get time until next timer call: " + std::string(rcl_get_error_string_safe());
+    rcl_reset_error();
+    rcljava_throw_exception(env, "java/lang/IllegalStateException", msg);
     return 0;
   }
 
@@ -170,9 +170,10 @@ Java_org_ros2_rcljava_timer_WallTimerImpl_nativeTimeSinceLastCall(
   rcl_ret_t ret = rcl_timer_get_time_since_last_call(timer, &elapsed_time);
 
   if (ret != RCL_RET_OK) {
-    rcljava_throw_exception(
-      env, "java/lang/IllegalStateException",
-      "Failed to get time until next timer call: " + std::string(rcl_get_error_string_safe()));
+    std::string msg =
+      "Failed to get time until next timer call: " + std::string(rcl_get_error_string_safe());
+    rcl_reset_error();
+    rcljava_throw_exception(env, "java/lang/IllegalStateException", msg);
     return 0;
   }
 
@@ -193,9 +194,9 @@ Java_org_ros2_rcljava_timer_WallTimerImpl_nativeGetTimerPeriodNS(
   rcl_ret_t ret = rcl_timer_get_period(timer, &timer_period);
 
   if (ret != RCL_RET_OK) {
-    rcljava_throw_exception(
-      env, "java/lang/IllegalStateException",
-      "Failed to get timer period: " + std::string(rcl_get_error_string_safe()));
+    std::string msg = "Failed to get timer period: " + std::string(rcl_get_error_string_safe());
+    rcl_reset_error();
+    rcljava_throw_exception(env, "java/lang/IllegalStateException", msg);
     return 0;
   }
 
@@ -216,9 +217,9 @@ Java_org_ros2_rcljava_timer_WallTimerImpl_nativeSetTimerPeriodNS(
   rcl_ret_t ret = rcl_timer_exchange_period(timer, timer_period, &old_period);
 
   if (ret != RCL_RET_OK) {
-    rcljava_throw_exception(
-      env, "java/lang/IllegalStateException",
-      "Failed to set timer period: " + std::string(rcl_get_error_string_safe()));
+    std::string msg = "Failed to set timer period: " + std::string(rcl_get_error_string_safe());
+    rcl_reset_error();
+    rcljava_throw_exception(env, "java/lang/IllegalStateException", msg);
   }
 }
 
@@ -235,8 +236,8 @@ Java_org_ros2_rcljava_timer_WallTimerImpl_nativeCallTimer(
   rcl_ret_t ret = rcl_timer_call(timer);
 
   if (ret != RCL_RET_OK) {
-    rcljava_throw_exception(
-      env, "java/lang/IllegalStateException",
-      "Failed to call timer: " + std::string(rcl_get_error_string_safe()));
+    std::string msg = "Failed to call timer: " + std::string(rcl_get_error_string_safe());
+    rcl_reset_error();
+    rcljava_throw_exception(env, "java/lang/IllegalStateException", msg);
   }
 }

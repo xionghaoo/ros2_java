@@ -84,8 +84,16 @@ if(BUILD_TESTING)
     TARGET "${PROJECT_NAME}_messages_jar"
     PROPERTY "JAR_FILE")
 
+  set(_deps_library_dirs "")
+  list_append_unique(_deps_library_dirs ${CMAKE_CURRENT_BINARY_DIR})
+  list_append_unique(_deps_library_dirs ${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_java/rosidl_generator_java/msg/)
+
   foreach(testsuite ${${PROJECT_NAME}_testsuites})
-    add_junit_tests("${PROJECT_NAME}_tests_${testsuite}"
+    ament_add_junit_tests("${PROJECT_NAME}_tests_${testsuite}"
+      TIMEOUT 90
+      WORKING_DIRECTORY
+      "${CMAKE_CURRENT_BINARY_DIR}"
+      SOURCES
       "${${PROJECT_NAME}_test_sources}"
       TESTS
       "${testsuite}"
@@ -93,6 +101,8 @@ if(BUILD_TESTING)
       "${rcljava_common_JARS}"
       "${rosidl_generator_java_JARS}"
       "${_${PROJECT_NAME}_messages_jar_file}"
+      APPEND_LIBRARY_DIRS
+      "${_deps_library_dirs}"
     )
 
     add_dependencies("${PROJECT_NAME}_tests_${testsuite}" "${PROJECT_NAME}_messages_jar")

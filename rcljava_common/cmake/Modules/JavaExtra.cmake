@@ -24,16 +24,20 @@ if(NOT ANDROID)
 endif()
 include(UseJava)
 
-function(add_junit_tests TARGET_NAME)
+function(ament_add_junit_tests TARGET_NAME)
 
-  cmake_parse_arguments(_add_junit_tests
+  cmake_parse_arguments(ARG
     ""
-    ""
-    "TESTS;SOURCES;INCLUDE_JARS;LIBRARY_PATHS"
+    "TIMEOUT;WORKING_DIRECTORY"
+    "APPEND_ENV;APPEND_LIBRARY_DIRS;ENV;TESTS;SOURCES;INCLUDE_JARS"
     ${ARGN}
   )
+  if(ARG_UNPARSED_ARGUMENTS)
+    message(FATAL_ERROR "ament_add_junit_tests() called with unused arguments: "
+    "${ARG_UNPARSED_ARGUMENTS}")
+  endif()
 
-  set(_source_files ${_add_junit_tests_SOURCES} ${_add_junit_tests_UNPARSED_ARGUMENTS})
+  set(_source_files ${ARG_SOURCES})
 
   if(WIN32 AND NOT CYGWIN)
     set(SEPARATOR ";")
@@ -106,7 +110,7 @@ function(add_junit_tests TARGET_NAME)
     OUTPUT_NAME
     "${TARGET_NAME}"
     INCLUDE_JARS
-    "${_add_junit_tests_INCLUDE_JARS}"
+    "${ARG_INCLUDE_JARS}"
     "${JUNIT_JAR}"
     "${HAMCREST_JAR}"
   )
@@ -117,18 +121,44 @@ function(add_junit_tests TARGET_NAME)
   )
 
   set(${TARGET_NAME}_jar_dependencies "${${TARGET_NAME}_jar_dependencies}${SEPARATOR}${_jar_test_file}")
-  foreach(_jar_dep ${_add_junit_tests_INCLUDE_JARS})
+  foreach(_jar_dep ${ARG_INCLUDE_JARS})
     set(${TARGET_NAME}_jar_dependencies "${${TARGET_NAME}_jar_dependencies}${SEPARATOR}${_jar_dep}")
   endforeach()
 
-  string(REPLACE ";" ${SEPARATOR} _library_paths "${_add_junit_tests_LIBRARY_PATHS}")
+  string(REPLACE ";" ${SEPARATOR} _library_paths "${ARG_APPEND_LIBRARY_DIRS}")
+
+  if(ARG_ENV)
+    set(ARG_ENV "ENV" ${ARG_ENV})
+  endif()
+  if(ARG_APPEND_ENV)
+    set(ARG_APPEND_ENV "APPEND_ENV" ${ARG_APPEND_ENV})
+  endif()
+  if(ARG_APPEND_LIBRARY_DIRS)
+    set(ARG_APPEND_LIBRARY_DIRS "APPEND_LIBRARY_DIRS" ${ARG_APPEND_LIBRARY_DIRS})
+  endif()
+  if(ARG_TIMEOUT)
+    set(ARG_TIMEOUT "TIMEOUT" "${ARG_TIMEOUT}")
+  endif()
+  if(ARG_WORKING_DIRECTORY)
+    set(ARG_WORKING_DIRECTORY "WORKING_DIRECTORY" "${ARG_WORKING_DIRECTORY}")
+  endif()
+  if(ARG_SKIP_TEST)
+    set(ARG_SKIP_TEST "SKIP_TEST")
+  endif()
 
   ament_add_test(
     ${TARGET_NAME}
     GENERATE_RESULT_FOR_RETURN_CODE_ZERO
     COMMAND ${Java_JAVA_EXECUTABLE}
     ${JVMARGS} -classpath ${${TARGET_NAME}_jar_dependencies} -Djava.library.path=${_library_paths}
-    org.junit.runner.JUnitCore ${_add_junit_tests_TESTS}
+    org.junit.runner.JUnitCore
+    ${ARG_TESTS}
+    ${ARG_SKIP_TEST}
+    ${ARG_ENV}
+    ${ARG_APPEND_ENV}
+    ${ARG_APPEND_LIBRARY_DIRS}
+    ${ARG_TIMEOUT}
+    ${ARG_WORKING_DIRECTORY}
   )
 
   add_custom_target(${TARGET_NAME} DEPENDS ${_jar_test_file})

@@ -33,7 +33,7 @@ public class PublisherImpl<T extends MessageDefinition> implements Publisher<T> 
 
   static {
     try {
-      JNIUtils.loadLibrary(PublisherImpl.class);
+      JNIUtils.loadImplementation(PublisherImpl.class);
     } catch (UnsatisfiedLinkError ule) {
       logger.error("Native code library failed to load.\n" + ule);
       System.exit(1);

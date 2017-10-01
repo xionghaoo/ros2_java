@@ -1,4 +1,4 @@
-# Copyright 2016-2017 Esteve Fernandez
+# Copyright 2016-2017 Esteve Fernandez <esteve@apache.org>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -36,9 +36,10 @@ macro(ament_export_jars)
           message(WARNING
             "ament_export_jars() package '${PROJECT_NAME}' exports the "
             "jar '${_arg}' which doesn't exist")
+        else()
+            list_append_unique(_AMENT_EXPORT_ABSOLUTE_CLASSPATH "${_arg}")
+            list_append_unique(_AMENT_EXPORT_ABSOLUTE_JARS "${_arg}")
         endif()
-        list_append_unique(_AMENT_EXPORT_ABSOLUTE_CLASSPATH "${_arg}")
-        list_append_unique(_AMENT_EXPORT_ABSOLUTE_JARS "${_arg}")
       else()
         list_append_unique(_AMENT_EXPORT_RELATIVE_CLASSPATH "\$AMENT_CURRENT_PREFIX/${_arg}")
         set(_arg "\${${PROJECT_NAME}_DIR}/../../../${_arg}")

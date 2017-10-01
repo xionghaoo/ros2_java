@@ -1,4 +1,4 @@
-# Copyright 2016-2017 Esteve Fernandez <esteve@apache.org>
+# Copyright 2017 Esteve Fernandez <esteve@apache.org>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,16 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# list relative paths before absolute paths
-set(_AMENT_CMAKE_EXPORT_JARS
-  ${_AMENT_EXPORT_RELATIVE_JARS}
-  ${_AMENT_EXPORT_ABSOLUTE_JARS})
-
-# generate and register extra file for jars
+# generate and register extra file for JNI libraries
 set(_generated_extra_file
-  "${CMAKE_CURRENT_BINARY_DIR}/ament_cmake_export_jars/ament_cmake_export_jars-extras.cmake")
+  "${CMAKE_CURRENT_BINARY_DIR}/ament_cmake_export_jni_libraries/ament_cmake_export_jni_libraries-extras.cmake")
 configure_file(
-  "${ament_cmake_export_jars_DIR}/ament_cmake_export_jars-extras.cmake.in"
+  "${ament_cmake_export_jni_libraries_DIR}/ament_cmake_export_jni_libraries-extras.cmake.in"
   "${_generated_extra_file}"
   @ONLY
 )

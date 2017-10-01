@@ -4,6 +4,7 @@ project(rcljava)
 
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_export_jars REQUIRED)
+find_package(ament_cmake_export_jni_libraries REQUIRED)
 find_package(rcl REQUIRED)
 find_package(rcljava_common REQUIRED)
 find_package(rmw REQUIRED)
@@ -23,16 +24,21 @@ endif()
 include(UseJava)
 include(JavaExtra)
 
-set(CMAKE_JAVA_COMPILE_FLAGS "-source" "1.6" "-target" "1.6")
+# Default to C++14
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+endif()
 
 if(NOT WIN32)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -Wextra")
+  add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
+
+set(CMAKE_JAVA_COMPILE_FLAGS "-source" "1.6" "-target" "1.6")
 
 include_directories(include)
 
-function(set_properties _targetname _build_type)
-  set_target_properties(${_targetname} PROPERTIES
+function(set_properties _target_name _build_type)
+  set_target_properties(${_target_name} PROPERTIES
     PREFIX ""
     LIBRARY_OUTPUT_DIRECTORY${_build_type} "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}"
     RUNTIME_OUTPUT_DIRECTORY${_build_type} "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}"
@@ -63,17 +69,24 @@ foreach(_jni_source ${${PROJECT_NAME}_jni_sources})
   get_filename_component(_target_name "${_jni_source}" NAME_WE)
   string_camel_case_to_lower_case_underscore("${_target_name}" _target_name)
 
-  add_library(
-    ${_target_name}
+  add_library(${_target_name}
     SHARED ${_jni_source}
   )
-
-  set_properties("${target_name}" "")
   if(WIN32)
-    set_properties("${target_name}" "_DEBUG")
-    set_properties("${target_name}" "_MINSIZEREL")
-    set_properties("${target_name}" "_RELEASE")
-    set_properties("${target_name}" "_RELWITHDEBINFO")
+    set(_jni_prefix "")
+  else()
+    set(_jni_prefix "lib")
+  endif()
+  set_target_properties(${_target_name} PROPERTIES
+    OUTPUT_NAME "${_jni_prefix}${_target_name}__jni"
+  )
+
+  set_properties("${_target_name}" "")
+  if(WIN32)
+    set_properties("${_target_name}" "_DEBUG")
+    set_properties("${_target_name}" "_MINSIZEREL")
+    set_properties("${_target_name}" "_RELEASE")
+    set_properties("${_target_name}" "_RELWITHDEBINFO")
   endif()
 
   ament_target_dependencies(${_target_name}
@@ -87,11 +100,11 @@ foreach(_jni_source ${${PROJECT_NAME}_jni_sources})
     ${JNI_INCLUDE_DIRS}
   )
 
-  ament_export_libraries(${_target_name})
+  ament_export_jni_libraries(${_target_name})
 
   install(TARGETS ${_target_name}
-    ARCHIVE DESTINATION lib
-    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib/jni
+    LIBRARY DESTINATION lib/jni
   )
 
 endforeach()
@@ -204,25 +217,45 @@ if(BUILD_TESTING)
     "org.ros2.rcljava.timer.TimerTest"
   )
 
-  set(_deps_library_paths "")
+  set(_deps_library_dirs "")
   foreach(_dep_lib ${rcljava_test_msgs_LIBRARIES})
     get_filename_component(_dep_dir "${_dep_lib}" DIRECTORY)
-    list(APPEND _deps_library_paths ${_dep_dir})
+    list_append_unique(_deps_library_dirs ${_dep_dir})
   endforeach()
+  foreach(_dep_lib ${rcljava_test_msgs_JNI_LIBRARIES})
+    get_filename_component(_dep_dir "${_dep_lib}" DIRECTORY)
+    list_append_unique(_deps_library_dirs ${_dep_dir})
+  endforeach()
+
   foreach(_dep_lib ${std_msgs_LIBRARIES})
     get_filename_component(_dep_dir "${_dep_lib}" DIRECTORY)
-    list(APPEND _deps_library_paths ${_dep_dir})
+    list_append_unique(_deps_library_dirs ${_dep_dir})
   endforeach()
+  foreach(_dep_lib ${std_msgs_JNI_LIBRARIES})
+    get_filename_component(_dep_dir "${_dep_lib}" DIRECTORY)
+    list_append_unique(_deps_library_dirs ${_dep_dir})
+  endforeach()
+
   foreach(_dep_lib ${builtin_interfaces_LIBRARIES})
     get_filename_component(_dep_dir "${_dep_lib}" DIRECTORY)
-    list(APPEND _deps_library_paths ${_dep_dir})
+    list_append_unique(_deps_library_dirs ${_dep_dir})
   endforeach()
-  list(APPEND _deps_library_paths ${CMAKE_CURRENT_BINARY_DIR})
-  list(APPEND _deps_library_paths ${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_java/rcljava/msg/)
-  list(APPEND _deps_library_paths ${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_java/rcljava/srv/)
+  foreach(_dep_lib ${builtin_interfaces_JNI_LIBRARIES})
+    get_filename_component(_dep_dir "${_dep_lib}" DIRECTORY)
+    list_append_unique(_deps_library_dirs ${_dep_dir})
+  endforeach()
+
+  list_append_unique(_deps_library_dirs ${CMAKE_CURRENT_BINARY_DIR})
+  list_append_unique(_deps_library_dirs ${CMAKE_CURRENT_BINARY_DIR}/rcljava)
+  list_append_unique(_deps_library_dirs ${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_java/rcljava/msg/)
+  list_append_unique(_deps_library_dirs ${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_java/rcljava/srv/)
 
   foreach(testsuite ${${PROJECT_NAME}_testsuites})
-    add_junit_tests("${PROJECT_NAME}_tests_${testsuite}"
+    ament_add_junit_tests("${PROJECT_NAME}_tests_${testsuite}"
+      TIMEOUT 90
+      WORKING_DIRECTORY
+      "${CMAKE_CURRENT_BINARY_DIR}"
+      SOURCES
       "${${PROJECT_NAME}_test_sources}"
       TESTS
       "${testsuite}"
@@ -233,8 +266,8 @@ if(BUILD_TESTING)
       "${builtin_interfaces_JARS}"
       "${_${PROJECT_NAME}_jar_file}"
       "${_${PROJECT_NAME}_messages_jar_file}"
-      LIBRARY_PATHS
-      "${_deps_library_paths}"
+      APPEND_LIBRARY_DIRS
+      "${_deps_library_dirs}"
     )
 
     add_dependencies("${PROJECT_NAME}_tests_${testsuite}" "${PROJECT_NAME}_messages_jar")

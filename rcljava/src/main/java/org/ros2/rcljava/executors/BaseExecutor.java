@@ -42,7 +42,7 @@ public class BaseExecutor {
 
   static {
     try {
-      JNIUtils.loadLibrary(BaseExecutor.class);
+      JNIUtils.loadImplementation(BaseExecutor.class);
     } catch (UnsatisfiedLinkError ule) {
       logger.error("Native code library failed to load.\n" + ule);
       System.exit(1);

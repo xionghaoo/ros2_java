@@ -1,13 +1,15 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>rcljava</name>
-  <version>0.0.0</version>
+  <version>0.0.3</version>
   <description>Package containing the Java client.</description>
+  <author email="esteve@apache.org">Esteve Fernandez</author>
   <maintainer email="esteve@apache.org">Esteve Fernandez</maintainer>
   <license>Apache License 2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
   <buildtool_depend>ament_cmake_export_jars</buildtool_depend>
+  <buildtool_depend>ament_cmake_export_jni_libraries</buildtool_depend>
   <buildtool_depend>rcljava_common</buildtool_depend>
 
   <buildtool_export_depend>rosidl_cmake</buildtool_export_depend>
