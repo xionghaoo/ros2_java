@@ -84,7 +84,7 @@ The Android setup is slightly more complex, you'll need the SDK and NDK installe
 
 Make sure to download at least the SDK for Android Lollipop (or greater), the examples require the API level 21 at least and NDK 14.
 
-You may download the Android NDK from [the official](https://developer.android.com/ndk/downloads/index.html) website, let's assume you unpack it to `~/android_ndk`
+You may download the Android NDK from [the official](https://developer.android.com/ndk/downloads/index.html) website, let's assume you've downloaded 15c (the latest stable version as of 2017-11-07) and you unpack it to `~/android_ndk`
 
 ```
 mkdir -p ~/ros2_android_ws/src
@@ -100,17 +100,20 @@ cd ~/ros2_android_ws
 . ~/ament_ws/install_isolated/local_setup.sh
 ament build --isolated --cmake-args \
   -DPYTHON_EXECUTABLE=/usr/bin/python3 \
-  -DEPROSIMA_BUILD=ON \
-  -DCMAKE_FIND_ROOT_PATH="$HOME/ament_ws/install_isolated;$HOME/ros2_android_ws/install_isolated" \
+  -DCMAKE_TOOLCHAIN_FILE=$HOME/android_ndk/android-ndk-r15c/build/cmake/android.toolchain.cmake \
   -DANDROID_FUNCTION_LEVEL_LINKING=OFF \
-  -DANDROID_TOOLCHAIN_NAME=arm-linux-androideabi-clang -DANDROID_STL=gnustl_shared \
-  -DANDROID_ABI=armeabi-v7a \
-  -DANDROID_NDK=$HOME/android_ndk/android-ndk-r14 \
   -DANDROID_NATIVE_API_LEVEL=android-21 \
-  -DCMAKE_TOOLCHAIN_FILE=$HOME/android_ndk/android-ndk-r14/build/cmake/android.toolchain.cmake \
+  -DANDROID_TOOLCHAIN_NAME=arm-linux-androideabi-clang \
+  -DANDROID_STL=gnustl_shared \
+  -DANDROID_ABI=armeabi-v7a \
+  -DANDROID_NDK=$HOME/android_ndk/android-ndk-r15c \
+  -DTHIRDPARTY=ON \
+  -DCOMPILE_EXAMPLES=OFF \
+  -DCMAKE_FIND_ROOT_PATH="$HOME/ament_ws/install_isolated;$HOME/ros2_android_ws/install_isolated" \
   -- \
+  --parallel \
   --ament-gradle-args \
-  -Pament.android_stl=gnustl_shared -Pament.android_abi=armeabi-v7a -Pament.android_ndk=$HOME/android_ndk/android-ndk-r14 --
+  -Pament.android_stl=gnustl_shared -Pament.android_abi=armeabi-v7a -Pament.android_ndk=$HOME/android_ndk/android-ndk-r15c --
 ```
 
 You can find more information about the Android examples at https://github.com/esteve/ros2_android_examples
