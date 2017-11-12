@@ -56,10 +56,14 @@ public final class @(type_name) implements MessageDefinition {
 @[        if field.default_value is not None]@
   private java.util.List<@(get_java_type(field.type, use_primitives=False))> @(field.name) = java.util.Arrays.asList(new @(get_java_type(field.type, use_primitives=False))[] @(value_to_java(field.type, field.default_value)));
 @[        else]@
+@[            if field.type.array_size]@
   private java.util.List<@(get_java_type(field.type, use_primitives=False))> @(field.name);
+@[            else]@
+  private java.util.List<@(get_java_type(field.type, use_primitives=False))> @(field.name) = new java.util.ArrayList<@(get_java_type(field.type, use_primitives=False))>();
+@[            end if]@
 @[        end if]@
 
-  public final void set@(convert_lower_case_underscore_to_camel_case(field.name))(final java.util.Collection<@(get_java_type(field.type, use_primitives=False))> @(field.name)) {
+  public final void set@(convert_lower_case_underscore_to_camel_case(field.name))(final java.util.List<@(get_java_type(field.type, use_primitives=False))> @(field.name)) {
 @[        if field.type.array_size]@
 @[            if field.type.is_upper_bound]@
     if(@(field.name).size() > @(field.type.array_size)) {
@@ -70,9 +74,7 @@ public final class @(type_name) implements MessageDefinition {
 @[            end if]@
     }
 @[        end if]@
-    if (@(field.name) != null) {
-      this.@(field.name) = new java.util.ArrayList<@(get_java_type(field.type, use_primitives=False))>(@(field.name));
-    }
+    this.@(field.name) = @(field.name);
   }
 
 @[        if field.type.is_primitive_type()]@
@@ -86,10 +88,7 @@ public final class @(type_name) implements MessageDefinition {
 @[        end if]@
 
   public final java.util.List<@(get_java_type(field.type, use_primitives=False))> get@(convert_lower_case_underscore_to_camel_case(field.name))() {
-    if (this.@(field.name) == null) {
-      return null;
-    }
-    return new java.util.ArrayList<@(get_java_type(field.type, use_primitives=False))>(this.@(field.name));
+    return this.@(field.name);
   }
 @[    else]@
 @[        if field.default_value is not None]@
