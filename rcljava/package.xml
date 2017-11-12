@@ -13,6 +13,7 @@
   <buildtool_depend>rcljava_common</buildtool_depend>
 
   <build_depend>builtin_interfaces</build_depend>
+  <build_depend>rcl_interfaces</build_depend>
   <build_depend>rcl</build_depend>
   <build_depend>rmw_implementation_cmake</build_depend>
   <build_depend>rmw</build_depend>
@@ -20,12 +21,14 @@
   <build_depend>rosidl_typesupport_c</build_depend>
   <build_depend>rosidl_typesupport_java</build_depend>
   <build_export_depend>builtin_interfaces</build_export_depend>
+  <build_export_depend>rcl_interfaces</build_export_depend>
   <build_export_depend>rmw</build_export_depend>
   <build_export_depend>rosidl_generator_c</build_export_depend>
   <build_export_depend>rosidl_generator_java</build_export_depend>
   <build_export_depend>rosidl_typesupport_c</build_export_depend>
 
   <exec_depend>builtin_interfaces</exec_depend>
+  <exec_depend>rcl_interfaces</exec_depend>
   <exec_depend>rcl</exec_depend>
   <exec_depend>rmw_implementation_cmake</exec_depend>
   <exec_depend>rmw_implementation</exec_depend>
@@ -35,6 +38,7 @@
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
   <test_depend>builtin_interfaces</test_depend>
+  <test_depend>rcl_interfaces</test_depend>
   <test_depend>rcljava_common</test_depend>
   <test_depend>rmw_implementation_cmake</test_depend>
   <test_depend>rmw</test_depend>

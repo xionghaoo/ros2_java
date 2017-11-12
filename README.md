@@ -42,6 +42,7 @@ The current set of features include:
 - Composition (i.e. more than one node per process)
 - Time handling (system and steady, ROS time not yet supported https://github.com/ros2/ros2/issues/350)
 - Support for Android
+- Parameters services and clients (both asynchronous and synchronous)
 
 Sounds great, how can I try this out?
 -------------------------------------
