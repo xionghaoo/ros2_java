@@ -104,4 +104,8 @@ public class ServiceImpl<T extends ServiceDefinition> implements Service<T> {
 
     callback.accept(rmwRequestId, request, response);
   }
+
+  public String getServiceName() {
+    return this.serviceName;
+  }
 }

@@ -138,4 +138,8 @@ public class ClientImpl<T extends ServiceDefinition> implements Client<T> {
   public final long getHandle() {
     return this.handle;
   }
+
+  public String getServiceName() {
+    return this.serviceName;
+  }
 }

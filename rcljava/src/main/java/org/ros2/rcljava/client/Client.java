@@ -36,4 +36,6 @@ public interface Client<T extends ServiceDefinition> extends Disposable {
 
   <U extends MessageDefinition, V extends MessageDefinition> Future<V> asyncSendRequest(
       final U request, final Consumer<Future<V>> callback);
+
+  String getServiceName();
 }

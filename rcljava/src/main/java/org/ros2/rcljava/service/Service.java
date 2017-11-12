@@ -26,4 +26,6 @@ public interface Service<T extends ServiceDefinition> extends Disposable {
   <U extends MessageDefinition> Class<U> getResponseType();
 
   void executeCallback(RMWRequestId rmwRequestId, MessageDefinition request, MessageDefinition response);
+
+  String getServiceName();
 }
