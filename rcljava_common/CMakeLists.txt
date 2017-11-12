@@ -45,8 +45,28 @@ set(${PROJECT_NAME}_cpp_sources
   "src/main/cpp/rcljava_common.cpp"
 )
 
-find_jar(SFL4J_JAR NAMES slf4j-api)
 set(${PROJECT_NAME}_exported_jars "")
+find_jar(COMMONS_LANG3_JAR NAMES commons-lang3)
+if(${COMMONS_LANG3_JAR})
+  list(APPEND ${PROJECT_NAME}_exported_jars ${COMMONS_LANG3_JAR})
+else()
+  set(commons_lang3_version "3.7")
+  set(commons_lang3_sha256 "6e8dc31e046508d9953c96534edf0c2e0bfe6f468966b5b842b3f87e43b6a847")
+  set(commons_lang3_url
+    "http://central.maven.org/maven2/org/apache/commons/commons-lang3/${commons_lang3_version}/commons-lang3-${commons_lang3_version}.jar")
+  set(commons_lang3_jar_path "${CMAKE_CURRENT_BINARY_DIR}/jars/commons-lang3-${commons_lang3_version}.jar")
+  file(DOWNLOAD ${commons_lang3_url} ${commons_lang3_jar_path} EXPECTED_HASH SHA256=${commons_lang3_sha256})
+
+  install(FILES
+    ${commons_lang3_jar_path}
+    DESTINATION
+    "share/${PROJECT_NAME}/java")
+
+  set(COMMONS_LANG3_JAR "${commons_lang3_jar_path}")
+  list(APPEND ${PROJECT_NAME}_exported_jars "share/${PROJECT_NAME}/java/commons-lang3-${commons_lang3_version}.jar")
+endif()
+
+find_jar(SFL4J_JAR NAMES slf4j-api)
 if(${SFL4J_JAR})
   list(APPEND ${PROJECT_NAME}_exported_jars ${SFL4J_JAR})
 else()

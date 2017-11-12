@@ -6,6 +6,9 @@ import org.ros2.rcljava.interfaces.MessageDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 @[for field in spec.fields]@
 @[    if not field.type.is_primitive_type()]@
 import @(field.type.pkg_name).msg.@(field.type.type);
@@ -120,4 +123,26 @@ public final class @(type_name) implements MessageDefinition {
   }
 @[    end if]@
 @[end for]@
+
+  public int hashCode() {
+    return new HashCodeBuilder(17, 37)
+@[for field in spec.fields]@
+      .append(this.@(field.name))
+@[end for]@
+      .toHashCode();
+  }
+
+ public boolean equals(Object obj) {
+   if (obj == null) { return false; }
+   if (obj == this) { return true; }
+   if (obj.getClass() != getClass()) {
+     return false;
+   }
+   @(type_name) rhs = (@(type_name)) obj;
+   return new EqualsBuilder()
+@[for field in spec.fields]@
+                .append(this.@(field.name), rhs.@(field.name))
+@[end for]@
+                .isEquals();
+  }
 }
