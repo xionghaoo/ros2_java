@@ -63,7 +63,7 @@ public final class @(type_name) implements MessageDefinition {
 @[            end if]@
 @[        end if]@
 
-  public final void set@(convert_lower_case_underscore_to_camel_case(field.name))(final java.util.List<@(get_java_type(field.type, use_primitives=False))> @(field.name)) {
+  public final @(type_name) set@(convert_lower_case_underscore_to_camel_case(field.name))(final java.util.List<@(get_java_type(field.type, use_primitives=False))> @(field.name)) {
 @[        if field.type.array_size]@
 @[            if field.type.is_upper_bound]@
     if(@(field.name).size() > @(field.type.array_size)) {
@@ -75,15 +75,16 @@ public final class @(type_name) implements MessageDefinition {
     }
 @[        end if]@
     this.@(field.name) = @(field.name);
+    return this;
   }
 
 @[        if field.type.is_primitive_type()]@
-  public final void set@(convert_lower_case_underscore_to_camel_case(field.name))(final @(get_java_type(field.type, use_primitives=True))[] @(field.name)) {
+  public final @(type_name) set@(convert_lower_case_underscore_to_camel_case(field.name))(final @(get_java_type(field.type, use_primitives=True))[] @(field.name)) {
     java.util.List<@(get_java_type(field.type, use_primitives=False))> @(field.name)_tmp = new java.util.ArrayList<@(get_java_type(field.type, use_primitives=False))>();
     for(@(get_java_type(field.type, use_primitives=True)) @(field.name)_value : @(field.name)) {
       @(field.name)_tmp.add(@(field.name)_value);
     }
-    set@(convert_lower_case_underscore_to_camel_case(field.name))(@(field.name)_tmp);
+    return set@(convert_lower_case_underscore_to_camel_case(field.name))(@(field.name)_tmp);
   }
 @[        end if]@
 
@@ -103,7 +104,7 @@ public final class @(type_name) implements MessageDefinition {
 @[            end if]@
 @[        end if]@
 
-  public void set@(convert_lower_case_underscore_to_camel_case(field.name))(final @(get_java_type(field.type)) @(field.name)) {
+  public @(type_name) set@(convert_lower_case_underscore_to_camel_case(field.name))(final @(get_java_type(field.type)) @(field.name)) {
 @[        if field.type.string_upper_bound]@
     if(@(field.name).length() > @(field.type.string_upper_bound)) {
         throw new IllegalArgumentException("String too long, maximum size allowed: @(field.type.string_upper_bound)");
@@ -111,6 +112,7 @@ public final class @(type_name) implements MessageDefinition {
 @[        end if]@
 
     this.@(field.name) = @(field.name);
+    return this;
   }
 
   public @(get_java_type(field.type)) get@(convert_lower_case_underscore_to_camel_case(field.name))() {
