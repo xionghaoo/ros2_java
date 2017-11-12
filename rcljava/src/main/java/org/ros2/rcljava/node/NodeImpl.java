@@ -43,6 +43,10 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -94,6 +98,8 @@ public class NodeImpl implements Node {
 
   private final String name;
 
+  private Object mutex;
+
   /**
    * Constructor.
    *
@@ -108,6 +114,7 @@ public class NodeImpl implements Node {
     this.services = new LinkedBlockingQueue<Service>();
     this.clients = new LinkedBlockingQueue<Client>();
     this.timers = new LinkedBlockingQueue<Timer>();
+    this.mutex = new Object();
   }
 
   /**

@@ -35,9 +35,63 @@ using rcljava_common::signatures::convert_from_java_signature;
 using rcljava_common::signatures::convert_to_java_signature;
 using rcljava_common::signatures::destroy_ros_message_signature;
 
-jobject convert_rmw_request_id_to_java(JNIEnv *, rmw_request_id_t *);
+jobject
+convert_rmw_request_id_to_java(JNIEnv * env, rmw_request_id_t * request_id)
+{
+  jclass jrequest_id_class = env->FindClass("org/ros2/rcljava/service/RMWRequestId");
+  assert(jrequest_id_class != nullptr);
 
-rmw_request_id_t * convert_rmw_request_id_from_java(JNIEnv *, jobject);
+  jmethodID jconstructor = env->GetMethodID(jrequest_id_class, "<init>", "()V");
+  assert(jconstructor != nullptr);
+
+  jobject jrequest_id = env->NewObject(jrequest_id_class, jconstructor);
+
+  jfieldID jsequence_number_field_id = env->GetFieldID(jrequest_id_class, "sequenceNumber", "J");
+  jfieldID jwriter_guid_field_id = env->GetFieldID(jrequest_id_class, "writerGUID", "[B");
+
+  assert(jsequence_number_field_id != nullptr);
+  assert(jwriter_guid_field_id != nullptr);
+
+  int8_t * writer_guid = request_id->writer_guid;
+  int64_t sequence_number = request_id->sequence_number;
+
+  env->SetLongField(jrequest_id, jsequence_number_field_id, sequence_number);
+
+  jsize writer_guid_len = 16;  // See rmw/rmw/include/rmw/types.h
+
+  jbyteArray jwriter_guid = env->NewByteArray(writer_guid_len);
+  env->SetByteArrayRegion(jwriter_guid, 0, writer_guid_len, reinterpret_cast<jbyte *>(writer_guid));
+  env->SetObjectField(jrequest_id, jwriter_guid_field_id, jwriter_guid);
+
+  return jrequest_id;
+}
+
+rmw_request_id_t *
+convert_rmw_request_id_from_java(JNIEnv * env, jobject jrequest_id)
+{
+  assert(jrequest_id != nullptr);
+
+  jclass jrequest_id_class = env->GetObjectClass(jrequest_id);
+  assert(jrequest_id_class != nullptr);
+
+  jfieldID jsequence_number_field_id = env->GetFieldID(jrequest_id_class, "sequenceNumber", "J");
+  jfieldID jwriter_guid_field_id = env->GetFieldID(jrequest_id_class, "writerGUID", "[B");
+
+  assert(jsequence_number_field_id != nullptr);
+  assert(jwriter_guid_field_id != nullptr);
+
+  rmw_request_id_t * request_id = static_cast<rmw_request_id_t *>(malloc(sizeof(rmw_request_id_t)));
+
+  int8_t * writer_guid = request_id->writer_guid;
+  request_id->sequence_number = env->GetLongField(jrequest_id, jsequence_number_field_id);
+
+  jsize writer_guid_len = 16;  // See rmw/rmw/include/rmw/types.h
+
+  jbyteArray jwriter_guid = (jbyteArray)env->GetObjectField(jrequest_id, jwriter_guid_field_id);
+  env->GetByteArrayRegion(jwriter_guid, 0, writer_guid_len, reinterpret_cast<jbyte *>(writer_guid));
+
+  return request_id;
+}
 
 JNIEXPORT jlong JNICALL
 Java_org_ros2_rcljava_executors_BaseExecutor_nativeGetZeroInitializedWaitSet(JNIEnv *, jclass)
@@ -392,60 +446,34 @@ Java_org_ros2_rcljava_executors_BaseExecutor_nativeTakeResponse(
   return nullptr;
 }
 
-jobject
-convert_rmw_request_id_to_java(JNIEnv * env, rmw_request_id_t * request_id)
+JNIEXPORT jboolean JNICALL
+Java_org_ros2_rcljava_executors_BaseExecutor_nativeWaitSetSubscriptionIsReady(
+  JNIEnv *, jclass, jlong wait_set_handle, jlong index)
 {
-  jclass jrequest_id_class = env->FindClass("org/ros2/rcljava/service/RMWRequestId");
-  assert(jrequest_id_class != nullptr);
-
-  jmethodID jconstructor = env->GetMethodID(jrequest_id_class, "<init>", "()V");
-  assert(jconstructor != nullptr);
-
-  jobject jrequest_id = env->NewObject(jrequest_id_class, jconstructor);
-
-  jfieldID jsequence_number_field_id = env->GetFieldID(jrequest_id_class, "sequenceNumber", "J");
-  jfieldID jwriter_guid_field_id = env->GetFieldID(jrequest_id_class, "writerGUID", "[B");
-
-  assert(jsequence_number_field_id != nullptr);
-  assert(jwriter_guid_field_id != nullptr);
-
-  int8_t * writer_guid = request_id->writer_guid;
-  int64_t sequence_number = request_id->sequence_number;
-
-  env->SetLongField(jrequest_id, jsequence_number_field_id, sequence_number);
-
-  jsize writer_guid_len = 16;  // See rmw/rmw/include/rmw/types.h
-
-  jbyteArray jwriter_guid = env->NewByteArray(writer_guid_len);
-  env->SetByteArrayRegion(jwriter_guid, 0, writer_guid_len, reinterpret_cast<jbyte *>(writer_guid));
-  env->SetObjectField(jrequest_id, jwriter_guid_field_id, jwriter_guid);
-
-  return jrequest_id;
+  rcl_wait_set_t * wait_set = reinterpret_cast<rcl_wait_set_t *>(wait_set_handle);
+  return wait_set->subscriptions[index] != nullptr;
 }
 
-rmw_request_id_t *
-convert_rmw_request_id_from_java(JNIEnv * env, jobject jrequest_id)
+JNIEXPORT jboolean JNICALL
+Java_org_ros2_rcljava_executors_BaseExecutor_nativeWaitSetTimerIsReady(
+  JNIEnv *, jclass, jlong wait_set_handle, jlong index)
 {
-  assert(jrequest_id != nullptr);
+  rcl_wait_set_t * wait_set = reinterpret_cast<rcl_wait_set_t *>(wait_set_handle);
+  return wait_set->timers[index] != nullptr;
+}
 
-  jclass jrequest_id_class = env->GetObjectClass(jrequest_id);
-  assert(jrequest_id_class != nullptr);
+JNIEXPORT jboolean JNICALL
+Java_org_ros2_rcljava_executors_BaseExecutor_nativeWaitSetServiceIsReady(
+  JNIEnv *, jclass, jlong wait_set_handle, jlong index)
+{
+  rcl_wait_set_t * wait_set = reinterpret_cast<rcl_wait_set_t *>(wait_set_handle);
+  return wait_set->services[index] != nullptr;
+}
 
-  jfieldID jsequence_number_field_id = env->GetFieldID(jrequest_id_class, "sequenceNumber", "J");
-  jfieldID jwriter_guid_field_id = env->GetFieldID(jrequest_id_class, "writerGUID", "[B");
-
-  assert(jsequence_number_field_id != nullptr);
-  assert(jwriter_guid_field_id != nullptr);
-
-  rmw_request_id_t * request_id = static_cast<rmw_request_id_t *>(malloc(sizeof(rmw_request_id_t)));
-
-  int8_t * writer_guid = request_id->writer_guid;
-  request_id->sequence_number = env->GetLongField(jrequest_id, jsequence_number_field_id);
-
-  jsize writer_guid_len = 16;  // See rmw/rmw/include/rmw/types.h
-
-  jbyteArray jwriter_guid = (jbyteArray)env->GetObjectField(jrequest_id, jwriter_guid_field_id);
-  env->GetByteArrayRegion(jwriter_guid, 0, writer_guid_len, reinterpret_cast<jbyte *>(writer_guid));
-
-  return request_id;
+JNIEXPORT jboolean JNICALL
+Java_org_ros2_rcljava_executors_BaseExecutor_nativeWaitSetClientIsReady(
+  JNIEnv *, jclass, jlong wait_set_handle, jlong index)
+{
+  rcl_wait_set_t * wait_set = reinterpret_cast<rcl_wait_set_t *>(wait_set_handle);
+  return wait_set->clients[index] != nullptr;
 }

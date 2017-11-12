@@ -141,6 +141,39 @@ JNIEXPORT jobject JNICALL Java_org_ros2_rcljava_executors_BaseExecutor_nativeTak
 JNIEXPORT void JNICALL Java_org_ros2_rcljava_executors_BaseExecutor_nativeWaitSetAddTimer(
   JNIEnv *, jclass, jlong, jlong);
 
+/*
+ * Class:     org_ros2_rcljava_executors_BaseExecutor
+ * Method:    nativeWaitSetSubscriptionIsReady
+ * Signature: (JJ)Z
+ */
+JNIEXPORT jboolean JNICALL
+  Java_org_ros2_rcljava_executors_BaseExecutor_nativeWaitSetSubscriptionIsReady(
+  JNIEnv *, jclass, jlong, jlong);
+
+/*
+ * Class:     org_ros2_rcljava_executors_BaseExecutor
+ * Method:    nativeWaitSetTimerIsReady
+ * Signature: (JJ)Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_ros2_rcljava_executors_BaseExecutor_nativeWaitSetTimerIsReady(
+  JNIEnv *, jclass, jlong, jlong);
+
+/*
+ * Class:     org_ros2_rcljava_executors_BaseExecutor
+ * Method:    nativeWaitSetServiceIsReady
+ * Signature: (JJ)Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_ros2_rcljava_executors_BaseExecutor_nativeWaitSetServiceIsReady(
+  JNIEnv *, jclass, jlong, jlong);
+
+/*
+ * Class:     org_ros2_rcljava_executors_BaseExecutor
+ * Method:    nativeWaitSetClientIsReady
+ * Signature: (JJ)Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_ros2_rcljava_executors_BaseExecutor_nativeWaitSetClientIsReady(
+  JNIEnv *, jclass, jlong, jlong);
+
 #ifdef __cplusplus
 }
 #endif

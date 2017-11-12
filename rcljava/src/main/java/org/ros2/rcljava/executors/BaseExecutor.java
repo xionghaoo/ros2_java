@@ -15,6 +15,10 @@
 
 package org.ros2.rcljava.executors;
 
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import java.util.concurrent.BlockingQueue;
@@ -51,14 +55,14 @@ public class BaseExecutor {
 
   private BlockingQueue<ComposableNode> nodes = new LinkedBlockingQueue<ComposableNode>();
 
-  private ConcurrentHashMap<Long, Subscription> subscriptionHandles =
-      new ConcurrentHashMap<Long, Subscription>();
+  private List<Map.Entry<Long, Subscription>> subscriptionHandles =
+      new ArrayList<Map.Entry<Long, Subscription>>();
 
-  private ConcurrentHashMap<Long, Timer> timerHandles = new ConcurrentHashMap<Long, Timer>();
+  private List<Map.Entry<Long, Timer>> timerHandles = new ArrayList<Map.Entry<Long, Timer>>();
 
-  private ConcurrentHashMap<Long, Service> serviceHandles = new ConcurrentHashMap<Long, Service>();
+  private List<Map.Entry<Long, Service>> serviceHandles = new ArrayList<Map.Entry<Long, Service>>();
 
-  private ConcurrentHashMap<Long, Client> clientHandles = new ConcurrentHashMap<Long, Client>();
+  private List<Map.Entry<Long, Client>> clientHandles = new ArrayList<Map.Entry<Long, Client>>();
 
   protected void addNode(ComposableNode node) {
     this.nodes.add(node);
@@ -158,22 +162,28 @@ public class BaseExecutor {
 
   protected void waitForWork(long timeout) {
     this.subscriptionHandles.clear();
+    this.timerHandles.clear();
+    this.serviceHandles.clear();
+    this.clientHandles.clear();
 
     for (ComposableNode node : this.nodes) {
       for (Subscription<MessageDefinition> subscription : node.getNode().getSubscriptions()) {
-        this.subscriptionHandles.put(subscription.getHandle(), subscription);
+        this.subscriptionHandles.add(new AbstractMap.SimpleEntry<Long, Subscription>(
+            subscription.getHandle(), subscription));
       }
 
       for (Timer timer : node.getNode().getTimers()) {
-        this.timerHandles.put(timer.getHandle(), timer);
+        this.timerHandles.add(new AbstractMap.SimpleEntry<Long, Timer>(timer.getHandle(), timer));
       }
 
       for (Service<ServiceDefinition> service : node.getNode().getServices()) {
-        this.serviceHandles.put(service.getHandle(), service);
+        this.serviceHandles.add(
+            new AbstractMap.SimpleEntry<Long, Service>(service.getHandle(), service));
       }
 
       for (Client<ServiceDefinition> client : node.getNode().getClients()) {
-        this.clientHandles.put(client.getHandle(), client);
+        this.clientHandles.add(
+            new AbstractMap.SimpleEntry<Long, Client>(client.getHandle(), client));
       }
     }
 
@@ -205,52 +215,120 @@ public class BaseExecutor {
 
     nativeWaitSetClearClients(waitSetHandle);
 
-    for (ComposableNode node : this.nodes) {
-      for (Subscription<MessageDefinition> subscription : node.getNode().getSubscriptions()) {
-        nativeWaitSetAddSubscription(waitSetHandle, subscription.getHandle());
-      }
+    for (Map.Entry<Long, Subscription> entry : this.subscriptionHandles) {
+      nativeWaitSetAddSubscription(waitSetHandle, entry.getKey());
+    }
 
-      for (Timer timer : node.getNode().getTimers()) {
-        nativeWaitSetAddTimer(waitSetHandle, timer.getHandle());
-      }
+    for (Map.Entry<Long, Timer> entry : this.timerHandles) {
+      nativeWaitSetAddTimer(waitSetHandle, entry.getKey());
+    }
 
-      for (Service<ServiceDefinition> service : node.getNode().getServices()) {
-        nativeWaitSetAddService(waitSetHandle, service.getHandle());
-      }
+    for (Map.Entry<Long, Service> entry : this.serviceHandles) {
+      nativeWaitSetAddService(waitSetHandle, entry.getKey());
+    }
 
-      for (Client<ServiceDefinition> client : node.getNode().getClients()) {
-        nativeWaitSetAddClient(waitSetHandle, client.getHandle());
-      }
+    for (Map.Entry<Long, Client> entry : this.clientHandles) {
+      nativeWaitSetAddClient(waitSetHandle, entry.getKey());
     }
 
     nativeWait(waitSetHandle, timeout);
+
+    for (int i = 0; i < this.subscriptionHandles.size(); ++i) {
+      if (!nativeWaitSetSubscriptionIsReady(waitSetHandle, i)) {
+        this.subscriptionHandles.get(i).setValue(null);
+      }
+    }
+
+    for (int i = 0; i < this.timerHandles.size(); ++i) {
+      if (!nativeWaitSetTimerIsReady(waitSetHandle, i)) {
+        this.timerHandles.get(i).setValue(null);
+      }
+    }
+
+    for (int i = 0; i < this.serviceHandles.size(); ++i) {
+      if (!nativeWaitSetServiceIsReady(waitSetHandle, i)) {
+        this.serviceHandles.get(i).setValue(null);
+      }
+    }
+
+    for (int i = 0; i < this.clientHandles.size(); ++i) {
+      if (!nativeWaitSetClientIsReady(waitSetHandle, i)) {
+        this.clientHandles.get(i).setValue(null);
+      }
+    }
+
+    Iterator<Map.Entry<Long, Subscription>> subscriptionIterator =
+        this.subscriptionHandles.iterator();
+    while (subscriptionIterator.hasNext()) {
+      Map.Entry<Long, Subscription> entry = subscriptionIterator.next();
+      if (entry.getValue() == null) {
+        subscriptionIterator.remove();
+      }
+    }
+
+    Iterator<Map.Entry<Long, Timer>> timerIterator = this.timerHandles.iterator();
+    while (timerIterator.hasNext()) {
+      Map.Entry<Long, Timer> entry = timerIterator.next();
+      if (entry.getValue() == null) {
+        timerIterator.remove();
+      }
+    }
+
+    Iterator<Map.Entry<Long, Service>> serviceIterator = this.serviceHandles.iterator();
+    while (serviceIterator.hasNext()) {
+      Map.Entry<Long, Service> entry = serviceIterator.next();
+      if (entry.getValue() == null) {
+        serviceIterator.remove();
+      }
+    }
+
+    Iterator<Map.Entry<Long, Client>> clientIterator = this.clientHandles.iterator();
+    while (clientIterator.hasNext()) {
+      Map.Entry<Long, Client> entry = clientIterator.next();
+      if (entry.getValue() == null) {
+        clientIterator.remove();
+      }
+    }
   }
+
   protected AnyExecutable getNextExecutable() {
     AnyExecutable anyExecutable = new AnyExecutable();
 
-    for (ComposableNode node : this.nodes) {
-      for (Timer timer : node.getNode().getTimers()) {
+    for (Map.Entry<Long, Timer> entry : this.timerHandles) {
+      if (entry.getValue() != null) {
+        Timer timer = entry.getValue();
         if (timer.isReady()) {
           anyExecutable.timer = timer;
+          entry.setValue(null);
           return anyExecutable;
         }
       }
+    }
 
-      for (Map.Entry<Long, Subscription> entry : subscriptionHandles.entrySet()) {
+    for (Map.Entry<Long, Subscription> entry : this.subscriptionHandles) {
+      if (entry.getValue() != null) {
         anyExecutable.subscription = entry.getValue();
-        return anyExecutable;
-      }
-
-      for (Service service : node.getNode().getServices()) {
-        anyExecutable.service = service;
-        return anyExecutable;
-      }
-
-      for (Client<ServiceDefinition> client : node.getNode().getClients()) {
-        anyExecutable.client = client;
+        entry.setValue(null);
         return anyExecutable;
       }
     }
+
+    for (Map.Entry<Long, Service> entry : this.serviceHandles) {
+      if (entry.getValue() != null) {
+        anyExecutable.service = entry.getValue();
+        entry.setValue(null);
+        return anyExecutable;
+      }
+    }
+
+    for (Map.Entry<Long, Client> entry : this.clientHandles) {
+      if (entry.getValue() != null) {
+        anyExecutable.client = entry.getValue();
+        entry.setValue(null);
+        return anyExecutable;
+      }
+    }
+
     return null;
   }
 
@@ -258,11 +336,12 @@ public class BaseExecutor {
     AnyExecutable anyExecutable = getNextExecutable();
     if (anyExecutable == null) {
       waitForWork(0);
-      anyExecutable = getNextExecutable();
-    }
-
-    if (anyExecutable != null) {
-      executeAnyExecutable(anyExecutable);
+      do {
+        anyExecutable = getNextExecutable();
+        if (anyExecutable != null) {
+          executeAnyExecutable(anyExecutable);
+        }
+      } while (anyExecutable != null);
     }
   }
 
@@ -316,4 +395,12 @@ public class BaseExecutor {
   private static native RMWRequestId nativeTakeResponse(long clientHandle,
       long responseFromJavaConverterHandle, long responseToJavaConverterHandle,
       long responseDestructorHandle, MessageDefinition responseMessage);
+
+  private static native boolean nativeWaitSetSubscriptionIsReady(long waitSetHandle, long index);
+
+  private static native boolean nativeWaitSetTimerIsReady(long waitSetHandle, long index);
+
+  private static native boolean nativeWaitSetServiceIsReady(long waitSetHandle, long index);
+
+  private static native boolean nativeWaitSetClientIsReady(long waitSetHandle, long index);
 }
