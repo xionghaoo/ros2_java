@@ -69,7 +69,7 @@ public class QoSProfile {
       new QoSProfile(History.KEEP_LAST, 1000, Reliability.RELIABLE, Durability.VOLATILE, false);
 
   public static final QoSProfile DEFAULT =
-      new QoSProfile(History.KEEP_ALL, 10, Reliability.RELIABLE, Durability.VOLATILE, false);
+      new QoSProfile(History.KEEP_LAST, 10, Reliability.RELIABLE, Durability.VOLATILE, false);
 
   public static final QoSProfile SERVICES_DEFAULT =
       new QoSProfile(History.KEEP_LAST, 10, Reliability.RELIABLE, Durability.VOLATILE, false);
