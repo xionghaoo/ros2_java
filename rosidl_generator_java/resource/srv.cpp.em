@@ -3,7 +3,7 @@
 
 #include <jni.h>
 
-#include "rosidl_generator_c/service_type_support.h"
+#include "rosidl_generator_c/service_type_support_struct.h"
 #include "@(spec.pkg_name)/@(subfolder)/@(module_name).h"
 
 #ifdef __cplusplus
