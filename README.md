@@ -59,6 +59,13 @@ src/ament/ament_tools/scripts/ament.py build --symlink-install --isolated
 
 We need to split the build process between Ament and the rest of `ros2_java` workspace so that the additional build type for Gradle projects is picked up by Ament.
 
+Make sure you have Gradle 3.2 (or later) installed. Ubuntu 16.04 ships with Gradle 2.10, you can install a more recent version of Gradle from the following PPA:
+
+```
+$ sudo add-apt-repository ppa:cwchien/gradle
+$ sudo apt install -y gradle
+```
+
 The following sections deal with building the `ros2_java` codebase for the desktop Java runtime and for Android.
 
 Desktop
