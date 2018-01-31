@@ -21,7 +21,7 @@ public enum ParameterType {
   PARAMETER_INTEGER(rcl_interfaces.msg.ParameterType.PARAMETER_INTEGER),
   PARAMETER_DOUBLE(rcl_interfaces.msg.ParameterType.PARAMETER_DOUBLE),
   PARAMETER_STRING(rcl_interfaces.msg.ParameterType.PARAMETER_STRING),
-  PARAMETER_BYTES(rcl_interfaces.msg.ParameterType.PARAMETER_BYTES);
+  PARAMETER_BYTE_ARRAY(rcl_interfaces.msg.ParameterType.PARAMETER_BYTE_ARRAY);
 
   private final byte value;
 

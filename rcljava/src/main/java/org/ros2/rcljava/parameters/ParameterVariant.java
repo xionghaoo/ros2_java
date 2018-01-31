@@ -94,11 +94,11 @@ public class ParameterVariant {
     this.value.setType(ParameterType.PARAMETER_STRING.getValue());
   }
 
-  public ParameterVariant(final String name, final List<Byte> bytesValue) {
+  public ParameterVariant(final String name, final List<Byte> byteArrayValue) {
     this.name = name;
     this.value = new rcl_interfaces.msg.ParameterValue();
-    this.value.setBytesValue(bytesValue);
-    this.value.setType(ParameterType.PARAMETER_BYTES.getValue());
+    this.value.setByteArrayValue(byteArrayValue);
+    this.value.setType(ParameterType.PARAMETER_BYTE_ARRAY.getValue());
   }
 
   public ParameterType getType() {
@@ -115,8 +115,8 @@ public class ParameterVariant {
         return "double";
       case PARAMETER_STRING:
         return "string";
-      case PARAMETER_BYTES:
-        return "bytes";
+      case PARAMETER_BYTE_ARRAY:
+        return "byte_array";
       case PARAMETER_NOT_SET:
         return "not set";
       default:
@@ -161,11 +161,11 @@ public class ParameterVariant {
     return this.value.getBoolValue();
   }
 
-  public final List<Byte> asBytes() {
-    if (getType() != ParameterType.PARAMETER_BYTES) {
+  public final List<Byte> asByteArray() {
+    if (getType() != ParameterType.PARAMETER_BYTE_ARRAY) {
       throw new IllegalArgumentException("Invalid type");
     }
-    return this.value.getBytesValue();
+    return this.value.getByteArrayValue();
   }
 
   public final rcl_interfaces.msg.Parameter toParameter() {
@@ -185,8 +185,8 @@ public class ParameterVariant {
         return new ParameterVariant(parameter.getName(), parameter.getValue().getDoubleValue());
       case rcl_interfaces.msg.ParameterType.PARAMETER_STRING:
         return new ParameterVariant(parameter.getName(), parameter.getValue().getStringValue());
-      case rcl_interfaces.msg.ParameterType.PARAMETER_BYTES:
-        return new ParameterVariant(parameter.getName(), parameter.getValue().getBytesValue());
+      case rcl_interfaces.msg.ParameterType.PARAMETER_BYTE_ARRAY:
+        return new ParameterVariant(parameter.getName(), parameter.getValue().getByteArrayValue());
       case rcl_interfaces.msg.ParameterType.PARAMETER_NOT_SET:
         throw new IllegalArgumentException("Type from ParameterValue is not set");
       default:
