@@ -166,7 +166,7 @@ Java_org_ros2_rcljava_timer_WallTimerImpl_nativeTimeSinceLastCall(
 
   assert(timer != NULL);
 
-  uint64_t elapsed_time;
+  int64_t elapsed_time;
   rcl_ret_t ret = rcl_timer_get_time_since_last_call(timer, &elapsed_time);
 
   if (ret != RCL_RET_OK) {
@@ -190,7 +190,7 @@ Java_org_ros2_rcljava_timer_WallTimerImpl_nativeGetTimerPeriodNS(
 
   assert(timer != NULL);
 
-  uint64_t timer_period;
+  int64_t timer_period;
   rcl_ret_t ret = rcl_timer_get_period(timer, &timer_period);
 
   if (ret != RCL_RET_OK) {
@@ -213,7 +213,7 @@ Java_org_ros2_rcljava_timer_WallTimerImpl_nativeSetTimerPeriodNS(
 
   assert(timer != NULL);
 
-  uint64_t old_period;
+  int64_t old_period;
   rcl_ret_t ret = rcl_timer_exchange_period(timer, timer_period, &old_period);
 
   if (ret != RCL_RET_OK) {
