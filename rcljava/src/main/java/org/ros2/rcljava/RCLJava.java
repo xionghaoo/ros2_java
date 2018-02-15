@@ -44,6 +44,17 @@ import org.ros2.rcljava.timer.Timer;
 public final class RCLJava {
   private static final Logger logger = LoggerFactory.getLogger(RCLJava.class);
 
+  private static SingleThreadedExecutor globalExecutor = null;
+
+  private static SingleThreadedExecutor getGlobalExecutor() {
+    synchronized (RCLJava.class) {
+      if (globalExecutor == null) {
+        globalExecutor = new SingleThreadedExecutor();
+      }
+      return globalExecutor;
+    }
+  }
+
   /**
    * Private constructor so this cannot be instantiated.
    */
@@ -194,60 +205,54 @@ public final class RCLJava {
   }
 
   public static void spin(final Node node) {
-    SingleThreadedExecutor executor = new SingleThreadedExecutor();
     ComposableNode composableNode = new ComposableNode() {
       public Node getNode() {
         return node;
       }
     };
-    executor.addNode(composableNode);
-    executor.spin();
-    executor.removeNode(composableNode);
+    getGlobalExecutor().addNode(composableNode);
+    getGlobalExecutor().spin();
+    getGlobalExecutor().removeNode(composableNode);
   }
 
   public static void spin(final ComposableNode composableNode) {
-    SingleThreadedExecutor executor = new SingleThreadedExecutor();
-    executor.addNode(composableNode);
-    executor.spin();
-    executor.removeNode(composableNode);
+    getGlobalExecutor().addNode(composableNode);
+    getGlobalExecutor().spin();
+    getGlobalExecutor().removeNode(composableNode);
   }
 
   public static void spinOnce(final Node node) {
-    SingleThreadedExecutor executor = new SingleThreadedExecutor();
     ComposableNode composableNode = new ComposableNode() {
       public Node getNode() {
         return node;
       }
     };
-    executor.addNode(composableNode);
-    executor.spinOnce();
-    executor.removeNode(composableNode);
+    getGlobalExecutor().addNode(composableNode);
+    getGlobalExecutor().spinOnce();
+    getGlobalExecutor().removeNode(composableNode);
   }
 
   public static void spinOnce(final ComposableNode composableNode) {
-    SingleThreadedExecutor executor = new SingleThreadedExecutor();
-    executor.addNode(composableNode);
-    executor.spinOnce();
-    executor.removeNode(composableNode);
+    getGlobalExecutor().addNode(composableNode);
+    getGlobalExecutor().spinOnce();
+    getGlobalExecutor().removeNode(composableNode);
   }
 
   public static void spinSome(final Node node) {
-    SingleThreadedExecutor executor = new SingleThreadedExecutor();
     ComposableNode composableNode = new ComposableNode() {
       public Node getNode() {
         return node;
       }
     };
-    executor.addNode(composableNode);
-    executor.spinSome();
-    executor.removeNode(composableNode);
+    getGlobalExecutor().addNode(composableNode);
+    getGlobalExecutor().spinSome();
+    getGlobalExecutor().removeNode(composableNode);
   }
 
   public static void spinSome(final ComposableNode composableNode) {
-    SingleThreadedExecutor executor = new SingleThreadedExecutor();
-    executor.addNode(composableNode);
-    executor.spinSome();
-    executor.removeNode(composableNode);
+    getGlobalExecutor().addNode(composableNode);
+    getGlobalExecutor().spinSome();
+    getGlobalExecutor().removeNode(composableNode);
   }
 
   private static native void nativeShutdown();
