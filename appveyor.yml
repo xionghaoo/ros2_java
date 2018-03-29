@@ -1,0 +1,18 @@
+services:
+  - docker
+
+os:
+  - Ubuntu
+
+build: off
+
+environment:
+  matrix:
+    - DOCKER_TAG: java
+      SCRIPT_PATH: build_java.sh
+
+    - DOCKER_TAG: android
+      SCRIPT_PATH: build_android.sh
+
+test_script:
+  - docker run -v $APPVEYOR_BUILD_FOLDER/ci-scripts:/ci-scripts -e TRAVIS=1 -e ROS2_JAVA_BRANCH=$APPVEYOR_REPO_BRANCH --rm esteve/ros2-ubuntu-xenial-travisci:$DOCKER_TAG sh /ci-scripts/$SCRIPT_PATH
