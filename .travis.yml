@@ -5,12 +5,9 @@ language: generic
 services:
   - docker
 
-before_install:
-- docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-- docker pull esteve/ros2-ubuntu-xenial-travisci:java
-
 env:
-- ROS2_JAVA_BRANCH=$TRAVIS_BRANCH
+  - ROS2_JAVA_BRANCH=$TRAVIS_BRANCH DOCKER_TAG=java SCRIPT_PATH=build_java.sh
+  - ROS2_JAVA_BRANCH=$TRAVIS_BRANCH DOCKER_TAG=android SCRIPT_PATH=build_android.sh
 
 script:
-- docker run -e TRAVIS=$TRAVIS -e ROS2_JAVA_BRANCH=$ROS2_JAVA_BRANCH -it --rm esteve/ros2-ubuntu-xenial-travisci:java sh /build_java.sh
+  - docker run -v $TRAVIS_BUILD_DIR/ci-scripts:/ci-scripts -e TRAVIS=$TRAVIS -e ROS2_JAVA_BRANCH=$ROS2_JAVA_BRANCH -it --rm esteve/ros2-ubuntu-xenial-travisci:$DOCKER_TAG sh /ci-scripts/$SCRIPT_PATH
