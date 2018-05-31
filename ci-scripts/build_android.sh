@@ -28,13 +28,17 @@ if [ -z "$ROS2_JAVA_SKIP_FETCH" ]; then
   cd $AMENT_WS
   wget https://raw.githubusercontent.com/esteve/ament_java/$ROS2_JAVA_BRANCH/ament_java.repos || wget https://raw.githubusercontent.com/esteve/ament_java/master/ament_java.repos
   vcs import $AMENT_WS/src < ament_java.repos
+  cd src/ament_java
   vcs custom --git --args checkout $ROS2_JAVA_BRANCH || true
+  cd $AMENT_WS
   vcs export --exact
 
   cd $ROS2_ANDROID_WS
   wget https://raw.githubusercontent.com/esteve/ros2_java/$ROS2_JAVA_BRANCH/ros2_java_android.repos || wget https://raw.githubusercontent.com/esteve/ros2_java/master/ros2_java_android.repos
   vcs import $ROS2_ANDROID_WS/src < ros2_java_android.repos || true
+  cd src/ros2_java
   vcs custom --git --args checkout $ROS2_JAVA_BRANCH || true
+  cd $ROS2_ANDROID_WS
   vcs export --exact
 
   cd $ROS2_ANDROID_WS/src/ros2/rosidl

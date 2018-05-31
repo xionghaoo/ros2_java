@@ -28,9 +28,10 @@ if [ -z "$ROS2_JAVA_SKIP_FETCH" ]; then
   cd $AMENT_WS
   wget https://raw.githubusercontent.com/esteve/ament_java/$ROS2_JAVA_BRANCH/ament_java.repos || wget https://raw.githubusercontent.com/esteve/ament_java/master/ament_java.repos
   vcs import $AMENT_WS/src < ament_java.repos
+  cd src/ament_java
   vcs custom --git --args checkout $ROS2_JAVA_BRANCH || true
+  cd $AMENT_WS
   vcs export --exact
-#  vcs custom --git --args rebase origin/master || true
 
   cd $ROS2_JAVA_WS
   if [ -z "$TRAVIS" ]; then
@@ -40,7 +41,9 @@ if [ -z "$ROS2_JAVA_SKIP_FETCH" ]; then
     wget https://raw.githubusercontent.com/esteve/ros2_java/$ROS2_JAVA_BRANCH/ros2_java_desktop_travis.repos || wget https://raw.githubusercontent.com/esteve/ros2_java/master/ros2_java_desktop_travis.repos
     vcs import $ROS2_JAVA_WS/src < ros2_java_desktop_travis.repos
   fi
+  cd src/ros2_java
   vcs custom --git --args checkout $ROS2_JAVA_BRANCH || true
+  cd $ROS2_JAVA_WS
   vcs export --exact
   cd src/ros2
 #  vcs custom --git --args rebase origin/master || true
