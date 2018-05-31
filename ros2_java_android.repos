@@ -25,8 +25,8 @@ repositories:
     version: master
   ros2/libyaml_vendor:
     type: git
-    url: https://github.com/ros2/libyaml_vendor.git
-    version: master
+    url: https://github.com/esteve/libyaml_vendor.git
+    version: android
   ros2/poco_vendor:
     type: git
     url: https://github.com/ros2/poco_vendor.git
