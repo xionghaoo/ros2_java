@@ -1,25 +1,43 @@
+#!/bin/sh
 set -e
 
-ROS2_CURDIR=$PWD
-ROS2_JAVA_DIR=$(test -n "$TRAVIS" && echo /home/travis/build || echo $ROS2_CURDIR)
-ROS2_OUTPUT_DIR=$ROS2_JAVA_DIR/output
-AMENT_WS=$ROS2_JAVA_DIR/ament_ws
-ROS2_ANDROID_WS=$ROS2_JAVA_DIR/ros2_android_ws
-AMENT_BUILD_DIR=$ROS2_OUTPUT_DIR/build_isolated_ament
-AMENT_INSTALL_DIR=$ROS2_OUTPUT_DIR/install_isolated_ament
-ROS2_ANDROID_BUILD_DIR=$ROS2_OUTPUT_DIR/build_isolated_android
-ROS2_ANDROID_INSTALL_DIR=$ROS2_OUTPUT_DIR/install_isolated_android
+ROS2_CURDIR=${PWD}
+ROS2_JAVA_DIR=$(test -n "${TRAVIS}" && echo /home/travis/build || echo ${ROS2_CURDIR})
+ROS2_OUTPUT_DIR=${ROS2_JAVA_DIR}/output
+AMENT_WS=${ROS2_JAVA_DIR}/ament_ws
+ROS2_ANDROID_WS=${ROS2_JAVA_DIR}/ros2_android_ws
+AMENT_BUILD_DIR=${ROS2_OUTPUT_DIR}/build_isolated_ament
+AMENT_INSTALL_DIR=${ROS2_OUTPUT_DIR}/install_isolated_ament
+ROS2_ANDROID_BUILD_DIR=${ROS2_OUTPUT_DIR}/build_isolated_android
+ROS2_ANDROID_INSTALL_DIR=${ROS2_OUTPUT_DIR}/install_isolated_android
 #TOOLCHAIN_FILE=/opt/android/android-ndk-r13b/build/cmake/android.toolchain.cmake
-ANDROID_NDK=/opt/android/android-ndk-r16b
-TOOLCHAIN_FILE=$ANDROID_NDK/build/cmake/android.toolchain.cmake
+ANDROID_NDK=/opt/android/${ANDROID_NDK_VERSION}
+TOOLCHAIN_FILE=${ANDROID_NDK}/build/cmake/android.toolchain.cmake
 #ANDROID_STL=c++_shared
 ANDROID_STL=gnustl_shared
 ANDROID_TARGET=android-21
 ANDROID_ABI=armeabi-v7a
 
-mkdir -p $ROS2_JAVA_DIR
-mkdir -p $AMENT_WS/src
-mkdir -p $ROS2_ANDROID_WS/src
+mkdir -p ${ROS2_JAVA_DIR}
+mkdir -p ${AMENT_WS}/src
+mkdir -p ${ROS2_ANDROID_WS}/src
+
+if [ -n "${TRAVIS}" ]; then
+  wget -O /tmp/android-ndk.zip https://dl.google.com/android/repository/${ANDROID_NDK_VERSION}-linux-x86_64.zip && mkdir -p /opt/android/ && cd /opt/android/ && unzip -q /tmp/android-ndk.zip && rm /tmp/android-ndk.zip
+  wget -O /tmp/android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-${ANDROID_SDK_VERSION}.zip && mkdir -p /opt/android/android-sdk-linux && cd /opt/android/android-sdk-linux && unzip -q /tmp/android-sdk.zip && rm /tmp/android-sdk.zip
+
+# Accept licenses
+  yes | ${ANDROID_SDK}/tools/bin/sdkmanager --licenses
+
+# Install platform tools
+  yes | ${ANDROID_SDK}/tools/bin/sdkmanager --verbose "platforms;${ANDROID_TARGET}"
+
+# Disable emulator for now
+# yes | ${ANDROID_SDK}/tools/bin/sdkmanager --verbose "emulator"
+# yes | ${ANDROID_SDK}/tools/bin/sdkmanager --verbose "system-images;${ANDROID_TARGET};default;armeabi-v7a"
+# yes | ${ANDROID_SDK}/tools/bin/sdkmanager --verbose "system-images;${ANDROID_TARGET};default;x86_64"
+# echo no | ${ANDROID_SDK}/tools/bin/avdmanager create avd --force --name test --package "system-images;${ANDROID_TARGET};default;${ANDROID_ABI}" --abi ${ANDROID_ABI}
+fi
 
 if [ -z "$ROS2_JAVA_SKIP_FETCH" ]; then
   cd $ROS2_JAVA_DIR
