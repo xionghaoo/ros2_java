@@ -64,6 +64,9 @@ macro(ament_export_jni_libraries)
       "${_ament_build_type_gradle_jni_library_path_filename}"
       "${jni_library_path_template}")
 
-    ament_environment_hooks("${_ament_build_type_gradle_jni_library_path_filename}")
+    if(NOT WIN32)
+      find_package(ament_cmake_core QUIET REQUIRED)
+      ament_environment_hooks("${_ament_build_type_gradle_jni_library_path_filename}")
+    endif()
   endif()
 endmacro()
