@@ -169,8 +169,7 @@ macro(set_properties _build_type)
     RUNTIME_OUTPUT_DIRECTORY${_build_type} ${_output_path}/${_parent_folder}
     C_STANDARD 11
     CXX_STANDARD 14
-    OUTPUT_NAME "${_library_path}"
-    )
+    OUTPUT_NAME "${_library_path}")
 endmacro()
 
 set(_type_support_by_generated_cpp_files ${_type_support_by_generated_msg_cpp_files} ${_type_support_by_generated_srv_cpp_files})
