@@ -189,7 +189,7 @@ foreach(_generated_cpp_file ${_generated_cpp_files})
   set(_generated_msg_cpp_common_file "${_full_folder}/${_base_msg_name}.cpp")
   string(REGEX REPLACE "^rosidl_typesupport_" "" _short_typesupport_impl ${_typesupport_impl})
   set(_library_name
-    "${_base_msg_name}_${_short_typesupport_impl}"
+    "${_parent_folder}${_base_msg_name}${_short_typesupport_impl}"
   )
   set(_library_path
     "${_package_name}_${_parent_folder}_${_base_msg_name}__jni__${_typesupport_impl}"
