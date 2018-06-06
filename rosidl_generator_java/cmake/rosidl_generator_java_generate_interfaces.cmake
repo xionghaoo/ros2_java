@@ -256,6 +256,7 @@ foreach(_generated_cpp_file ${_generated_cpp_files})
     install(TARGETS ${_library_name}
       ARCHIVE DESTINATION lib/jni
       LIBRARY DESTINATION lib/jni
+      RUNTIME DESTINATION lib/jni
     )
     ament_export_jni_libraries(${_library_name})
   endif()
