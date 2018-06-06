@@ -168,7 +168,9 @@ macro(set_properties _build_type)
     LIBRARY_OUTPUT_DIRECTORY${_build_type} ${_output_path}/${_parent_folder}
     RUNTIME_OUTPUT_DIRECTORY${_build_type} ${_output_path}/${_parent_folder}
     C_STANDARD 11
-    CXX_STANDARD 14)
+    CXX_STANDARD 14
+    OUTPUT_NAME "${_library_path}"
+    )
 endmacro()
 
 set(_type_support_by_generated_cpp_files ${_type_support_by_generated_msg_cpp_files} ${_type_support_by_generated_srv_cpp_files})
@@ -185,10 +187,14 @@ foreach(_generated_cpp_file ${_generated_cpp_files})
   list(GET _type_support_by_generated_cpp_files ${_file_index} _typesupport_impl)
   find_package(${_typesupport_impl} REQUIRED)
   set(_generated_msg_cpp_common_file "${_full_folder}/${_base_msg_name}.cpp")
+  string(REGEX REPLACE "^rosidl_typesupport_" "" _short_typesupport_impl ${_typesupport_impl})
   set(_library_name
+    "${_base_msg_name}_${_short_typesupport_impl}"
+  )
+  set(_library_path
     "${_package_name}_${_parent_folder}_${_base_msg_name}__jni__${_typesupport_impl}"
   )
-  string_camel_case_to_lower_case_underscore(${_library_name} _library_name)
+  string_camel_case_to_lower_case_underscore(${_library_path} _library_path)
   add_library(${_library_name} SHARED
     ${_generated_cpp_file}
   )
