@@ -76,9 +76,6 @@ mkdir -p ~/ros2_java_ws/src
 cd ~/ros2_java_ws
 wget https://raw.githubusercontent.com/esteve/ros2_java/master/ros2_java_desktop.repos
 vcs import ~/ros2_java_ws/src < ros2_java_desktop.repos
-cd ~/ros2_java_ws/src/ros2/rosidl_typesupport
-patch -p1 < ../../ros2_java/ros2_java/rosidl_typesupport_ros2_java.patch
-cd ~/ros2_java_ws
 . ~/ament_ws/install_isolated/local_setup.sh
 ament build --symlink-install --isolated
 ```
@@ -104,14 +101,9 @@ mkdir -p ~/ros2_android_ws/src
 cd ~/ros2_android_ws
 wget https://raw.githubusercontent.com/esteve/ros2_java/master/ros2_java_android.repos
 vcs import ~/ros2_android_ws/src < ros2_java_android.repos
-touch ~/ros2_android_ws/src/ros2/rosidl/python_cmake_module/AMENT_IGNORE
-touch ~/ros2_android_ws/src/ros2/rosidl/rosidl_generator_py/AMENT_IGNORE
-touch ~/ros2_android_ws/src/ros2/rcl_interfaces/test_msgs/AMENT_IGNORE
-cd ~/ros2_android_ws/src/ros2/rosidl_typesupport
-patch -p1 < ../../ros2_java/ros2_java/rosidl_typesupport_ros2_android.patch
-cd ~/ros2_android_ws
 . ~/ament_ws/install_isolated/local_setup.sh
-ament build --isolated --cmake-args \
+ament build --isolated --skip-packages python_cmake_module rosidl_generator_py test_msgs \
+  --cmake-args \
   -DPYTHON_EXECUTABLE=/usr/bin/python3 \
   -DCMAKE_TOOLCHAIN_FILE=$HOME/android_ndk/android-ndk-r15c/build/cmake/android.toolchain.cmake \
   -DANDROID_FUNCTION_LEVEL_LINKING=OFF \

@@ -1,6 +1,14 @@
 #!/bin/sh
 set -e
 
+ANDROID_NDK_VERSION=android-ndk-r17b
+# tools_r26.0.2
+ANDROID_SDK_VERSION=3859397
+
+ANDROID_TARGET=android-21
+ANDROID_ABI=armeabi-v7a
+ANDROID_NDK=/opt/android/${ANDROID_NDK_VERSION}/
+
 ROS2_CURDIR=${PWD}
 ROS2_JAVA_DIR=$(test -n "${TRAVIS}" && echo /home/travis/build || echo ${ROS2_CURDIR})
 ROS2_OUTPUT_DIR=${ROS2_JAVA_DIR}/output
@@ -60,20 +68,8 @@ if [ -z "$ROS2_JAVA_SKIP_FETCH" ]; then
   vcs export --exact
 
   cd $ROS2_ANDROID_WS/src/ros2/rosidl
-  touch python_cmake_module/AMENT_IGNORE
   test -e $ROS2_ANDROID_WS/src/ros2/rmw_fastrtps/rmw_fastrtps_c/package.xml && touch rosidl_generator_cpp/AMENT_IGNORE
-  touch rosidl_generator_py/AMENT_IGNORE
   test -e $ROS2_ANDROID_WS/src/ros2/rmw_fastrtps/rmw_fastrtps_c/package.xml && touch rosidl_typesupport_introspection_cpp/AMENT_IGNORE
-
-  cd $ROS2_ANDROID_WS/src/ros2/rosidl_typesupport
-  patch -p1 < ../../ros2_java/ros2_java/rosidl_typesupport_ros2_android.patch
-
-#  cd $ROS2_ANDROID_WS/src/eProsima/Fast-RTPS
-#  git submodule init
-#  git submodule update
-#  if [ -n "$TRAVIS" ]; then
-#    find $ROS2_ANDROID_WS/src/ros2/examples/rclcpp $ROS2_ANDROID_WS/src/ros2/examples/rclpy -name "package.xml" -printf "%h\n" | xargs -i touch {}/AMENT_IGNORE
-#  fi
 fi
 
 cd $ROS2_ANDROID_WS/src/ros2/rmw_fastrtps
@@ -90,7 +86,8 @@ fi
 . $AMENT_INSTALL_DIR/local_setup.sh
 
 cd $ROS2_ANDROID_WS
-ament build --parallel --symlink-install --isolated --install-space $ROS2_ANDROID_INSTALL_DIR --build-space $ROS2_ANDROID_BUILD_DIR --cmake-args \
+ament build --skip-packages python_cmake_module rosidl_generator_py test_msgs \
+  --parallel --symlink-install --isolated --install-space $ROS2_ANDROID_INSTALL_DIR --build-space $ROS2_ANDROID_BUILD_DIR --cmake-args \
   -DTHIRDPARTY=ON \
   -DPYTHON_EXECUTABLE=/usr/bin/python3 -DCMAKE_TOOLCHAIN_FILE=$TOOLCHAIN_FILE \
   -DANDROID_FUNCTION_LEVEL_LINKING=OFF -DANDROID_NATIVE_API_LEVEL=$ANDROID_TARGET -DANDROID_TOOLCHAIN_NAME=arm-linux-androideabi-clang -DANDROID_STL=$ANDROID_STL \
