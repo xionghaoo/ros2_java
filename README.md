@@ -94,14 +94,19 @@ Make sure to download at least the SDK for Android Lollipop (or greater), the ex
 
 You may download the Android NDK from [the official](https://developer.android.com/ndk/downloads/index.html) website, let's assume you've downloaded 15c (the latest stable version as of 2017-11-07) and you unpack it to `~/android_ndk`
 
+We'll also need to have the [Android SDK](https://developer.android.com/studio/#downloads) installed, for example, in `~/android_sdk` and set the `ANDROID_HOME` environment variable pointing to it.
+
+Although the `ros2_java_android.repos` file contains all the repositories for the Android bindings to compile, we'll have to disable certain packages (`python_cmake_module`, `rosidl_generator_py`, `test_msgs`) that are included the repositories and that we either don't need or can't cross-compile properly (e.g. the Python generator)
+
 ```
+export ANDROID_HOME=$HOME/android_sdk
 mkdir -p ~/ros2_android_ws/src
 cd ~/ros2_android_ws
 wget https://raw.githubusercontent.com/esteve/ros2_java/master/ros2_java_android.repos
 vcs import ~/ros2_android_ws/src < ros2_java_android.repos
-cd ~/ros2_android_ws/src/ros2/rosidl
-touch python_cmake_module/AMENT_IGNORE
-touch rosidl_generator_py/AMENT_IGNORE
+touch ~/ros2_android_ws/src/ros2/rosidl/python_cmake_module/AMENT_IGNORE
+touch ~/ros2_android_ws/src/ros2/rosidl/rosidl_generator_py/AMENT_IGNORE
+touch ~/ros2_android_ws/src/ros2/rcl_interfaces/test_msgs/AMENT_IGNORE
 cd ~/ros2_android_ws/src/ros2/rosidl_typesupport
 patch -p1 < ../../ros2_java/ros2_java/rosidl_typesupport_ros2_android.patch
 cd ~/ros2_android_ws
