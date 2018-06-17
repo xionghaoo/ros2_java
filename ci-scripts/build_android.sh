@@ -21,8 +21,8 @@ ROS2_ANDROID_INSTALL_DIR=${ROS2_OUTPUT_DIR}/install_isolated_android
 #TOOLCHAIN_FILE=/opt/android/android-ndk-r13b/build/cmake/android.toolchain.cmake
 ANDROID_NDK=/opt/android/${ANDROID_NDK_VERSION}
 TOOLCHAIN_FILE=${ANDROID_NDK}/build/cmake/android.toolchain.cmake
-#ANDROID_STL=c++_shared
-ANDROID_STL=gnustl_shared
+ANDROID_STL=c++_shared
+# ANDROID_STL=gnustl_shared
 ANDROID_TARGET=android-21
 ANDROID_ABI=armeabi-v7a
 
