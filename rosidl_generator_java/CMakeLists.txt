@@ -26,7 +26,7 @@ include(JavaExtra)
 
 set(CMAKE_JAVA_COMPILE_FLAGS "-source" "1.6" "-target" "1.6")
 
-ament_index_register_resource("rosidl_interface_generator" CONTENT ${PROJECT_NAME})
+ament_index_register_resource("rosidl_generator_packages")
 
 if(BUILD_TESTING)
   find_package(rosidl_cmake REQUIRED)
