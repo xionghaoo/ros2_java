@@ -102,7 +102,7 @@ cd ~/ros2_android_ws
 wget https://raw.githubusercontent.com/esteve/ros2_java/master/ros2_java_android.repos
 vcs import ~/ros2_android_ws/src < ros2_java_android.repos
 . ~/ament_ws/install_isolated/local_setup.sh
-ament build --isolated --skip-packages python_cmake_module rosidl_generator_py test_msgs \
+ament build --isolated --skip-packages test_msgs \
   --cmake-args \
   -DPYTHON_EXECUTABLE=/usr/bin/python3 \
   -DCMAKE_TOOLCHAIN_FILE=$HOME/android_ndk/android-ndk-r15c/build/cmake/android.toolchain.cmake \
