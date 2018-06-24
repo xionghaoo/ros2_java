@@ -86,7 +86,7 @@ fi
 . $AMENT_INSTALL_DIR/local_setup.sh
 
 cd $ROS2_ANDROID_WS
-ament build --skip-packages python_cmake_module rosidl_generator_py test_msgs \
+ament build --skip-packages test_msgs \
   --parallel --symlink-install --isolated --install-space $ROS2_ANDROID_INSTALL_DIR --build-space $ROS2_ANDROID_BUILD_DIR --cmake-args \
   -DTHIRDPARTY=ON \
   -DPYTHON_EXECUTABLE=/usr/bin/python3 -DCMAKE_TOOLCHAIN_FILE=$TOOLCHAIN_FILE \
