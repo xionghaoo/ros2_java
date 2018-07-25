@@ -4,9 +4,10 @@
   <name>rosidl_generator_java</name>
   <version>0.0.3</version>
   <description>Generate the ROS interfaces in Java.</description>
-  <author email="esteve@apache.org">Esteve Fernandez</author>
   <maintainer email="esteve@apache.org">Esteve Fernandez</maintainer>
   <license>Apache License 2.0</license>
+
+  <author email="esteve@apache.org">Esteve Fernandez</author>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
   <buildtool_depend>ament_cmake_export_jars</buildtool_depend>
