@@ -4,9 +4,10 @@ ROS2 for Java
 Build status
 ------------
 
-**JRE** [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/esteve/ros2_java/branches/master/1)](https://travis-ci.org/esteve/ros2_java)
-
-**Android** [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/esteve/ros2_java/branches/master/2)](https://travis-ci.org/esteve/ros2_java)
+| Target | Status |
+|----------|--------|
+| **JRE** | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/esteve/ros2_java/branches/master/1)](https://travis-ci.org/esteve/ros2_java) |
+| **Android** | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/esteve/ros2_java/branches/master/2)](https://travis-ci.org/esteve/ros2_java) |
 
 Introduction
 ------------
