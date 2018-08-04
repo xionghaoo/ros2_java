@@ -6,8 +6,9 @@ Build status
 
 | Target | Status |
 |----------|--------|
-| **JRE** | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/esteve/ros2_java/branches/master/1)](https://travis-ci.org/esteve/ros2_java) |
-| **Android** | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/esteve/ros2_java/branches/master/2)](https://travis-ci.org/esteve/ros2_java) |
+| **Ubuntu Xenial (OpenJDK)** | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/esteve/ros2_java/branches/master/1)](https://travis-ci.org/esteve/ros2_java) |
+| **Ubuntu Xenial (Android)** | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/esteve/ros2_java/branches/master/2)](https://travis-ci.org/esteve/ros2_java) |
+| **Windows Desktop (JDK)**   | [![Build status](https://ci.appveyor.com/api/projects/status/7syqscd42yd3f7do?svg=true)](https://ci.appveyor.com/project/esteve/ros2-java) |
 
 Introduction
 ------------
