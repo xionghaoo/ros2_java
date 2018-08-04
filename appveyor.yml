@@ -24,8 +24,8 @@ build_script:
 
   - md \dev\ros2\src
   - cd \dev\ros2
-  - curl -sk https://raw.githubusercontent.com/esteve/ros2_java/%APPVEYOR_REPO_BRANCH%/ros2_java_desktop.repos -o ros2_java_desktop.repos
-  - vcs import src < ros2_java_desktop.repos
+  - curl -sk https://raw.githubusercontent.com/esteve/ros2_java/%APPVEYOR_REPO_BRANCH%/ros2_java_desktop_travis.repos -o ros2_java_desktop_travis.repos
+  - vcs import src < ros2_java_desktop_travis.repos
   - cd \dev\ros2\src\ros2_java
   - vcs custom --git --args checkout %APPVEYOR_REPO_BRANCH% || VER>NUL
   - cd \dev\ros2
