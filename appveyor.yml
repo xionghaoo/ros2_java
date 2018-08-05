@@ -9,10 +9,11 @@ build: off
 environment:
   PYTHON: C:\Python36-x64
 
-before_build:
+install:
   - SET PATH=%PYTHON%;%PYTHON%\Scripts;%path%
   - pip install vcstool
   - pip install -U catkin_pkg EmPy pyparsing pyyaml
+  - choco install -y gradle
 
 build_script:
   - md \dev\ament\src
