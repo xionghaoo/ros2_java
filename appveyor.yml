@@ -10,11 +10,11 @@ environment:
   PYTHON: C:\Python36-x64
 
 install:
+  - choco install -y gradle
+  - refreshenv
   - SET PATH=%PYTHON%;%PYTHON%\Scripts;%path%
   - pip install vcstool
   - pip install -U catkin_pkg EmPy pyparsing pyyaml
-  - choco install -y gradle
-  - refreshenv
 
 build_script:
   - md \dev\ament\src
