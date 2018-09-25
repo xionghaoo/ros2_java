@@ -6,8 +6,8 @@ Build status
 
 | Target | Status |
 |----------|--------|
-| **Ubuntu Xenial (OpenJDK)** | [![Build Status](http://vsts-matrix-badges.herokuapp.com/repos/ros2-java/ros2-java/1/branches/master/1)](https://travis-ci.org/esteve/ros2_java) |
-| **Ubuntu Xenial (Android)** | [![Build Status](http://vsts-matrix-badges.herokuapp.com/repos/ros2-java/ros2-java/1/branches/master/2)](https://travis-ci.org/esteve/ros2_java) |
+| **Ubuntu Xenial (OpenJDK)** | [![Build Status](http://vsts-matrix-badges.herokuapp.com/repos/ros2-java/ros2-java/1/branches/master/1)](https://dev.azure.com/ros2-java/ros2-java/_build?definitionId=1) |
+| **Ubuntu Xenial (Android)** | [![Build Status](http://vsts-matrix-badges.herokuapp.com/repos/ros2-java/ros2-java/1/branches/master/2)](https://dev.azure.com/ros2-java/ros2-java/_build?definitionId=1) |
 
 Introduction
 ------------
