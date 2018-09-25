@@ -7,6 +7,18 @@ repositories:
     type: git
     url: https://github.com/eProsima/Fast-RTPS.git
     version: 7a0b0fe7ca8d2c4ea41e36744c6024c263a6505a
+  ros/class_loader:
+    type: git
+    url: https://github.com/ros/class_loader.git
+    version: 1.1.0
+  ros/console_bridge:
+    type: git
+    url: https://github.com/ros/console_bridge.git
+    version: ad25f7307da76be2857545e7e5c2a20727eee542
+  ros2/console_bridge_vendor:
+    type: git
+    url: https://github.com/ros2/console_bridge_vendor.git
+    version: master
   ros2/ament_cmake_ros:
     type: git
     url: https://github.com/ros2/ament_cmake_ros.git
@@ -23,6 +35,10 @@ repositories:
     type: git
     url: https://github.com/ros2/example_interfaces.git
     version: 0.5.0
+  ros2/launch:
+    type: git
+    url: https://github.com/ros2/launch.git
+    version: 0.5.2
   ros2/libyaml_vendor:
     type: git
     url: https://github.com/ros2/libyaml_vendor.git
@@ -39,6 +55,10 @@ repositories:
     type: git
     url: https://github.com/ros2/rcl_interfaces.git
     version: master
+  ros2/rclpy:
+    type: git
+    url: https://github.com/ros2/rclpy.git
+    version: 0.5.3
   ros2/rmw:
     type: git
     url: https://github.com/ros2/rmw.git
@@ -51,6 +71,18 @@ repositories:
     type: git
     url: https://github.com/ros2/rmw_implementation.git
     version: 0.5.1
+  ros2/rmw_opensplice:
+    type: git
+    url: https://github.com/ros2/rmw_opensplice.git
+    version: 0.5.2
+  ros2/rosidl_typesupport_opensplice:
+    type: git
+    url: https://github.com/ros2/rosidl_typesupport_opensplice.git
+    version: 0.5.0
+  ros2/ros2cli:
+    type: git
+    url: https://github.com/ros2/ros2cli.git
+    version: 0.5.3
   ros2/rosidl:
     type: git
     url: https://github.com/ros2/rosidl.git
@@ -63,13 +95,13 @@ repositories:
     type: git
     url: https://github.com/ros2/rosidl_defaults.git
     version: 0.5.0
+  ros2/rosidl_python:
+    type: git
+    url: https://github.com/ros2/rosidl_python.git
+    version: 0.5.2
   ros2/rosidl_typesupport:
     type: git
     url: https://github.com/ros2/rosidl_typesupport.git
-    version: 0.5.0
-  ros2/tinyxml_vendor:
-    type: git
-    url: https://github.com/ros2/tinyxml_vendor.git
     version: 0.5.0
   ros2_java/ros2_java:
     type: git

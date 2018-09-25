@@ -11,6 +11,10 @@ repositories:
     type: git
     url: https://github.com/ros/class_loader.git
     version: 1.1.0
+  ros/console_bridge:
+    type: git
+    url: https://github.com/ros/console_bridge.git
+    version: ad25f7307da76be2857545e7e5c2a20727eee542
   ros2/console_bridge_vendor:
     type: git
     url: https://github.com/ros2/console_bridge_vendor.git
@@ -27,22 +31,10 @@ repositories:
     type: git
     url: https://github.com/ros2/common_interfaces.git
     version: 0.5.0
-  ros2/demos:
-    type: git
-    url: https://github.com/ros2/demos.git
-    version: 0.5.1
-  ros2/examples:
-    type: git
-    url: https://github.com/ros2/examples.git
-    version: 0.5.1
   ros2/example_interfaces:
     type: git
     url: https://github.com/ros2/example_interfaces.git
     version: 0.5.0
-  ros2/geometry2:
-    type: git
-    url: https://github.com/ros2/geometry2.git
-    version: 0.9.1
   ros2/launch:
     type: git
     url: https://github.com/ros2/launch.git
@@ -63,34 +55,14 @@ repositories:
     type: git
     url: https://github.com/ros2/rcl_interfaces.git
     version: master
-#  ros2/rclc:
-#    type: git
-#    url: https://github.com/ros2/rclc.git
-#    version: master
-  ros2/rclcpp:
-    type: git
-    url: https://github.com/ros2/rclcpp.git
-    version: 0.5.1
   ros2/rclpy:
     type: git
     url: https://github.com/ros2/rclpy.git
     version: 0.5.3
-  ros2/realtime_support:
-    type: git
-    url: https://github.com/ros2/realtime_support.git
-    version: 0.5.0
   ros2/rmw:
     type: git
     url: https://github.com/ros2/rmw.git
     version: 0.5.0
-  ros2/rmw_connext:
-    type: git
-    url: https://github.com/ros2/rmw_connext.git
-    version: 0.5.1
-  ros2/rosidl_typesupport_connext:
-    type: git
-    url: https://github.com/ros2/rosidl_typesupport_connext.git
-    version: 0.5.3
   ros2/rmw_fastrtps:
     type: git
     url: https://github.com/ros2/rmw_fastrtps.git
@@ -106,10 +78,6 @@ repositories:
   ros2/rosidl_typesupport_opensplice:
     type: git
     url: https://github.com/ros2/rosidl_typesupport_opensplice.git
-    version: 0.5.0
-  ros2/ros1_bridge:
-    type: git
-    url: https://github.com/ros2/ros1_bridge.git
     version: 0.5.0
   ros2/ros2cli:
     type: git
@@ -134,18 +102,6 @@ repositories:
   ros2/rosidl_typesupport:
     type: git
     url: https://github.com/ros2/rosidl_typesupport.git
-    version: 0.5.0
-  ros2/system_tests:
-    type: git
-    url: https://github.com/ros2/system_tests.git
-    version: 29c299669a766329dffcc91f459b17c0e1c46c15
-  ros2/tinyxml_vendor:
-    type: git
-    url: https://github.com/ros2/tinyxml_vendor.git
-    version: 0.5.0
-  ros2/tlsf:
-    type: git
-    url: https://github.com/ros2/tlsf.git
     version: 0.5.0
   ros2_java/ros2_java:
     type: git

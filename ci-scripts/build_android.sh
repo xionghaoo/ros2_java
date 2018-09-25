@@ -10,7 +10,7 @@ ANDROID_ABI=armeabi-v7a
 ANDROID_NDK=/opt/android/${ANDROID_NDK_VERSION}/
 
 ROS2_CURDIR=${PWD}
-ROS2_JAVA_DIR=$(test -n "${TRAVIS}" && echo /home/travis/build || echo ${ROS2_CURDIR})
+ROS2_JAVA_DIR=${ROS2_JAVA_DIR:-${ROS2_CURDIR}}
 ROS2_OUTPUT_DIR=${ROS2_JAVA_DIR}/output
 AMENT_WS=${ROS2_JAVA_DIR}/ament_ws
 ROS2_ANDROID_WS=${ROS2_JAVA_DIR}/ros2_android_ws
@@ -30,7 +30,7 @@ mkdir -p ${ROS2_JAVA_DIR}
 mkdir -p ${AMENT_WS}/src
 mkdir -p ${ROS2_ANDROID_WS}/src
 
-if [ -n "${TRAVIS}" ]; then
+if [ -n "${ROS2_JAVA_CI}" ]; then
   wget -O /tmp/android-ndk.zip https://dl.google.com/android/repository/${ANDROID_NDK_VERSION}-linux-x86_64.zip && mkdir -p /opt/android/ && cd /opt/android/ && unzip -q /tmp/android-ndk.zip && rm /tmp/android-ndk.zip
   wget -O /tmp/android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-${ANDROID_SDK_VERSION}.zip && mkdir -p /opt/android/android-sdk-linux && cd /opt/android/android-sdk-linux && unzip -q /tmp/android-sdk.zip && rm /tmp/android-sdk.zip
 

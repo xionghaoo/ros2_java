@@ -2,7 +2,7 @@
 set -e
 
 ROS2_CURDIR=$PWD
-ROS2_JAVA_DIR=$(test -n "$TRAVIS" && echo /home/travis/build || echo $ROS2_CURDIR)
+ROS2_JAVA_DIR=${ROS2_JAVA_DIR:-${ROS2_CURDIR}}
 ROS2_OUTPUT_DIR=$ROS2_JAVA_DIR/output
 AMENT_WS=$ROS2_JAVA_DIR/ament_ws
 ROS2_JAVA_WS=$ROS2_JAVA_DIR/ros2_java_ws
@@ -35,13 +35,8 @@ if [ -z "$ROS2_JAVA_SKIP_FETCH" ]; then
   vcs export --exact
 
   cd $ROS2_JAVA_WS
-  if [ -z "$TRAVIS" ]; then
-    wget https://raw.githubusercontent.com/esteve/ros2_java/$ROS2_JAVA_BRANCH/ros2_java_desktop.repos || wget https://raw.githubusercontent.com/esteve/ros2_java/master/ros2_java_desktop.repos
-    vcs import $ROS2_JAVA_WS/src < ros2_java_desktop.repos
-  else
-    wget https://raw.githubusercontent.com/esteve/ros2_java/$ROS2_JAVA_BRANCH/ros2_java_desktop_travis.repos || wget https://raw.githubusercontent.com/esteve/ros2_java/master/ros2_java_desktop_travis.repos
-    vcs import $ROS2_JAVA_WS/src < ros2_java_desktop_travis.repos
-  fi
+  wget https://raw.githubusercontent.com/esteve/ros2_java/$ROS2_JAVA_BRANCH/ros2_java_desktop.repos || wget https://raw.githubusercontent.com/esteve/ros2_java/master/ros2_java_desktop.repos
+  vcs import $ROS2_JAVA_WS/src < ros2_java_desktop.repos
   cd src/ros2_java
   vcs custom --git --args checkout $ROS2_JAVA_BRANCH || true
   cd $ROS2_JAVA_WS
@@ -49,7 +44,7 @@ if [ -z "$ROS2_JAVA_SKIP_FETCH" ]; then
   cd src/ros2
 #  vcs custom --git --args rebase origin/master || true
 
-  if [ -n "$TRAVIS" ]; then
+  if [ -n "${ROS2_JAVA_CI}" ]; then
     find $ROS2_JAVA_WS/src/ros2/examples/rclcpp $ROS2_JAVA_WS/src/ros2/examples/rclpy -name "package.xml" -printf "%h\n" | xargs -i touch {}/AMENT_IGNORE
   fi
 fi
