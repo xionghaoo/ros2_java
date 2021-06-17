@@ -48,26 +48,25 @@ macro(ament_export_jni_libraries)
       endif()
     endforeach()
 
-    if(WIN32)
-      set(_ament_build_type_gradle_jni_library_path_key "ament_build_type_gradle_jni_library_path_bat")
-      set(_ament_build_type_gradle_jni_library_path_filename
-        "${CMAKE_CURRENT_BINARY_DIR}/ament_build_type_gradle_jni_library_path.bat.in")
+    if(APPLE)
+      set(JNI_LIB_ENV_VAR "DYLD_LIBRARY_PATH")
+    elseif(WIN32)
+      set(JNI_LIB_ENV_VAR "PATH")
     else()
-      set(_ament_build_type_gradle_jni_library_path_key "ament_build_type_gradle_jni_library_path_sh")
-      set(_ament_build_type_gradle_jni_library_path_filename
-        "${CMAKE_CURRENT_BINARY_DIR}/ament_build_type_gradle_jni_library_path.sh.in")
+      set(JNI_LIB_ENV_VAR "LD_LIBRARY_PATH")
     endif()
+
+    set(_ament_build_type_gradle_jni_library_path_dsv_filename
+      "${CMAKE_CURRENT_BINARY_DIR}/ament_build_type_gradle_jni_library_path.dsv.in")
 
     ament_index_get_resource(
-      jni_library_path_template "templates" "${_ament_build_type_gradle_jni_library_path_key}")
+      jni_library_path_dsv_template "templates" "ament_build_type_gradle_jni_library_path_dsv")
 
     file(WRITE
-      "${_ament_build_type_gradle_jni_library_path_filename}"
-      "${jni_library_path_template}")
+      "${_ament_build_type_gradle_jni_library_path_dsv_filename}"
+      "${jni_library_path_dsv_template}")
 
-    if(NOT WIN32)
-      find_package(ament_cmake_core QUIET REQUIRED)
-      ament_environment_hooks("${_ament_build_type_gradle_jni_library_path_filename}")
-    endif()
+    find_package(ament_cmake_core REQUIRED)
+    ament_environment_hooks("${_ament_build_type_gradle_jni_library_path_dsv_filename}")
   endif()
 endmacro()
