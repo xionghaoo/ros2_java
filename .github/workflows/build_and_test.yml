@@ -49,6 +49,9 @@ jobs:
       run: |
         curl -LO https://dl.google.com/android/repository/android-ndk-r21d-linux-x86_64.zip
         unzip android-ndk-r21d-linux-x86_64.zip
+    - name: Install QEMU emulation binaries
+      run: |
+        sudo apt-get update && sudo apt-get install -y qemu-user
     - name: Setup workspace with VCS repo file
       run: |
         mkdir -p ros2_java_ws/src
@@ -84,4 +87,5 @@ jobs:
           -DANDROID_NDK=${ANDROID_NDK} \
           -DTHIRDPARTY=ON \
           -DCOMPILE_EXAMPLES=OFF \
-          -DCMAKE_FIND_ROOT_PATH="${PWD}/install"
+          -DCMAKE_FIND_ROOT_PATH="${PWD}/install" \
+          -DCMAKE_CROSSCOMPILING_EMULATOR="/usr/bin/qemu-arm"
