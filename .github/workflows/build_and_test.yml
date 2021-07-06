@@ -22,6 +22,36 @@ jobs:
 
   build_android:
     runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - colcon_meta: |
+              {
+                "names": {
+                  "rcl": {
+                    "cmake-args": [ "-DBUILD_TESTING=OFF" ]
+                  },
+                  "rcl_yaml_param_parser": {
+                    "cmake-args": [ "-DBUILD_TESTING=OFF" ]
+                  },
+                  "rclcpp": {
+                    "cmake-args": [ "-DBUILD_TESTING=OFF" ]
+                  },
+                  "rclcpp_action": {
+                    "cmake-args": [ "-DBUILD_TESTING=OFF" ]
+                  },
+                  "rclcpp_lifecycle": {
+                    "cmake-args": [ "-DBUILD_TESTING=OFF" ]
+                  },
+                  "rcutils": {
+                    "cmake-args": [ "-DBUILD_TESTING=OFF" ]
+                  },
+                  "rosidl_typesupport_c": {
+                    "cmake-args": [ "-DBUILD_TESTING=OFF" ]
+                  },
+                }
+              }
     steps:
     - name: Install Java
       run: |
@@ -60,6 +90,8 @@ jobs:
         # Use checked out version of ros2_java
         rm -rf src/ros2-java/ros2_java
         ln --symbolic ${{ github.workspace }} src/ros2-java
+    - name: Create colcon defaults file
+      run: printf "${{matrix.colcon_meta}}" > ${{ github.workspace }}/colcon.meta
     - name: Build ros2_java for Android
       run: |
         export PYTHON3_EXEC="$( which python3 )"
@@ -74,6 +106,7 @@ jobs:
         colcon build \
           --packages-ignore cyclonedds rcl_logging_log4cxx rosidl_generator_py \
           --packages-up-to rcljava \
+          --metas ${{ github.workspace }}/colcon.meta \
           --cmake-args \
           -DPYTHON_EXECUTABLE=${PYTHON3_EXEC} \
           -DPYTHON_LIBRARY=${PYTHON3_LIBRARY} \
