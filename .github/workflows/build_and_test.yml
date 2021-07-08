@@ -119,6 +119,7 @@ jobs:
           -DANDROID_ABI=${ANDROID_ABI} \
           -DANDROID_NDK=${ANDROID_NDK} \
           -DANDROID=ON \
+          -DTHIRDPARTY_android-ifaddrs=FORCE \
           -DTHIRDPARTY=ON \
           -DCOMPILE_EXAMPLES=OFF \
           -DCMAKE_FIND_ROOT_PATH="${PWD}/install" \
