@@ -108,6 +108,7 @@ jobs:
           --packages-up-to rcljava \
           --metas ${{ github.workspace }}/colcon.meta \
           --cmake-args \
+          -DRCL_LOGGING_IMPLEMENTATION=rcl_logging_noop \
           -DPYTHON_EXECUTABLE=${PYTHON3_EXEC} \
           -DPYTHON_LIBRARY=${PYTHON3_LIBRARY} \
           -DPYTHON_INCLUDE_DIR=${PYTHON3_INCLUDE_DIR} \
