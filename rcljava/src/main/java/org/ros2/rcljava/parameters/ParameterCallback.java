@@ -1,4 +1,4 @@
-/* Copyright 2017-2018 Esteve Fernandez <esteve@apache.org>
+/* Copyright 2020 Open Source Robotics Foundation, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,10 @@
 
 package org.ros2.rcljava.parameters;
 
-public class ParameterNames {
-  public static final String DESCRIBE_PARAMETERS = "describe_parameters";
-  public static final String GET_PARAMETERS = "get_parameters";
-  public static final String GET_PARAMETER_TYPES = "get_parameter_types";
-  public static final String LIST_PARAMETERS = "list_parameters";
-  public static final String SET_PARAMETERS = "set_parameters";
-  public static final String SET_PARAMETERS_ATOMICALLY = "set_parameters_atomically";
+import java.util.List;
 
-  private ParameterNames() {}
+import org.ros2.rcljava.parameters.ParameterVariant;
+
+public interface ParameterCallback {
+  rcl_interfaces.msg.SetParametersResult callback(List<ParameterVariant> parameters);
 }
