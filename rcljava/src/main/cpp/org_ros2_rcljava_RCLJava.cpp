@@ -17,6 +17,7 @@
 #include <cassert>
 #include <cstdlib>
 #include <string>
+#include <vector>
 
 #include "rcl/error_handling.h"
 #include "rcl/node.h"
@@ -44,30 +45,103 @@ Java_org_ros2_rcljava_RCLJava_nativeCreateContextHandle(JNIEnv *, jclass)
   return context_handle;
 }
 
+bool parse_arguments(JNIEnv * env, jobject cli_args, rcl_arguments_t * arguments)
+{
+  // TODO(clalancette): we could probably make this faster by just doing these
+  // method lookups during some initialization time.  But we'd have to add a lot
+  // more infrastructure for that, and we don't expect to call
+  // 'nativeCreateNodeHandle' that often, so I think this is OK for now.
+  jclass java_util_ArrayList = env->FindClass("java/util/ArrayList");
+  jmethodID java_util_ArrayList_size = env->GetMethodID(java_util_ArrayList, "size", "()I");
+  jmethodID java_util_ArrayList_get = env->GetMethodID(
+    java_util_ArrayList, "get", "(I)Ljava/lang/Object;");
+
+  *arguments = rcl_get_zero_initialized_arguments();
+  jint argc = env->CallIntMethod(cli_args, java_util_ArrayList_size);
+  std::vector<const char *> argv(argc);
+  for (jint i = 0; i < argc; ++i) {
+    jstring element =
+      static_cast<jstring>(env->CallObjectMethod(cli_args, java_util_ArrayList_get, i));
+    argv[i] = env->GetStringUTFChars(element, nullptr);
+    env->DeleteLocalRef(element);
+  }
+  rcl_ret_t ret = rcl_parse_arguments(argc, &argv[0], rcl_get_default_allocator(), arguments);
+  for (jint i = 0; i < argc; ++i) {
+    jstring element =
+      static_cast<jstring>(env->CallObjectMethod(cli_args, java_util_ArrayList_get, i));
+    env->ReleaseStringUTFChars(element, argv[i]);
+    env->DeleteLocalRef(element);
+  }
+  if (ret != RCL_RET_OK) {
+    std::string msg = "Failed to parse node arguments: " + std::string(rcl_get_error_string().str);
+    rcl_reset_error();
+    rcljava_throw_rclexception(env, ret, msg);
+    return false;
+  }
+
+  return true;
+}
+
 JNIEXPORT jlong JNICALL
 Java_org_ros2_rcljava_RCLJava_nativeCreateNodeHandle(
-  JNIEnv * env, jclass, jstring jnode_name, jstring jnamespace, jlong context_handle)
+  JNIEnv * env, jclass, jstring jnode_name, jstring jnamespace, jlong context_handle,
+  jobject cli_args, jboolean use_global_arguments, jboolean enable_rosout)
 {
-  const char * node_name = env->GetStringUTFChars(jnode_name, 0);
-  const char * node_namespace = env->GetStringUTFChars(jnamespace, 0);
+  const char * node_name_tmp = env->GetStringUTFChars(jnode_name, 0);
+  std::string node_name(node_name_tmp);
+  env->ReleaseStringUTFChars(jnode_name, node_name_tmp);
+
+  const char * namespace_tmp = env->GetStringUTFChars(jnamespace, 0);
+  std::string namespace_(namespace_tmp);
+  env->ReleaseStringUTFChars(jnamespace, namespace_tmp);
 
   rcl_context_t * context = reinterpret_cast<rcl_context_t *>(context_handle);
 
   rcl_node_t * node = static_cast<rcl_node_t *>(malloc(sizeof(rcl_node_t)));
+  if (node == nullptr) {
+    env->ThrowNew(env->FindClass("java/lang/OutOfMemoryError"), "Failed to allocate node");
+    return 0;
+  }
   *node = rcl_get_zero_initialized_node();
 
-  rcl_node_options_t default_options = rcl_node_get_default_options();
-  rcl_ret_t ret = rcl_node_init(node, node_name, node_namespace, context, &default_options);
-  env->ReleaseStringUTFChars(jnode_name, node_name);
-  env->ReleaseStringUTFChars(jnamespace, node_namespace);
+  rcl_arguments_t arguments;
+  if (!parse_arguments(env, cli_args, &arguments)) {
+    // All of the exception setup was done by parse_arguments, just return here.
+    free(node);
+    return 0;
+  }
+
+  rcl_node_options_t options = rcl_node_get_default_options();
+  options.use_global_arguments = use_global_arguments;
+  options.arguments = arguments;
+  options.enable_rosout = enable_rosout;
+  rcl_ret_t ret = rcl_node_init(node, node_name.c_str(), namespace_.c_str(), context, &options);
   if (ret != RCL_RET_OK) {
     std::string msg = "Failed to create node: " + std::string(rcl_get_error_string().str);
     rcl_reset_error();
+    free(node);
+    if (rcl_arguments_fini(&arguments) != RCL_RET_OK) {
+      // We are already throwing an exception, just ignore the return here
+    }
     rcljava_throw_rclexception(env, ret, msg);
     return 0;
   }
-  jlong node_handle = reinterpret_cast<jlong>(node);
-  return node_handle;
+
+  ret = rcl_arguments_fini(&arguments);
+  if (ret != RCL_RET_OK) {
+    // We failed to cleanup
+    std::string msg = "Failed to cleanup after creating node: " + std::string(
+      rcl_get_error_string().str);
+    rcl_reset_error();
+    if (rcl_node_fini(node) != RCL_RET_OK) {
+      // We are already throwing an exception, just ignore the return here
+    }
+    free(node);
+    rcljava_throw_rclexception(env, ret, msg);
+    return 0;
+  }
+
+  return reinterpret_cast<jlong>(node);
 }
 
 JNIEXPORT jstring JNICALL
